@@ -1,0 +1,34 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="GPL-3.0"
+issueTrackerURL="https://github.com/AlexModGuy/AlexsCaves/issues"
+
+[[mixins]]
+config="alexscaves.mixins.json"
+
+[[mods]]
+modId="alexscaves"
+version="2.0.3"
+displayName="Alex's Caves"
+displayURL="https://www.curseforge.com/minecraft/mc-mods/alexs-caves"
+logoFile="assets/alexscaves/textures/misc/mod_logo.png"
+authors="Alexthe668, Noonyeyz, Raguto"
+credits="LudoCrypt, _Ninni, PrismaticPinky, RenRen, Gatetoh, arby698, PlummetStudios, HolidayRaptor"
+description='''Explore new rare cave biomes hidden under the surface of the Overworld...'''
+
+[[dependencies.alexscaves]]
+    modId="citadel"
+    mandatory=true
+    versionRange="[2.6.0,)"
+    ordering="AFTER"
+    side="BOTH"
+
+[[dependencies.alexscaves]]
+    modId="neoforge"
+    mandatory=true
+    versionRange="[21.1.0,)"
+    ordering="NONE"
+    side="BOTH"
+
+[modproperties.alexscaves]
+    catalogueItemIcon="alexscaves:cave_tablet"

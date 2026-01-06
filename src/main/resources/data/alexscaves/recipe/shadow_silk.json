@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MDM",
+    "DPD",
+    "MDM"
+  ],
+  "key": {
+    "D": {
+      "item": "alexscaves:dark_tatters"
+    },
+    "P": {
+      "item": "alexscaves:pure_darkness"
+    },
+    "M": {
+      "item": "alexscaves:moth_dust"
+    }
+  },
+  "result": { "id": "alexscaves:shadow_silk",
+    "count": 2
+  }
+}

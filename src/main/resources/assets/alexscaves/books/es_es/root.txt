@@ -1,0 +1,57 @@
+
+
+    §lESCONDIDO §lBAJO §lEL §lSUBSUELO §lDE §lLA §lTIERRA §rhay muchos biomas únicos, todos raros en la naturaleza.
+
+    estos biomas de cuuevas son buscados no solo por ser raros, sino tambien por los contenidos legendarios que hay en cada una de ellas.
+    de estos biomas, solo se conocen cinco:
+
+    • {Cuevas Mangnéticas|magnetic_caves/chapter.json}
+    • {Cuevas Primordiales|primordial_caves/chapter.json}
+    • {Cuevas Tóxicas|toxic_caves/chapter.json}
+    • {Fosas Abisales|abyssal_chasm/chapter.json}
+    • {Criptas Desamparadas|forlorn_hollows/chapter.json}
+
+
+
+    para descubrir más de estas cuevas, busca una §lCabina §lSubterránea§r...
+    las Cabina subterránea pueden ser comunmente encontradas en las cuevas del mundo superior.
+
+    los cartografos pueden vender mapas a estas estructuras, que tambien pueden ser encontrados en cofres de minas abandonadas.
+
+    Aparte de botín normal, las Cabinas  Subterráneas contienen §lTabletas §lde §lEspeología§r.
+
+
+
+
+
+
+
+    Las Tabletas de Espeología pueden ser colocadas con papel en una §lMesa §lde §lEspeologíar, otro objeto que solo se encuentra en las Cabinas Subterráneas.
+
+    Entonces, ya podras traducir las Tabletas de Espeología...
+    Cuando el papel y la tableta estan en la mesa, las runas de la tableta seran visibles.
+
+    Interactuando con una runa la revelara. la traducción de una runa se puede ver colocando la lente sobre la palabra. Solo tienes cinco intentos si fallas la tableta se rompera.
+
+
+
+
+    Usar el conocimiento de las runas que representan letras puedenla palabra que buscas. Si este proceso ha sido realizado tres veces, la tableta y el papel se convertiran en un §lCódice §lde §llas §lCuevas §r.
+
+    Estos códices tienen muchos usos. pueden ser usados para ganar conocimiento sobre las cuevas que corresponde con el códice.
+
+
+
+
+
+
+    Adicionalmente, se pueden fabricar códices extras para fabricas  §lMapas §lde §Exploración §lde §lCuevas§r.
+
+
+
+
+
+
+
+
+    Los Mapas de Exploración de Cuevas pueden llevarte al bioma mas cercano detallado por el códice. El proceso de crear un Códice de las Cuevas parece dotar a este mapa de un alcance y una capacidad de respuesta asombrosas.

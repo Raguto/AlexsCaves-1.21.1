@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NCN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "alexscaves:energized_galena_neutral"
+    },
+    "C": {
+      "item": "alexscaves:telecore"
+    }
+  },
+  "result": { "id": "alexscaves:tesla_bulb"
+  }
+}

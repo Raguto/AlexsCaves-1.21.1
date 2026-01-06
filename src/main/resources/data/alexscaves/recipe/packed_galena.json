@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GGG",
+    "GGG"
+  ],
+  "key": {
+    "G": {
+      "item": "alexscaves:galena"
+    }
+  },
+  "result": { "id": "alexscaves:packed_galena",
+    "count": 1
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LLL",
+    "LDL",
+    "LLL"
+  ],
+  "key": {
+    "L": {
+      "tag": "alexscaves:rock_candies"
+    },
+    "D": {
+      "tag": "neoforge:dyes/red"
+    }
+  },
+  "result": { "id": "alexscaves:rock_candy_red",
+    "count": 8
+  }
+}

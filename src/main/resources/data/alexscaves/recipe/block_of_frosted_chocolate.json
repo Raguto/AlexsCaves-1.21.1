@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FF",
+    "CC"
+  ],
+  "key": {
+    "C": {
+      "item": "alexscaves:block_of_chocolate"
+    },
+    "F": {
+      "item": "alexscaves:block_of_frosting"
+    }
+  },
+  "result": { "id": "alexscaves:block_of_frosted_chocolate",
+    "count": 4
+  }
+}

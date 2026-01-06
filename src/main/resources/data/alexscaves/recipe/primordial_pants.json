@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "HHH",
+    "H H",
+    "B B"
+  ],
+  "key": {
+    "H": {
+      "item": "alexscaves:tough_hide"
+    },
+    "B": {
+      "item": "minecraft:bone_block"
+    }
+  },
+  "result": { "id": "alexscaves:primordial_pants"
+  }
+}

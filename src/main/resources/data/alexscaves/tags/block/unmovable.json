@@ -1,0 +1,6 @@
+{
+  "__comment": "all blocks that cannot pulled or pushed by magnets, or changed by world gen.",
+  "values": [
+    "#minecraft:wither_immune"
+  ]
+}

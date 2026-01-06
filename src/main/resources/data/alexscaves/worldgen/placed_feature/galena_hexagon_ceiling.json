@@ -1,0 +1,16 @@
+{
+  "feature": "alexscaves:galena_hexagon_ceiling",
+  "placement": [
+    {
+      "type": "minecraft:count",
+      "count": {
+        "type": "minecraft:uniform",
+        "max_inclusive": 3,
+        "min_inclusive": 1
+      }
+    },
+    {
+      "type": "minecraft:in_square"
+    }
+  ]
+}

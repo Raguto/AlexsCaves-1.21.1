@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CC",
+    "CC"
+  ],
+  "key": {
+    "C": {
+      "item": "alexscaves:candy_cane"
+    }
+  },
+  "result": { "id": "alexscaves:candy_cane_block"
+  }
+}

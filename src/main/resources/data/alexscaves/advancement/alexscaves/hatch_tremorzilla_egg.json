@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:tremorzilla_egg"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.hatch_tremorzilla_egg.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.hatch_tremorzilla_egg.desc"
+    }
+  },
+  "parent": "alexscaves:alexscaves/tremorzilla_egg",
+  "criteria": {
+    "hatch_tremorzilla_egg": {
+      "trigger": "alexscaves:hatch_tremorzilla_egg"
+    }
+  }
+}

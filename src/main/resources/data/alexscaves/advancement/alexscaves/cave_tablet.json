@@ -1,0 +1,29 @@
+{
+    "display": {
+        "icon": {
+            "id": "alexscaves:cave_tablet",
+            "components": {
+                "minecraft:custom_data": {"Rainbow": 1}
+            }
+        },
+        "title": {
+            "translate": "advancements.alexscaves.cave_tablet.title"
+        },
+        "description": {
+            "translate": "advancements.alexscaves.cave_tablet.desc"
+        }
+    },
+    "parent": "alexscaves:alexscaves/root",
+    "criteria": {
+        "cave_tablet": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["alexscaves:cave_tablet"]
+                    }
+                ]
+            }
+        }
+    }
+}

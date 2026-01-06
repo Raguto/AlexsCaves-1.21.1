@@ -1,0 +1,29 @@
+{
+    "display": {
+        "icon": {
+            "id": "alexscaves:cave_map",
+            "components": {
+                "minecraft:custom_data": {"Filled": 1}
+            }
+        },
+        "title": {
+            "translate": "advancements.alexscaves.cave_map.title"
+        },
+        "description": {
+            "translate": "advancements.alexscaves.cave_map.desc"
+        }
+    },
+    "parent": "alexscaves:alexscaves/cave_codex",
+    "criteria": {
+        "cave_map": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["alexscaves:cave_map"]
+                    }
+                ]
+            }
+        }
+    }
+}

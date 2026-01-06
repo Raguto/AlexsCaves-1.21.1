@@ -1,0 +1,14 @@
+{
+  "__comment": "all mobs that do not sink in muck.",
+  "values": [
+    "minecraft:drowned",
+    "alexscaves:lanternfish",
+    "alexscaves:sea_pig",
+    "alexscaves:hullbreaker",
+    "alexscaves:gossamer_worm",
+    "alexscaves:tripodfish",
+    "alexscaves:deep_one",
+    "alexscaves:deep_one_knight",
+    "alexscaves:deep_one_mage"
+  ]
+}

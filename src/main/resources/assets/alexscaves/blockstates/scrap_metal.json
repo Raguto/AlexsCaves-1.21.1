@@ -1,0 +1,24 @@
+{
+  "variants": {
+    "": [
+      {
+        "model": "alexscaves:block/scrap_metal_0"
+      },
+      {
+        "model": "alexscaves:block/scrap_metal_1"
+      },
+      {
+        "model": "alexscaves:block/scrap_metal_2"
+      },
+      {
+        "model": "alexscaves:block/scrap_metal_3"
+      },
+      {
+        "model": "alexscaves:block/scrap_metal_4"
+      },
+      {
+        "model": "alexscaves:block/scrap_metal_5"
+      }
+    ]
+  }
+}

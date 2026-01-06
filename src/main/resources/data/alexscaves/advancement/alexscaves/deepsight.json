@@ -1,0 +1,24 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:bioluminescent_torch"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.deepsight.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.deepsight.desc"
+    }
+  },
+  "parent": "alexscaves:alexscaves/abyssal_bucket",
+  "criteria": {
+    "all_effects": {
+      "trigger": "minecraft:effects_changed",
+      "conditions": {
+        "effects": {
+          "alexscaves:deepsight": {}
+        }
+      }
+    }
+  }
+}

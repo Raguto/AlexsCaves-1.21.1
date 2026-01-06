@@ -1,0 +1,22 @@
+{
+    "display": {
+        "icon": {
+            "id": "alexscaves:advancement_tab_icon"
+        },
+        "title": {
+            "translate": "advancements.alexscaves.root.title"
+        },
+        "description": {
+            "translate": "advancements.alexscaves.root.desc"
+        },
+        "background": "minecraft:textures/block/stone.png",
+        "show_toast": false,
+        "announce_to_chat": false
+    },
+    "criteria": {
+        "tick": {
+            "trigger": "minecraft:tick"
+        }
+    },
+    "sends_telemetry_event": false
+}

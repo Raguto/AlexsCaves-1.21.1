@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "II",
+    "II"
+  ],
+  "key": {
+    "I": {
+      "item": "alexscaves:chocolate_ice_cream_scoop"
+    }
+  },
+  "result": { "id": "alexscaves:chocolate_ice_cream"
+  }
+}

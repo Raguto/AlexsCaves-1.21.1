@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " S ",
+    "SBS",
+    " S "
+  ],
+  "key": {
+    "S": {
+      "item": "alexscaves:scrap_metal"
+    },
+    "B": {
+      "tag": "neoforge:barrels/wooden"
+    }
+  },
+  "result": { "id": "alexscaves:metal_barrel"
+  }
+}

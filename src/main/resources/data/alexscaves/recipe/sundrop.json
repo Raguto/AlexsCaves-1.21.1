@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GCG",
+    "CRC",
+    "GCG"
+  ],
+  "key": {
+    "G": {
+      "tag": "alexscaves:gelatins"
+    },
+    "C": {
+      "item": "alexscaves:caramel"
+    },
+    "R": {
+      "item": "alexscaves:radiant_essence"
+    }
+  },
+  "result": { "id": "alexscaves:sundrop",
+    "count": 2
+  }
+}

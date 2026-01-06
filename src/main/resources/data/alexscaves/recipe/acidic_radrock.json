@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " R ",
+    "RAR",
+    " R "
+  ],
+  "key": {
+    "R": {
+      "item": "alexscaves:radrock"
+    },
+    "A": {
+      "item": "alexscaves:acid_bucket"
+    }
+  },
+  "result": { "id": "alexscaves:acidic_radrock"
+  }
+}

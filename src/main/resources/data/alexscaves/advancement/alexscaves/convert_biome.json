@@ -1,0 +1,20 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:biome_treat"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.convert_biome.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.convert_biome.desc"
+    },
+    "frame": "goal"
+  },
+  "parent": "alexscaves:alexscaves/conversion_crucible",
+  "criteria": {
+    "convert_biome": {
+      "trigger": "alexscaves:convert_biome"
+    }
+  }
+}

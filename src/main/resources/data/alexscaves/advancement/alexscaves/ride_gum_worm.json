@@ -1,0 +1,25 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:gumball_pile"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.ride_gum_worm.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.ride_gum_worm.desc"
+    },
+    "frame": "challenge"
+  },
+  "parent": "alexscaves:alexscaves/gobthumper",
+  "criteria": {
+    "ride_gum_worm": {
+      "trigger": "minecraft:started_riding",
+      "conditions": {
+        "vehicle": {
+          "type": "alexscaves:gum_worm_segment"
+        }
+      }
+    }
+  }
+}

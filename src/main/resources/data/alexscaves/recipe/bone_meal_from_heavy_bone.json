@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alexscaves:heavy_bone"
+    }
+  ],
+  "result": { "id": "minecraft:bone_meal",
+    "count": 6
+  }
+}

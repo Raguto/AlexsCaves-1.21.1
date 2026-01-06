@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "alexscaves:coprolith"
+    }
+  },
+  "result": { "id": "alexscaves:coprolith_slab",
+    "count": 6
+  }
+}

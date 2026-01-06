@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "G  ",
+    "GG ",
+    "GGG"
+  ],
+  "key": {
+    "G": {
+      "item": "alexscaves:cinder_block"
+    }
+  },
+  "result": { "id": "alexscaves:cinder_block_stairs",
+    "count": 4
+  }
+}

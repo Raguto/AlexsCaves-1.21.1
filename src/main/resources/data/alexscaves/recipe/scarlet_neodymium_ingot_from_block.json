@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alexscaves:block_of_scarlet_neodymium"
+    }
+  ],
+  "result": { "id": "alexscaves:scarlet_neodymium_ingot",
+    "count": 9
+  }
+}

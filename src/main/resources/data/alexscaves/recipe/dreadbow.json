@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " VS",
+    "P S",
+    " VS"
+  ],
+  "key": {
+    "P": {
+      "item": "alexscaves:pure_darkness"
+    },
+    "V": {
+      "item": "alexscaves:vesper_wing"
+    },
+    "S": {
+      "item": "alexscaves:shadow_silk"
+    }
+  },
+  "result": { "id": "alexscaves:dreadbow"
+  }
+}

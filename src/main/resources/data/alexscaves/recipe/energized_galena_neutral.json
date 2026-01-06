@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alexscaves:energized_galena_scarlet"
+    },
+    {
+      "item": "alexscaves:energized_galena_azure"
+    }
+  ],
+  "result": { "id": "alexscaves:energized_galena_neutral",
+    "count": 2
+  }
+}

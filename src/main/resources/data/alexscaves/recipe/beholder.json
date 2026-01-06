@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BEB",
+    " B "
+  ],
+  "key": {
+    "B": {
+      "item": "alexscaves:thornwood_branch"
+    },
+    "E": {
+      "item": "alexscaves:occult_gem"
+    }
+  },
+  "result": { "id": "alexscaves:beholder"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SS",
+    "SS"
+  ],
+  "key": {
+    "S": {
+      "item": "alexscaves:sea_glass_shards"
+    }
+  },
+  "result": { "id": "minecraft:glass"
+  }
+}

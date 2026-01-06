@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alexscaves:gingerbread_block"
+    },
+    {
+      "item": "alexscaves:block_of_vanilla_frosting"
+    }
+  ],
+  "result": { "id": "alexscaves:frosted_gingerbread_block"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:pearl"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.discover_abyssal_chasm.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.discover_abyssal_chasm.desc"
+    },
+    "frame": "goal"
+  },
+  "parent": "alexscaves:alexscaves/cave_map",
+  "criteria": {
+    "enter_biome": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "biomes": "alexscaves:abyssal_chasm"
+              }
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alexscaves:curly_fern"
+    }
+  ],
+  "result": { "id": "minecraft:lime_dye",
+    "count": 2
+  }
+}

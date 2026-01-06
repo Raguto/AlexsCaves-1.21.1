@@ -1,0 +1,12 @@
+{
+  "__comment": "all mobs that cannot be controlled with a totem of possession.",
+  "values": [
+    "#c:bosses",
+    "minecraft:warden",
+    "minecraft:armor_stand",
+    "alexscaves:hullbreaker",
+    "alexscaves:forsaken",
+    "alexscaves:atlatitan",
+    "alexscaves:tremorzilla"
+  ]
+}

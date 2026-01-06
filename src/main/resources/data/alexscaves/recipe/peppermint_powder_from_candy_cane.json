@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alexscaves:candy_cane"
+    }
+  ],
+  "result": { "id": "alexscaves:peppermint_powder",
+    "count": 2
+  }
+}

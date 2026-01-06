@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "LLL",
+    "LDL",
+    "LLL"
+  ],
+  "key": {
+    "L": {
+      "tag": "alexscaves:radon_lamps"
+    },
+    "D": {
+      "tag": "neoforge:dyes/black"
+    }
+  },
+  "result": { "id": "alexscaves:radon_lamp_black",
+    "count": 8
+  }
+}

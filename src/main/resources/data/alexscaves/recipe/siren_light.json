@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG",
+    "GRG",
+    "IEI"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:redstone"
+    },
+    "R": {
+      "item": "alexscaves:radon_bottle"
+    },
+    "G": {
+      "tag": "neoforge:glass/colorless"
+    },
+    "I": {
+      "tag": "neoforge:ingots/iron"
+    }
+  },
+  "result": { "id": "alexscaves:siren_light",
+    "count": 1
+  }
+}

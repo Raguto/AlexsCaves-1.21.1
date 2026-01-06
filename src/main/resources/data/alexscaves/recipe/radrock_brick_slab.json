@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG"
+  ],
+  "key": {
+    "G": {
+      "item": "alexscaves:radrock_bricks"
+    }
+  },
+  "result": { "id": "alexscaves:radrock_brick_slab",
+    "count": 6
+  }
+}

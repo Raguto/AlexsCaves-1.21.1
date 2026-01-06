@@ -1,0 +1,23 @@
+{
+  "replace": false,
+  "values": [
+    "alexscaves:primordial_helmet",
+    "alexscaves:primordial_tunic",
+    "alexscaves:primordial_pants",
+    "alexscaves:hazmat_mask",
+    "alexscaves:hazmat_chestplate",
+    "alexscaves:hazmat_leggings",
+    "alexscaves:hazmat_boots",
+    "alexscaves:diving_helmet",
+    "alexscaves:diving_chestplate",
+    "alexscaves:diving_leggings",
+    "alexscaves:diving_boots",
+    "alexscaves:hood_of_darkness",
+    "alexscaves:cloak_of_darkness",
+    "alexscaves:gingerbread_helmet",
+    "alexscaves:gingerbread_chestplate",
+    "alexscaves:gingerbread_leggings",
+    "alexscaves:gingerbread_boots",
+    "alexscaves:rainbounce_boots"
+  ]
+}

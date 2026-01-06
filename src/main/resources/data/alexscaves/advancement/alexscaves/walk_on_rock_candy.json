@@ -1,0 +1,26 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:rock_candy_yellow"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.walk_on_rock_candy.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.walk_on_rock_candy.desc"
+    }
+  },
+  "parent": "alexscaves:alexscaves/discover_candy_cavity",
+  "criteria": {
+    "get_rock_candy": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": ["alexscaves:rock_candy_yellow"]
+          }
+        ]
+      }
+    }
+  }
+}

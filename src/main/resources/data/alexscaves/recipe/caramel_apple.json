@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "CAC",
+    "CCC"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:apple"
+    },
+    "C": {
+      "item": "alexscaves:caramel"
+    }
+  },
+  "result": { "id": "alexscaves:caramel_apple"
+  }
+}

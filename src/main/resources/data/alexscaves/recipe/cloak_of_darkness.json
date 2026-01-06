@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "D D",
+    "DOD",
+    "DDD"
+  ],
+  "key": {
+    "D": {
+      "item": "alexscaves:shadow_silk"
+    },
+    "O": {
+      "item": "alexscaves:occult_gem"
+    }
+  },
+  "result": { "id": "alexscaves:cloak_of_darkness"
+  }
+}

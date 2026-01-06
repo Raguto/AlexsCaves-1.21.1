@@ -1,0 +1,65 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:heavy_bone"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.defeat_big_dinosaur.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.defeat_big_dinosaur.desc"
+    }
+  },
+  "parent": "alexscaves:alexscaves/breed_grottoceratops",
+  "criteria": {
+    "killed_grottoceratops": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "alexscaves:grottoceratops"
+        }
+      }
+    },
+    "killed_tremorsaurus": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "alexscaves:tremorsaurus"
+        }
+      }
+    },
+    "killed_relicheirus": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "alexscaves:relicheirus"
+        }
+      }
+    },
+    "killed_luxtructosaurus": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "alexscaves:luxtructosaurus"
+        }
+      }
+    },
+    "killed_atlatitan": {
+      "trigger": "minecraft:player_killed_entity",
+      "conditions": {
+        "entity": {
+          "type": "alexscaves:atlatitan"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "killed_grottoceratops",
+      "killed_tremorsaurus",
+      "killed_relicheirus",
+      "killed_luxtructosaurus",
+      "killed_atlatitan"
+    ]
+  ]
+}

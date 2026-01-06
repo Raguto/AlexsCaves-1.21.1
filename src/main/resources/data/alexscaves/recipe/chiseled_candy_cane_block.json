@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P",
+    "P"
+  ],
+  "key": {
+    "P": {
+      "item": "alexscaves:large_peppermint"
+    }
+  },
+  "result": { "id": "alexscaves:chiseled_candy_cane_block"
+  }
+}

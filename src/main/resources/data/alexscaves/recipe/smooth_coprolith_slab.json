@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GGG"
+  ],
+  "key": {
+    "G": {
+      "item": "alexscaves:smooth_coprolith"
+    }
+  },
+  "result": { "id": "alexscaves:smooth_coprolith_slab",
+    "count": 6
+  }
+}

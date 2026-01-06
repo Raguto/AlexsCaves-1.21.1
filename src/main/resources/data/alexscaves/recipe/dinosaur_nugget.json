@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alexscaves:cooked_dinosaur_chop"
+    }
+  ],
+  "result": { "id": "alexscaves:dinosaur_nugget",
+    "count": 12
+  }
+}

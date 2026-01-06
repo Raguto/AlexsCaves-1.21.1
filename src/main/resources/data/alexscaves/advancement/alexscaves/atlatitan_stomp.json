@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:heavy_bone"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.atlatitan_stomp.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.atlatitan_stomp.desc"
+    }
+  },
+  "parent": "alexscaves:alexscaves/defeat_luxtructosaurus",
+  "criteria": {
+    "atlatitan_stomp": {
+      "trigger": "alexscaves:atlatitan_stomp"
+    }
+  }
+}

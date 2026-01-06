@@ -1,0 +1,42 @@
+{
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "alexscaves:cave_book"
+        }
+      ],
+      "rolls": {
+        "min": 0,
+        "max": 1
+      }
+    },
+    {
+      "name": "underground_cabin_toxic_caves",
+      "rolls": {
+        "min": 12,
+        "max": 22
+      },
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "weight": 15,
+          "value": "alexscaves:chests/underground_cabin"
+        },
+        {
+          "type": "minecraft:item",
+          "name": "alexscaves:cave_tablet",
+          "weight": 10,
+          "functions": [
+            {
+              "function": "minecraft:set_custom_data",
+              "tag": "{CaveBiome:\"alexscaves:toxic_caves\"}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

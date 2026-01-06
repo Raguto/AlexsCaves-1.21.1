@@ -1,0 +1,25 @@
+{
+    "display": {
+        "icon": {
+            "id": "alexscaves:submarine"
+        },
+        "title": {
+            "translate": "advancements.alexscaves.ride_submarine.title"
+        },
+        "description": {
+            "translate": "advancements.alexscaves.ride_submarine.desc"
+        },
+        "frame": "goal"
+    },
+    "parent": "alexscaves:alexscaves/discover_abyssal_ruins",
+    "criteria": {
+        "ride_submarine": {
+            "trigger": "minecraft:started_riding",
+            "conditions": {
+                "vehicle": {
+                    "type": "alexscaves:submarine"
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,20 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:radiant_essence"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.tremorzilla_kill_beam.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.tremorzilla_kill_beam.desc"
+    },
+    "frame": "challenge"
+  },
+  "parent": "alexscaves:alexscaves/tame_tremorzilla",
+  "criteria": {
+    "tremorzilla_kill_beam": {
+      "trigger": "alexscaves:tremorzilla_kill_beam"
+    }
+  }
+}

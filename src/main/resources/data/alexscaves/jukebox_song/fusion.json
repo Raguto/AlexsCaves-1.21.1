@@ -1,0 +1,8 @@
+{
+  "comparator_output": 11,
+  "description": {
+    "translate": "jukebox_song.alexscaves.fusion"
+  },
+  "length_in_seconds": 180,
+  "sound_event": "alexscaves:fusion_music_disc"
+}

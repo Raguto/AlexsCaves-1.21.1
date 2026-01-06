@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "MF",
+    "FM"
+  ],
+  "key": {
+    "M": {
+      "item": "minecraft:magma_block"
+    },
+    "F": {
+      "item": "alexscaves:flood_basalt"
+    }
+  },
+  "result": { "id": "alexscaves:primal_magma",
+    "count": 2
+  }
+}

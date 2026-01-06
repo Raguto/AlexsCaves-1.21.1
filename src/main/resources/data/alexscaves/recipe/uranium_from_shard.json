@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NNN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "alexscaves:uranium_shard"
+    }
+  },
+  "result": { "id": "alexscaves:uranium",
+    "count": 1
+  }
+}

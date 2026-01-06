@@ -1,0 +1,6 @@
+{
+  "__comment": "override underwater ambience with biome ambience in these biomes.",
+  "values": [
+    "alexscaves:abyssal_chasm"
+  ]
+}

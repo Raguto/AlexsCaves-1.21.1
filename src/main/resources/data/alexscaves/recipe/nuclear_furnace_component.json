@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "UCU",
+    "CFC",
+    "UCU"
+  ],
+  "key": {
+    "C": {
+      "item": "alexscaves:charred_remnant"
+    },
+    "U": {
+      "tag": "neoforge:raw_materials/uranium"
+    },
+    "F": {
+      "item": "minecraft:blast_furnace"
+    }
+  },
+  "result": { "id": "alexscaves:nuclear_furnace_component",
+    "count": 2
+  }
+}

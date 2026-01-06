@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " T ",
+    "TST",
+    "ABA"
+  ],
+  "key": {
+    "T": {
+      "item": "alexscaves:tectonic_shard"
+    },
+    "S": {
+      "item": "alexscaves:limestone_spear"
+    },
+    "A": {
+      "item": "alexscaves:amber_curiosity"
+    },
+    "B": {
+      "item": "alexscaves:heavy_bone"
+    }
+  },
+  "result": { "id": "alexscaves:extinction_spear"
+  }
+}

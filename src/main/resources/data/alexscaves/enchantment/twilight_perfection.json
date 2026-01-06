@@ -1,0 +1,18 @@
+{
+  "description": {
+    "translate": "enchantment.alexscaves.twilight_perfection"
+  },
+  "supported_items": "#alexscaves:enchantable/dreadbow",
+  "weight": 3,
+  "max_level": 3,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 10
+  },
+  "max_cost": {
+    "base": 45,
+    "per_level_above_first": 10
+  },
+  "anvil_cost": 3,
+  "slots": ["mainhand"]
+}

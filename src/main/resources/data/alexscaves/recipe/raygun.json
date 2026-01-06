@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "PPP",
+    "FUU",
+    "P  "
+  ],
+  "key": {
+    "P": {
+      "item": "alexscaves:polymer_plate"
+    },
+    "U": {
+      "item": "alexscaves:uranium_rod"
+    },
+    "F": {
+      "item": "alexscaves:fissile_core"
+    }
+  },
+  "result": { "id": "alexscaves:raygun",
+    "count": 1
+  }
+}

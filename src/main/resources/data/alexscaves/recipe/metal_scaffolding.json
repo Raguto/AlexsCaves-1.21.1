@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "TTT",
+    "S S",
+    "S S"
+  ],
+  "key": {
+    "S": {
+      "item": "alexscaves:metal_rebar"
+    },
+    "T": {
+      "item": "alexscaves:scrap_metal"
+    }
+  },
+  "result": { "id": "alexscaves:metal_scaffolding",
+    "count": 6
+  }
+}

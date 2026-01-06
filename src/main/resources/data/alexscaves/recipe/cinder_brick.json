@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CCC",
+    "C C",
+    "CCC"
+  ],
+  "key": {
+    "C": {
+      "tag": "neoforge:concrete"
+    }
+  },
+  "result": { "id": "alexscaves:cinder_brick",
+    "count": 16
+  }
+}

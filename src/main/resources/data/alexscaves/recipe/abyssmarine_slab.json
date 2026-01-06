@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "alexscaves:abyssmarine"
+    }
+  },
+  "result": { "id": "alexscaves:abyssmarine_slab",
+    "count": 6
+  }
+}

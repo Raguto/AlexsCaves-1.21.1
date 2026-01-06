@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "P P",
+    "P P"
+  ],
+  "key": {
+    "P": {
+      "item": "alexscaves:polymer_plate"
+    }
+  },
+  "result": { "id": "alexscaves:hazmat_boots"
+  }
+}

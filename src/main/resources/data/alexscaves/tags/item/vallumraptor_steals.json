@@ -1,0 +1,8 @@
+{
+  "__comment": "all non-meat items that vallumraptors will steal from chests.",
+  "values": [
+    "#minecraft:eggs",
+    "alexscaves:dinosaur_chop",
+    "alexscaves:cooked_dinosaur_chop"
+  ]
+}

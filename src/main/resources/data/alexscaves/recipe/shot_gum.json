@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SPP",
+    "III",
+    "IN "
+  ],
+  "key": {
+    "S": {
+      "item": "alexscaves:sugar_glass"
+    },
+    "P": {
+      "item": "alexscaves:gumball_pile"
+    },
+    "I": {
+      "tag": "neoforge:ingots/iron"
+    },
+    "N": {
+      "tag": "neoforge:nuggets/iron"
+    }
+  },
+  "result": { "id": "alexscaves:shot_gum",
+    "count": 1
+  }
+}

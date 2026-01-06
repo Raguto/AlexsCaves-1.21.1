@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SPS",
+    "PDP",
+    "SPS"
+  ],
+  "key": {
+    "S": {
+      "item": "minecraft:sugar"
+    },
+    "P": {
+      "item": "alexscaves:peppermint_powder"
+    },
+    "D": {
+      "tag": "neoforge:dyes/yellow"
+    }
+  },
+  "result": { "id": "alexscaves:rock_candy_yellow",
+    "count": 4
+  }
+}

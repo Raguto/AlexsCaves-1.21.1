@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GEG",
+    "CSC",
+    "GRG"
+  ],
+  "key": {
+    "G": {
+      "item": "alexscaves:gingerbread_crumbs"
+    },
+    "E": {
+      "item": "alexscaves:radiant_essence"
+    },
+    "R": {
+      "item": "minecraft:redstone"
+    },
+    "S": {
+      "item": "minecraft:smoker"
+    },
+    "C": {
+      "item": "alexscaves:candy_cane"
+    }
+  },
+  "result": { "id": "alexscaves:confection_oven"
+  }
+}

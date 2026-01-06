@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "alexscaves:sweetish_fish_blue"
+  },
+  "result": { "id": "alexscaves:gelatin_blue" },
+  "experience": 0.15,
+  "cookingtime": 200
+}

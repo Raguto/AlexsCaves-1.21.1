@@ -1,0 +1,8 @@
+{
+  "comparator_output": 12,
+  "description": {
+    "translate": "jukebox_song.alexscaves.tasty"
+  },
+  "length_in_seconds": 180,
+  "sound_event": "alexscaves:tasty_music_disc"
+}

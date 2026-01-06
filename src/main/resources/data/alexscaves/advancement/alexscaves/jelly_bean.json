@@ -1,0 +1,30 @@
+{
+    "display": {
+        "icon": {
+            "id": "alexscaves:jelly_bean",
+            "components": {
+                "minecraft:custom_data": {"Rainbow": 1}
+            }
+        },
+        "title": {
+            "translate": "advancements.alexscaves.jelly_bean.title"
+        },
+        "description": {
+            "translate": "advancements.alexscaves.jelly_bean.desc"
+        },
+        "frame": "goal"
+    },
+    "parent": "alexscaves:alexscaves/feed_gummy_bear",
+    "criteria": {
+        "mussel": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["alexscaves:jelly_bean"]
+                    }
+                ]
+            }
+        }
+    }
+}

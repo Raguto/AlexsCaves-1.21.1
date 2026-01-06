@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alexscaves:block_of_pearl"
+    }
+  ],
+  "result": { "id": "alexscaves:pearl",
+    "count": 9
+  }
+}

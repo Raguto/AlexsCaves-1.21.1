@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DED",
+    "DBD",
+    "DBD"
+  ],
+  "key": {
+    "B": {
+      "item": "alexscaves:thornwood_branch"
+    },
+    "E": {
+      "item": "alexscaves:occult_gem"
+    },
+    "D": {
+      "item": "alexscaves:moth_dust"
+    }
+  },
+  "result": { "id": "alexscaves:totem_of_possession"
+  }
+}

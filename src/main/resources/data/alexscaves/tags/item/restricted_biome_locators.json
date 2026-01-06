@@ -1,0 +1,21 @@
+{
+  "__comment": "all biome location items from other mods that we do not want breaking the balance of Alex's Caves and circumventing the need for Cave Explorer maps.",
+  "values": [
+    {
+      "id": "naturescompass:naturescompass",
+      "required": false
+    },
+    {
+      "id": "structures_compass:structures_compass",
+      "required": false
+    },
+    {
+      "id": "structurecompass:structure_compass",
+      "required": false
+    },
+    {
+      "id": "explorerscompass:explorerscompass",
+      "required": false
+    }
+  ]
+}

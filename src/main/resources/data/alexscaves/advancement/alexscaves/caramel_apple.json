@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "id": "alexscaves:caramel_apple"
+        },
+        "title": {
+            "translate": "advancements.alexscaves.caramel_apple.title"
+        },
+        "description": {
+            "translate": "advancements.alexscaves.caramel_apple.desc"
+        }
+    },
+    "parent": "alexscaves:alexscaves/caramel",
+    "criteria": {
+        "mussel": {
+            "trigger": "minecraft:inventory_changed",
+            "conditions": {
+                "items": [
+                    {
+                        "items": ["alexscaves:caramel_apple"]
+                    }
+                ]
+            }
+        }
+    }
+}

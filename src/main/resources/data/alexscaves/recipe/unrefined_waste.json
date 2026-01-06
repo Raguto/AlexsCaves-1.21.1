@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "NNN",
+    "NNN",
+    "NNN"
+  ],
+  "key": {
+    "N": {
+      "item": "alexscaves:toxic_paste"
+    }
+  },
+  "result": { "id": "alexscaves:unrefined_waste",
+    "count": 1
+  }
+}

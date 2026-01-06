@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "CC",
+    "CC"
+  ],
+  "key": {
+    "C": {
+      "item": "alexscaves:block_of_chocolate"
+    }
+  },
+  "result": { "id": "alexscaves:block_of_polished_chocolate",
+    "count": 4
+  }
+}

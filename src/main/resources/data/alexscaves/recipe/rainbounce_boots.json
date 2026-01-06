@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "G G",
+    "S S"
+  ],
+  "key": {
+    "G": {
+      "tag": "alexscaves:gelatins"
+    },
+    "S": {
+      "item": "alexscaves:sundrop"
+    }
+  },
+  "result": { "id": "alexscaves:rainbounce_boots"
+  }
+}

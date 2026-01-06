@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "SSS",
+    "SRS",
+    "SSS"
+  ],
+  "key": {
+    "S": {
+      "item": "alexscaves:scrap_metal"
+    },
+    "R": {
+      "tag": "neoforge:storage_blocks/redstone"
+    }
+  },
+  "result": { "id": "alexscaves:magnetic_activator"
+  }
+}

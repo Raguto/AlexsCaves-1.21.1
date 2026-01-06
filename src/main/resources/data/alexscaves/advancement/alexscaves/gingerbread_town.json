@@ -1,0 +1,35 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:gingerbread_crumbs"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.gingerbread_town.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.gingerbread_town.desc"
+    }
+  },
+  "parent": "alexscaves:alexscaves/walk_on_rock_candy",
+  "criteria": {
+    "gingerbread_town": {
+      "trigger": "minecraft:location",
+      "conditions": {
+        "player": [
+          {
+            "condition": "minecraft:entity_properties",
+            "entity": "this",
+            "predicate": {
+              "location": {
+                "structures": [
+                  "alexscaves:gingerbread_town"
+                ]
+              }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "sends_telemetry_event": true
+}

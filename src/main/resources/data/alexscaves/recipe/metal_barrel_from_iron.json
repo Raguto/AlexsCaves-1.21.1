@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "III",
+    "IBI",
+    "III"
+  ],
+  "key": {
+    "I": {
+      "tag": "neoforge:ingots/iron"
+    },
+    "B": {
+      "tag": "neoforge:barrels/wooden"
+    }
+  },
+  "result": { "id": "alexscaves:metal_barrel"
+  }
+}

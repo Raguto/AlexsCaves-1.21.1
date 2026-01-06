@@ -1,0 +1,19 @@
+{
+  "display": {
+    "icon": {
+      "id": "alexscaves:cave_painting_tremorsaurus"
+    },
+    "title": {
+      "translate": "advancements.alexscaves.cave_painting.title"
+    },
+    "description": {
+      "translate": "advancements.alexscaves.cave_painting.desc"
+    }
+  },
+  "parent": "alexscaves:alexscaves/limestone",
+  "criteria": {
+    "cave_painting": {
+      "trigger": "alexscaves:cave_painting"
+    }
+  }
+}

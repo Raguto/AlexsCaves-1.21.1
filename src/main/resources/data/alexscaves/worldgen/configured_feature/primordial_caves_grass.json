@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:random_patch",
+  "config": {
+    "feature": "alexscaves:primordial_caves_grass_vegetation",
+    "tries": 40,
+    "xz_spread": 7,
+    "y_spread": 3
+  }
+}

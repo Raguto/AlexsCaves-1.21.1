@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "alexscaves:gingerbread_block"
+    }
+  },
+  "result": { "id": "alexscaves:gingerbread_slab",
+    "count": 6
+  }
+}

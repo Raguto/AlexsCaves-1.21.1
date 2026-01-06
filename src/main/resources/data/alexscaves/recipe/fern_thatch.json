@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "FF",
+    "FF"
+  ],
+  "key": {
+    "F": {
+      "tag": "alexscaves:ferns"
+    }
+  },
+  "result": { "id": "alexscaves:fern_thatch"
+  }
+}

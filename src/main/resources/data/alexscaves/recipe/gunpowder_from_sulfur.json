@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "alexscaves:sulfur_dust"
+    },
+    {
+      "item": "alexscaves:sulfur_dust"
+    },
+    {
+      "item": "minecraft:gravel"
+    }
+  ],
+  "result": { "id": "minecraft:gunpowder"
+  }
+}

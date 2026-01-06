@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "INI",
+    "ISI",
+    "INI"
+  ],
+  "key": {
+    "N": {
+      "item": "alexscaves:azure_neodymium_ingot"
+    },
+    "I": {
+      "tag": "neoforge:ingots/iron"
+    },
+    "S": {
+      "tag": "neoforge:rods/wooden"
+    }
+  },
+  "result": { "id": "alexscaves:magnetic_levitation_rail",
+    "count": 6
+  }
+}

@@ -1,0 +1,26 @@
+{
+    "display": {
+        "icon": {
+            "id": "alexscaves:nuclear_bomb"
+        },
+        "title": {
+            "translate": "advancements.alexscaves.ride_nuclear_bomb.title"
+        },
+        "description": {
+            "translate": "advancements.alexscaves.ride_nuclear_bomb.desc"
+        },
+        "frame": "challenge",
+        "hidden": true
+    },
+    "parent": "alexscaves:alexscaves/nuclear_bomb",
+    "criteria": {
+        "ride_nuclear_bomb": {
+            "trigger": "minecraft:started_riding",
+            "conditions": {
+                "vehicle": {
+                    "type": "alexscaves:nuclear_bomb"
+                }
+            }
+        }
+    }
+}

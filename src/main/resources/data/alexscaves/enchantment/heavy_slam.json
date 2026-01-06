@@ -1,0 +1,18 @@
+{
+  "description": {
+    "translate": "enchantment.alexscaves.heavy_slam"
+  },
+  "supported_items": "#alexscaves:enchantable/galena_gauntlet",
+  "weight": 3,
+  "max_level": 1,
+  "min_cost": {
+    "base": 15,
+    "per_level_above_first": 10
+  },
+  "max_cost": {
+    "base": 45,
+    "per_level_above_first": 10
+  },
+  "anvil_cost": 3,
+  "slots": ["mainhand"]
+}

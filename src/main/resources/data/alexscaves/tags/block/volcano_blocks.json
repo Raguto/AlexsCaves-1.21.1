@@ -1,0 +1,10 @@
+{
+  "__comment": "all blocks considered part of the volcano inside the primordial caves.",
+  "values": [
+    "minecraft:lava",
+    "alexscaves:primal_magma",
+    "alexscaves:flood_basalt",
+    "alexscaves:volcanic_core",
+    "alexscaves:fissure_primal_magma"
+  ]
+}

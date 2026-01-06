@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "alexscaves:acid",
+      "required": false
+    },
+    {
+      "id": "alexscaves:acid_flowing",
+      "required": false
+    },
+    {
+      "id": "alexscaves:purple_soda",
+      "required": false
+    },
+    {
+      "id": "alexscaves:purple_soda_flowing",
+      "required": false
+    }
+  ]
+}

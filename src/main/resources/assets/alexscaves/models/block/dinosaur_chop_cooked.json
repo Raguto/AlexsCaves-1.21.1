@@ -1,0 +1,8 @@
+{
+	"parent": "alexscaves:block/dinosaur_chop_template",
+	"textures": {
+		"side": "alexscaves:block/dinosaur_chop_cooked_side",
+		"front": "alexscaves:block/dinosaur_chop_cooked"
+	}
+
+}

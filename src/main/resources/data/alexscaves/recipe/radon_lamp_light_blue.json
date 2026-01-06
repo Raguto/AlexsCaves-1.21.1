@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "DRD",
+    "RGR",
+    "DRD"
+  ],
+  "key": {
+    "R": {
+      "item": "alexscaves:radon_bottle"
+    },
+    "G": {
+      "item": "minecraft:glowstone"
+    },
+    "D": {
+      "tag": "neoforge:dyes/light_blue"
+    }
+  },
+  "result": { "id": "alexscaves:radon_lamp_light_blue",
+    "count": 4
+  }
+}

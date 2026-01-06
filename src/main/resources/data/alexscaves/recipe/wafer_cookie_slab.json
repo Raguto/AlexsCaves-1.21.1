@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "WWW"
+  ],
+  "key": {
+    "W": {
+      "item": "alexscaves:wafer_cookie_block"
+    }
+  },
+  "result": { "id": "alexscaves:wafer_cookie_slab",
+    "count": 6
+  }
+}

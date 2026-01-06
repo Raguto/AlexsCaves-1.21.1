@@ -1,0 +1,11 @@
+{
+	"parent": "alexscaves:block/tremorsaurus_egg_template",
+	"textures": {
+		"east": "alexscaves:block/egg/tremorsaurus_egg_east",
+		"south": "alexscaves:block/egg/tremorsaurus_egg_south",
+		"west": "alexscaves:block/egg/tremorsaurus_egg_west",
+		"north": "alexscaves:block/egg/tremorsaurus_egg_north",
+		"bottom" : "alexscaves:block/egg/tremorsaurus_egg_bottom",
+		"top" : "alexscaves:block/egg/tremorsaurus_egg_top"
+	}
+}
