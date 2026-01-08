@@ -36,6 +36,14 @@ public record UpdateItemTagMessage(int entityId, ItemStack itemStackFrom) implem
         return ID;
     }
 
+    public static void handle(UpdateItemTagMessage message, IPayloadContext context) {
+        if (context.flow().isClientbound()) {
+            handleClient(message, context);
+        } else {
+            handleServer(message, context);
+        }
+    }
+
     public static void handleClient(UpdateItemTagMessage message, IPayloadContext context) {
         context.enqueueWork(() -> {
             Player playerSided = context.player();
@@ -53,6 +61,27 @@ public record UpdateItemTagMessage(int entityId, ItemStack itemStackFrom) implem
                         net.minecraft.nbt.CompoundTag tag = stackFrom.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
                         updatesStackTags.updateTagFromServer(holder, to, tag);
                     }
+                }
+            }
+        });
+    }
+
+    public static void handleServer(UpdateItemTagMessage message, IPayloadContext context) {
+        context.enqueueWork(() -> {
+            Player player = context.player();
+            if (player != null) {
+                // Server receives the updated item tag from client
+                // This is used by items like the raygun to sync their state when stopping use
+                ItemStack stackFrom = message.itemStackFrom;
+                ItemStack to = null;
+                if (player.getItemInHand(InteractionHand.MAIN_HAND).is(stackFrom.getItem())) {
+                    to = player.getItemInHand(InteractionHand.MAIN_HAND);
+                } else if (player.getItemInHand(InteractionHand.OFF_HAND).is(stackFrom.getItem())) {
+                    to = player.getItemInHand(InteractionHand.OFF_HAND);
+                }
+                if (to != null && to.getItem() instanceof UpdatesStackTags updatesStackTags) {
+                    net.minecraft.nbt.CompoundTag tag = stackFrom.getOrDefault(net.minecraft.core.component.DataComponents.CUSTOM_DATA, net.minecraft.world.item.component.CustomData.EMPTY).copyTag();
+                    updatesStackTags.updateTagFromServer(player, to, tag);
                 }
             }
         });

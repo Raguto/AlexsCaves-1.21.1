@@ -52,8 +52,13 @@
       "minecraft:monster_room",
       "minecraft:monster_room_deep"
     ],
-    [],
-    [],
+    [
+      "alexscaves:floating_galena_orb"
+    ],
+    [
+      "alexscaves:galena_hexagon_floor",
+      "alexscaves:galena_hexagon_ceiling"
+    ],
     [
       "minecraft:ore_dirt",
       "minecraft:ore_gravel",

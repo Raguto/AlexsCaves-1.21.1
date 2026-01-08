@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "alexscaves:abyssal_chasm",
+  "features": [
+    "alexscaves:abyssal_boulder",
+    "alexscaves:black_vent",
+    "alexscaves:whalefall",
+    "alexscaves:deep_one_ruins",
+    "alexscaves:tube_worm",
+    "alexscaves:mussel",
+    "alexscaves:ping_pong_sponge",
+    "alexscaves:dusk_anemone",
+    "alexscaves:twilight_anemone",
+    "alexscaves:midnight_anemone",
+    "alexscaves:fill_in_bubbles_with_water"
+  ],
+  "step": "underground_decoration"
+}

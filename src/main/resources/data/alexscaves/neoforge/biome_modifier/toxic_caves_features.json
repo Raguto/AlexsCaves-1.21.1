@@ -1,0 +1,17 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "alexscaves:toxic_caves",
+  "features": [
+    "alexscaves:acid_lake",
+    "alexscaves:toxic_ruins",
+    "alexscaves:metal_swarf_replace_mud",
+    "alexscaves:unrefined_waste_replace_mud",
+    "alexscaves:radrock_uranium_ore",
+    "alexscaves:spring_acid",
+    "alexscaves:acid_vent",
+    "alexscaves:underweed",
+    "alexscaves:sulfur_stack",
+    "alexscaves:nuclear_siren"
+  ],
+  "step": "underground_decoration"
+}

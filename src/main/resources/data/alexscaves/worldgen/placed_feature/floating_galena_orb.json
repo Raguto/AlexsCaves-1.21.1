@@ -3,11 +3,10 @@
   "placement": [
     {
       "type": "minecraft:count",
-      "count": {
-        "type": "minecraft:uniform",
-        "max_inclusive": 70,
-        "min_inclusive": 40
-      }
+      "count": 25
+    },
+    {
+      "type": "minecraft:in_square"
     },
     {
       "type": "minecraft:height_range",
@@ -22,12 +21,21 @@
       }
     },
     {
-      "type": "minecraft:in_square"
+      "type": "minecraft:environment_scan",
+      "allowed_search_condition": {
+        "type": "minecraft:matching_blocks",
+        "blocks": "minecraft:air"
+      },
+      "direction_of_search": "down",
+      "max_steps": 12,
+      "target_condition": {
+        "type": "minecraft:solid"
+      }
     },
     {
-      "type": "minecraft:surface_relative_threshold_filter",
-      "heightmap": "OCEAN_FLOOR_WG",
-      "max_inclusive": -13
+      "type": "minecraft:random_offset",
+      "xz_spread": 0,
+      "y_spread": 1
     },
     {
       "type": "minecraft:biome"

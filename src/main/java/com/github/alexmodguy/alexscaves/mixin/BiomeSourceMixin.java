@@ -37,13 +37,10 @@ public class BiomeSourceMixin implements BiomeSourceAccessor {
 
     @Override
     public void expandBiomesWith(Set<Holder<Biome>> newGenBiomes) {
-        Set<Holder<Biome>> originalBiomes = this.possibleBiomes.get();
-        
-        ImmutableSet.Builder<Holder<Biome>> builder = ImmutableSet.builder();
-        builder.addAll(originalBiomes);
-        builder.addAll(newGenBiomes);
-        Set<Holder<Biome>> expandedSet = builder.build();
-        
-        this.possibleBiomes = () -> expandedSet;
+        // Don't actually expand possibleBiomes - this causes feature order cycle issues on dedicated servers
+        // The biome injection via MultiNoiseBiomeSourceMixin handles returning AC biomes when appropriate
+        // Adding them to possibleBiomes causes the ChunkGenerator's FeatureSorter to try to sort
+        // AC biome features alongside vanilla features, which can cause cycle detection failures
+        AlexsCaves.LOGGER.debug("[AC] expandBiomesWith called with {} biomes - skipping to avoid feature cycle issues", newGenBiomes.size());
     }
 }

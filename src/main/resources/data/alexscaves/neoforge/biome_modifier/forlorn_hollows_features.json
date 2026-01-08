@@ -1,0 +1,18 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "alexscaves:forlorn_hollows",
+  "features": [
+    "alexscaves:forlorn_posts",
+    "alexscaves:thornwood_tree_with_branches",
+    "alexscaves:dirt_replace_packed_mud",
+    "alexscaves:coprolith_coal_ore",
+    "alexscaves:guanostone_redstone_ore",
+    "alexscaves:peering_coprolith",
+    "alexscaves:forlorn_ruins",
+    "alexscaves:guano_pile",
+    "alexscaves:underweed",
+    "alexscaves:thornwood_roots",
+    "alexscaves:forlorn_hollows_brown_mushroom"
+  ],
+  "step": "underground_decoration"
+}

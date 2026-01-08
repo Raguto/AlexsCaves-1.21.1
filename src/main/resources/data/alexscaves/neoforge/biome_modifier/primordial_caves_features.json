@@ -1,0 +1,23 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "alexscaves:primordial_caves",
+  "features": [
+    "alexscaves:subterranodon_roost",
+    "alexscaves:primordial_caves_lake",
+    "alexscaves:caveman_house",
+    "alexscaves:ambersol",
+    "alexscaves:primordial_forest_rock",
+    "alexscaves:volcano_boulder",
+    "alexscaves:packed_mud_replace_dirt",
+    "alexscaves:moss_replace_grass",
+    "alexscaves:cycad",
+    "alexscaves:primordial_caves_grass",
+    "alexscaves:flytrap",
+    "alexscaves:amber_monolith",
+    "alexscaves:pewen_tree",
+    "alexscaves:ancient_tree",
+    "alexscaves:giant_ancient_tree",
+    "alexscaves:archaic_vine"
+  ],
+  "step": "underground_decoration"
+}

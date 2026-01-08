@@ -62,12 +62,14 @@ public class ACNetworking {
             BeholderRotateMessage::handleServer
         );
 
-        // Server -> Client packets
-        registrar.playToClient(
+        // Bidirectional - UpdateItemTagMessage is sent from client to server (raygun) and server to client
+        registrar.playBidirectional(
             UpdateItemTagMessage.ID,
             UpdateItemTagMessage.CODEC,
-            UpdateItemTagMessage::handleClient
+            UpdateItemTagMessage::handle
         );
+
+        // Server -> Client packets
         registrar.playToClient(
             BeholderSyncMessage.ID,
             BeholderSyncMessage.CODEC,

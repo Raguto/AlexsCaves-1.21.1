@@ -1,0 +1,15 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "alexscaves:magnetic_caves",
+  "features": [
+    "alexscaves:scarlet_magnetic_node",
+    "alexscaves:azure_magnetic_node",
+    "alexscaves:tesla_bulb",
+    "alexscaves:floating_galena_orb",
+    "alexscaves:galena_hexagon_floor",
+    "alexscaves:galena_hexagon_ceiling",
+    "alexscaves:galena_iron_ore",
+    "alexscaves:metal_swarf"
+  ],
+  "step": "underground_decoration"
+}

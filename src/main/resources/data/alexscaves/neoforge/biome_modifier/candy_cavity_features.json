@@ -1,0 +1,25 @@
+{
+  "type": "neoforge:add_features",
+  "biomes": "alexscaves:candy_cavity",
+  "features": [
+    "alexscaves:candy_ruins",
+    "alexscaves:gobstopper_geode",
+    "alexscaves:chocolate_ice_cream_scoop",
+    "alexscaves:vanilla_ice_cream_scoop",
+    "alexscaves:sweetberry_ice_cream_scoop",
+    "alexscaves:ceiling_ice_cream_cone",
+    "alexscaves:cookie_shelf",
+    "alexscaves:lollipop",
+    "alexscaves:licoroot_tree_with_sprouts",
+    "alexscaves:floating_gummy_ring",
+    "alexscaves:peppermint_patch",
+    "alexscaves:sprinkles_pile",
+    "alexscaves:sweet_puff",
+    "alexscaves:sundrop_patch",
+    "alexscaves:candy_cane",
+    "alexscaves:encrusted_peppermint",
+    "alexscaves:spilled_ice_cream_cone",
+    "alexscaves:ceiling_frostmint"
+  ],
+  "step": "underground_decoration"
+}
