@@ -14,6 +14,7 @@ import com.github.alexmodguy.alexscaves.server.config.BiomeGenerationConfig;
 import com.github.alexmodguy.alexscaves.server.entity.ACEntityDataRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.ACFrogRegistry;
+import com.github.alexmodguy.alexscaves.server.event.CommonEvents;
 import com.github.alexmodguy.alexscaves.server.inventory.ACMenuRegistry;
 import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
@@ -106,7 +107,7 @@ public class AlexsCaves {
         modEventBus.addListener(com.github.alexmodguy.alexscaves.server.message.ACNetworking::register);
         
         PROXY.setModEventBus(modEventBus);
-        PROXY.commonInit();
+        NeoForge.EVENT_BUS.register(new CommonEvents());//FMLEnvironment thinks that this is the client side. I advise you to abandon proxies in the future.
         ACBiomeRegistry.init();
     }
 
