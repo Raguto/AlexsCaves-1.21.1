@@ -3,10 +3,10 @@ package com.github.alexmodguy.alexscaves.server.level.structure;
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
 import com.github.alexmodguy.alexscaves.server.level.structure.piece.VolcanoStructurePiece;
 import com.github.alexmodguy.alexscaves.server.misc.ACMath;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -31,13 +31,19 @@ public class VolcanoStructure extends Structure {
     }
 
     public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
-        int i = context.chunkPos().getBlockX(9);
-        int j = context.chunkPos().getBlockZ(9);
-
-        for(Holder<Biome> holder : ACMath.getBiomesWithinAtY(context.biomeSource(), i, VOLCANO_Y_CENTER, j, 30, context.randomState().sampler())) {
-            if (!holder.is(ACBiomeRegistry.PRIMORDIAL_CAVES)) {
-                return Optional.empty();
-            }
+        ChunkPos chunkpos = context.chunkPos();
+        int x = chunkpos.getMiddleBlockX();
+        int z = chunkpos.getMiddleBlockZ();
+        
+        // Use ACBiomeRarity directly to check if this location is in the correct AC biome region
+        // This bypasses the biome source which has Y-level and timing issues
+        long seed = context.seed();
+        ResourceKey<Biome> biomeAtLocation = com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRarity.getACBiomeForPosition(seed, x, z);
+        
+        boolean biomeMatches = biomeAtLocation != null && biomeAtLocation.equals(ACBiomeRegistry.PRIMORDIAL_CAVES);
+        
+        if (!biomeMatches) {
+            return Optional.empty();
         }
 
         return atYCaveBiomePoint(context, Heightmap.Types.OCEAN_FLOOR_WG, (builder) -> {
@@ -81,5 +87,3 @@ public class VolcanoStructure extends Structure {
         return ACStructureRegistry.VOLCANO.get();
     }
 }
-
-

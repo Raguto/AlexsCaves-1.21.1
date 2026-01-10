@@ -3,15 +3,12 @@ package com.github.alexmodguy.alexscaves.server.misc;
 import com.github.alexmodguy.alexscaves.AlexsCaves;
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
 import com.github.alexthe666.citadel.server.entity.CitadelEntityData;
-import com.github.alexthe666.citadel.server.message.PropertiesMessage;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.biome.Biome;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -45,12 +42,10 @@ public class CaveBookProgress {
         CompoundTag tag = CitadelEntityData.getOrCreateCitadelTag(player);
         tag.put(PLAYER_CAVE_BOOK_PROGRESS_TAG, savedTag);
         CitadelEntityData.setCitadelTag(player, tag);
-        PropertiesMessage message = new PropertiesMessage("CitadelTagUpdate", tag, player.getId());
-        if (!player.level().isClientSide && player instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToAllPlayers(message);
-        } else {
-            PacketDistributor.sendToServer(message);
-        }
+        // In 1.21, Citadel's PropertiesMessage is only registered for server-bound traffic (playToServer)
+        // We cannot send it from server to client - it will cause an encoding error
+        // The data is persisted via CitadelEntityData.setCitadelTag which handles saving to player NBT
+        // The client-side CaveBookScreen reads directly from CitadelEntityData when opened
     }
 
     private CompoundTag save() {

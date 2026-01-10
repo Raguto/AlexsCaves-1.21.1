@@ -15,8 +15,11 @@ import javax.annotation.Nullable;
 
 public class PrimordialArmorItem extends ArmorItem {
 
+    private static final int[] DURABILITY_PER_SLOT = new int[]{13, 15, 16, 11};
+    private static final int DURABILITY_MULTIPLIER = 15;
+
     public PrimordialArmorItem(Holder<ArmorMaterial> armorMaterial, Type slot) {
-        super(armorMaterial, slot, new Properties());
+        super(armorMaterial, slot, new Properties().durability(DURABILITY_PER_SLOT[slot.getSlot().getIndex()] * DURABILITY_MULTIPLIER));
     }
 
     @Override

@@ -90,8 +90,7 @@ public abstract class AbstractCaveGenerationStructurePiece extends StructurePiec
                                     }
                                 }
                             }
-                            // In 1.21, biomes field is private - requires access transformer
-                            // section.biomes = container;
+                            section.biomes = container;
                         }
                     }
                 }
@@ -104,7 +103,26 @@ public abstract class AbstractCaveGenerationStructurePiece extends StructurePiec
     }
 
     public void checkedSetBlock(WorldGenLevel level, BlockPos position, BlockState state) {
+        // Strict bounds check - only set blocks within this piece's bounding box
         if (this.getBoundingBox().isInside(position)) {
+            level.setBlock(position, state, 128);
+        }
+    }
+
+    /**
+     * Safe setBlock that checks chunk boundaries to avoid far chunk errors.
+     * Use this for any block placement that might be near chunk edges.
+     */
+    public void safeSetBlock(WorldGenLevel level, BlockPos position, BlockState state, ChunkPos currentChunk) {
+        // Only place blocks within the current chunk being processed
+        int chunkMinX = currentChunk.getMinBlockX();
+        int chunkMaxX = currentChunk.getMaxBlockX();
+        int chunkMinZ = currentChunk.getMinBlockZ();
+        int chunkMaxZ = currentChunk.getMaxBlockZ();
+        
+        if (position.getX() >= chunkMinX && position.getX() <= chunkMaxX &&
+            position.getZ() >= chunkMinZ && position.getZ() <= chunkMaxZ &&
+            this.getBoundingBox().isInside(position)) {
             level.setBlock(position, state, 128);
         }
     }

@@ -42,9 +42,7 @@ public class FillBiomeAboveFeature extends Feature<FillBiomeAboveConfiguration> 
                                 }
                             }
                         }
-                        // In 1.21, biomes field is private - use reflection or AT
-                        // For now, skip biome modification as it requires access transformer
-                        // section.biomes = container;
+                        section.biomes = container;
                     }
                 }
             }

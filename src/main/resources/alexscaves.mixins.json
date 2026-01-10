@@ -9,6 +9,7 @@
     "AbstractMinecartMixin",
     "BiomeSourceMixin",
     "ChunkGeneratorMixin",
+    "ChunkStatusTasksMixin",
     "ServerChunkCacheMixin",
     "CoralFeatureMixin",
     "EnchantRandomlyFunctionMixin",

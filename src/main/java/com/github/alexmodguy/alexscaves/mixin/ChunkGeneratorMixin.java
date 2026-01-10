@@ -17,7 +17,6 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -30,9 +29,6 @@ import java.util.Optional;
  */
 @Mixin(ChunkGenerator.class)
 public class ChunkGeneratorMixin {
-    
-    @Unique
-    private static boolean ac_loggedFeatureGen = false;
 
     @Inject(method = "applyBiomeDecoration", at = @At("TAIL"))
     private void ac_applyBiomeDecoration(WorldGenLevel level, ChunkAccess chunk, StructureManager structureManager, CallbackInfo ci) {
@@ -44,7 +40,6 @@ public class ChunkGeneratorMixin {
         int centerX = chunkPos.getMiddleBlockX();
         int centerZ = chunkPos.getMiddleBlockZ();
         
-        // Sample at multiple Y levels since AC biomes are underground caves
         Holder<Biome> acBiomeHolder = null;
         ResourceKey<Biome> acBiome = null;
         int foundY = 0;
@@ -66,11 +61,6 @@ public class ChunkGeneratorMixin {
         
         if (acBiome == null || acBiomeHolder == null) {
             return;
-        }
-        
-        if (!ac_loggedFeatureGen) {
-            ac_loggedFeatureGen = true;
-            AlexsCaves.LOGGER.info("[AC] Feature generation mixin active - will place features for AC biomes");
         }
         
         List<HolderSet<PlacedFeature>> biomeFeatures = acBiomeHolder.value().getGenerationSettings().features();

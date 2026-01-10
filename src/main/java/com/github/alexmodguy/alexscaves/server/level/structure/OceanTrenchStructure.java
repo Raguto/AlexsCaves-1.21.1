@@ -2,7 +2,6 @@ package com.github.alexmodguy.alexscaves.server.level.structure;
 
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
 import com.github.alexmodguy.alexscaves.server.level.structure.piece.OceanTrenchStructurePiece;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,15 +34,20 @@ public class OceanTrenchStructure extends AbstractCaveGenerationStructure {
         BlockPos center = new BlockPos(i, getGenerateYHeight(context.random(), i, j), j);
         int heightRad = getHeightRadius(context.random(), context.chunkGenerator().getSeaLevel());
         int widthRad = getWidthRadius(context.random());
-        int biomeUp = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.UP, center, heightRad) + getYExpandUp();
-        int biomeDown = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.DOWN, center, heightRad) + getYExpandDown();
-        BlockPos ground = center.below(biomeDown - 2);
-        int biomeEast = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.EAST, ground, widthRad) + 32;
-        int biomeWest = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.WEST, ground, widthRad) + 32;
-        int biomeNorth = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.NORTH, ground, widthRad) + 32;
-        int biomeSouth = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.SOUTH, ground, widthRad) + 32;
+        
+        // Use voronoi to check how far the biome extends
+        long seed = context.seed();
+        int biomeUp = biomeContinuesInDirectionForVoronoi(seed, Direction.UP, center, heightRad) + getYExpandUp();
+        int biomeDown = biomeContinuesInDirectionForVoronoi(seed, Direction.DOWN, center, heightRad) + getYExpandDown();
+        BlockPos ground = center.below(Math.max(biomeDown, heightRad / 2) - 2);
+        int biomeEast = biomeContinuesInDirectionForVoronoi(seed, Direction.EAST, ground, widthRad) + 32;
+        int biomeWest = biomeContinuesInDirectionForVoronoi(seed, Direction.WEST, ground, widthRad) + 32;
+        int biomeNorth = biomeContinuesInDirectionForVoronoi(seed, Direction.NORTH, ground, widthRad) + 32;
+        int biomeSouth = biomeContinuesInDirectionForVoronoi(seed, Direction.SOUTH, ground, widthRad) + 32;
+        
         int widthBlocks = (biomeEast + biomeWest + biomeNorth + biomeSouth) / 4;
         int heightBlocks = (biomeUp + biomeDown) / 2;
+        
         int widthChunks = (int) Math.ceil((widthBlocks + 16) / 16F / 2F) + 3;
         for (int chunkX = -widthChunks; chunkX <= widthChunks; chunkX++) {
             for (int chunkZ = -widthChunks; chunkZ <= widthChunks; chunkZ++) {

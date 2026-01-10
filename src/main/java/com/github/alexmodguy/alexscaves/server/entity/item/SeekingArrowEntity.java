@@ -28,11 +28,11 @@ public class SeekingArrowEntity extends AbstractArrow {
     }
 
     public SeekingArrowEntity(Level level, LivingEntity shooter) {
-        super(ACEntityRegistry.SEEKING_ARROW.get(), shooter, level, new ItemStack(ACItemRegistry.SEEKING_ARROW.get()), ItemStack.EMPTY);
+        super(ACEntityRegistry.SEEKING_ARROW.get(), shooter, level, new ItemStack(ACItemRegistry.SEEKING_ARROW.get()), null);
     }
 
     public SeekingArrowEntity(Level level, double x, double y, double z) {
-        super(ACEntityRegistry.SEEKING_ARROW.get(), x, y, z, level, new ItemStack(ACItemRegistry.SEEKING_ARROW.get()), ItemStack.EMPTY);
+        super(ACEntityRegistry.SEEKING_ARROW.get(), x, y, z, level, new ItemStack(ACItemRegistry.SEEKING_ARROW.get()), null);
     }
 
 @Override
