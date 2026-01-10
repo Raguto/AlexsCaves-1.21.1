@@ -23,7 +23,7 @@ import javax.annotation.Nullable;
 
 public class RainbounceBootsItem extends ArmorItem implements CustomArmorPostRender {
     public RainbounceBootsItem(Holder<ArmorMaterial> armorMaterial) {
-        super(armorMaterial, Type.BOOTS, new Properties());
+        super(armorMaterial, Type.BOOTS, new Properties().durability(Type.BOOTS.getDurability(15)));
     }
 
     @Override

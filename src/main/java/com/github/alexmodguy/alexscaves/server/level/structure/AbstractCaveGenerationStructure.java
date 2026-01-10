@@ -1,5 +1,6 @@
 package com.github.alexmodguy.alexscaves.server.level.structure;
 
+import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRarity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -26,6 +27,18 @@ public abstract class AbstractCaveGenerationStructure extends Structure {
     }
 
     public Optional<GenerationStub> findGenerationPoint(Structure.GenerationContext context) {
+        ChunkPos chunkpos = context.chunkPos();
+        int x = chunkpos.getMiddleBlockX();
+        int z = chunkpos.getMiddleBlockZ();
+        
+        // Use voronoi to check if this location should have this biome type
+        long seed = context.seed();
+        ResourceKey<Biome> biomeAtLocation = ACBiomeRarity.getACBiomeForPosition(seed, x, z);
+        
+        if (biomeAtLocation == null || !biomeAtLocation.equals(matchingBiome)) {
+            return Optional.empty();
+        }
+        
         return atYCaveBiomePoint(context, Heightmap.Types.OCEAN_FLOOR_WG, (builder) -> {
             this.generatePieces(builder, context);
         });
@@ -48,19 +61,24 @@ public abstract class AbstractCaveGenerationStructure extends Structure {
         BlockPos center = new BlockPos(i, getGenerateYHeight(context.random(), i, j), j);
         int heightRad = getHeightRadius(context.random(), context.chunkGenerator().getSeaLevel());
         int widthRad = getWidthRadius(context.random());
-        int biomeUp = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.UP, center, heightRad) + getYExpandUp();
-        int biomeDown = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.DOWN, center, heightRad) + getYExpandDown();
+        
+        // Use voronoi to check how far the biome extends
+        long seed = context.seed();
+        int biomeUp = biomeContinuesInDirectionForVoronoi(seed, Direction.UP, center, heightRad) + getYExpandUp();
+        int biomeDown = biomeContinuesInDirectionForVoronoi(seed, Direction.DOWN, center, heightRad) + getYExpandDown();
         BlockPos ground = center.below(biomeDown - 2);
-        int biomeEast = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.EAST, ground, widthRad);
-        int biomeWest = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.WEST, ground, widthRad);
-        int biomeNorth = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.NORTH, ground, widthRad);
-        int biomeSouth = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.SOUTH, ground, widthRad);
+        int biomeEast = biomeContinuesInDirectionForVoronoi(seed, Direction.EAST, ground, widthRad);
+        int biomeWest = biomeContinuesInDirectionForVoronoi(seed, Direction.WEST, ground, widthRad);
+        int biomeNorth = biomeContinuesInDirectionForVoronoi(seed, Direction.NORTH, ground, widthRad);
+        int biomeSouth = biomeContinuesInDirectionForVoronoi(seed, Direction.SOUTH, ground, widthRad);
         int widthBlocks = (biomeEast + biomeWest + biomeNorth + biomeSouth) / 4;
         int heightBlocks = (biomeUp + biomeDown) / 2;
+        
         int widthChunks = (int) Math.ceil((widthBlocks + 16) / 16F / 2F) + 2;
         int heightChunks = getHeightOverride((int) Math.ceil((heightBlocks + 16) / 16F / 2F));
         int minYChunks = (int) Math.ceil(context.chunkGenerator().getMinY() / 16F);
         int maxYChunks = (int) Math.ceil(320 / 16F);
+        
         for (int chunkX = -widthChunks; chunkX <= widthChunks; chunkX++) {
             for (int chunkZ = -widthChunks; chunkZ <= widthChunks; chunkZ++) {
                 for (int chunkY = Math.max(-heightChunks, minYChunks); chunkY <= Math.min(heightChunks, maxYChunks); chunkY++) {
@@ -70,7 +88,23 @@ public abstract class AbstractCaveGenerationStructure extends Structure {
             }
         }
     }
-
+    
+    /**
+     * Check how far the matching biome extends in a direction using ACBiomeRarity voronoi system.
+     */
+    protected int biomeContinuesInDirectionForVoronoi(long seed, Direction direction, BlockPos start, int cutoff) {
+        int i = 0;
+        while (i < cutoff) {
+            BlockPos check = start.relative(direction, i);
+            ResourceKey<Biome> biomeAtPos = ACBiomeRarity.getACBiomeForPosition(seed, check.getX(), check.getZ());
+            if (biomeAtPos == null || !biomeAtPos.equals(matchingBiome)) {
+                break;
+            }
+            i += 16;
+        }
+        return Math.min(i, cutoff);
+    }
+    
     protected int getHeightOverride(int heightIn) {
         return heightIn;
     }

@@ -7,6 +7,7 @@ import net.minecraft.world.level.levelgen.WorldOptions;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -18,11 +19,18 @@ public class WorldGenOptionsMixin {
     @Final
     private long seed;
 
+    @Unique
+    private static boolean ac_loggedOnce = false;
+
     @Inject(method = "seed", at = @At("HEAD"))
     private void ac_onGetSeed(CallbackInfoReturnable<Long> cir) {
-        if (!ACWorldSeedHolder.isInitialized() && this.seed != 0) {
+        if (this.seed != 0) {
             ACWorldSeedHolder.setSeed(this.seed);
-            AlexsCaves.LOGGER.info("[AC] WorldGenOptionsMixin: Captured world seed {} from WorldOptions.seed()", this.seed);
+            if (!ac_loggedOnce) {
+                ac_loggedOnce = true;
+                AlexsCaves.LOGGER.info("[AC] WorldGenOptionsMixin: Set world seed {} in ACWorldSeedHolder (thread: {})", 
+                    this.seed, Thread.currentThread().getName());
+            }
         }
     }
 }

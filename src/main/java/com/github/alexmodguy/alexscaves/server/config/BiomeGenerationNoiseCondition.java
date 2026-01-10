@@ -50,11 +50,12 @@ public class BiomeGenerationNoiseCondition {
         if (disabledCompletely) {
             return false;
         }
-        if (!isFarEnoughFromSpawn(x, z, distanceFromSpawn)) {
-            return false;
-        }
         Vec3 rareBiomeCenter = ACBiomeRarity.getRareBiomeCenter(info);
         if (rareBiomeCenter == null) {
+            return false;
+        }
+
+        if (!isFarEnoughFromSpawnBlock((int) rareBiomeCenter.x * 4, (int) rareBiomeCenter.z * 4, distanceFromSpawn)) {
             return false;
         }
         Climate.TargetPoint centerTargetPoint = climateSampler.sample((int)Math.floor(rareBiomeCenter.x), y, (int)Math.floor(rareBiomeCenter.z));
@@ -90,9 +91,15 @@ public class BiomeGenerationNoiseCondition {
     }
 
     private static boolean isFarEnoughFromSpawn(int xIn, int zIn, double dist) {
-        int x = QuartPos.fromSection(xIn);
+        // xIn and zIn are in quart positions (biome coordinates), convert to block coordinates
+        int x = QuartPos.toBlock(xIn);
         int z = QuartPos.toBlock(zIn);
         return x * x + z * z >= dist * dist;
+    }
+    
+    private static boolean isFarEnoughFromSpawnBlock(int blockX, int blockZ, double dist) {
+        // blockX and blockZ are already in block coordinates
+        return blockX * blockX + blockZ * blockZ >= dist * dist;
     }
 
 
@@ -106,6 +113,10 @@ public class BiomeGenerationNoiseCondition {
 
     public int getRarityOffset(){
         return alexscavesRarityOffset;
+    }
+    
+    public int getDistanceFromSpawn(){
+        return distanceFromSpawn;
     }
 
     public static final class Builder {

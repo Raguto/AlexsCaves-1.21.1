@@ -8,12 +8,15 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
+
 public class SeekingArrowItem extends ArrowItem {
     public SeekingArrowItem() {
         super(new Item.Properties());
     }
 
-    public AbstractArrow createArrow(Level level, ItemStack itemStack, LivingEntity livingEntity) {
-        return new SeekingArrowEntity(level, livingEntity);
+    @Override
+    public AbstractArrow createArrow(Level level, ItemStack ammo, LivingEntity shooter, @Nullable ItemStack weapon) {
+        return new SeekingArrowEntity(level, shooter);
     }
 }

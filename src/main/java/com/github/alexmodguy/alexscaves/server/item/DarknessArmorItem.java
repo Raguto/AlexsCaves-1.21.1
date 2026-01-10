@@ -29,8 +29,11 @@ import javax.annotation.Nullable;
 
 public class DarknessArmorItem extends ArmorItem implements CustomArmorPostRender, KeybindUsingArmor, UpdatesStackTags {
 
+    private static final int[] DURABILITY_PER_SLOT = new int[]{13, 15, 16, 11};
+    private static final int DURABILITY_MULTIPLIER = 15;
+
     public DarknessArmorItem(Holder<ArmorMaterial> armorMaterial, Type slot) {
-        super(armorMaterial, slot, new Properties().rarity(ACItemRegistry.RARITY_DEMONIC));
+        super(armorMaterial, slot, new Properties().rarity(ACItemRegistry.RARITY_DEMONIC).durability(DURABILITY_PER_SLOT[slot.getSlot().getIndex()] * DURABILITY_MULTIPLIER));
     }
 
     private static boolean canChargeUp(LivingEntity entity, boolean creative) {
@@ -65,45 +68,41 @@ public class DarknessArmorItem extends ArmorItem implements CustomArmorPostRende
         return SoundEvents.ARMOR_EQUIP_LEATHER;
     }
 
-    public void onArmorTick(ItemStack stack, Level level, Player player) {
-        if (stack.is(ACItemRegistry.CLOAK_OF_DARKNESS.get())) {
-            if (!level.isClientSide) {
-                CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-                int charge = tag.getInt("CloakCharge");
-                boolean flag = false;
-                if (charge < AlexsCaves.COMMON_CONFIG.darknessCloakChargeTime.get() && canChargeUp(stack)) {
-                    charge += 1;
-                    tag.putInt("CloakCharge", charge);
-                    flag = true;
-                }
-                if (flag) {
-                    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-                    AlexsCaves.sendNonLocal(new UpdateItemTagMessage(player.getId(), stack), (ServerPlayer) player);
-                }
-            }
-        }
-    }
-
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int i, boolean held) {
         super.inventoryTick(stack, level, entity, i, held);
         if (stack.is(ACItemRegistry.CLOAK_OF_DARKNESS.get()) && entity instanceof LivingEntity living) {
             if (living.getItemBySlot(EquipmentSlot.CHEST) == stack) {
-                CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
-                if (!level.isClientSide) {
-                    long lastLightTimestamp = tag.getLong("LastLightTimestamp");
-                    long lastEquipMessageTime = tag.getLong("LastEquipMessageTime");
-                    if (lastLightTimestamp <= 0 || level.getGameTime() - lastLightTimestamp > 10) {
-                        tag.putLong("LastLightTimestamp", level.getGameTime());
-                        tag.putBoolean("CanCharge", canChargeUp(living, true));
+                // Handle armor tick logic (charging) - this replaces onArmorTick which is no longer called in 1.21
+                if (entity instanceof Player player) {
+                    if (!level.isClientSide) {
+                        CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
+                        int charge = tag.getInt("CloakCharge");
+                        boolean flag = false;
+                        if (charge < AlexsCaves.COMMON_CONFIG.darknessCloakChargeTime.get() && canChargeUp(stack)) {
+                            charge += 1;
+                            tag.putInt("CloakCharge", charge);
+                            flag = true;
+                        }
+                        
+                        long lastLightTimestamp = tag.getLong("LastLightTimestamp");
+                        long lastEquipMessageTime = tag.getLong("LastEquipMessageTime");
+                        if (lastLightTimestamp <= 0 || level.getGameTime() - lastLightTimestamp > 10) {
+                            tag.putLong("LastLightTimestamp", level.getGameTime());
+                            tag.putBoolean("CanCharge", canChargeUp(living, true));
+                        }
+                        if (lastEquipMessageTime <= 0) {
+                            tag.putLong("LastEquipMessageTime", level.getGameTime());
+                            player.displayClientMessage(Component.translatable("item.alexscaves.cloak_of_darkness.equip"), true);
+                        }
+                        
+                        stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+                        if (flag) {
+                            AlexsCaves.sendNonLocal(new UpdateItemTagMessage(player.getId(), stack), (ServerPlayer) player);
+                        }
+                    } else if (AlexsCaves.PROXY.getClientSidePlayer() == entity && getMeterProgress(stack) >= 1.0F && AlexsCaves.PROXY.isKeyDown(2)) {
+                        AlexsCaves.sendMSGToServer(new ArmorKeyMessage(EquipmentSlot.CHEST.ordinal(), living.getId(), 2));
+                        onKeyPacket(living, stack, 2);
                     }
-                    if (lastEquipMessageTime <= 0 && entity instanceof Player player && !level.isClientSide) {
-                        tag.putLong("LastEquipMessageTime", level.getGameTime());
-                        player.displayClientMessage(Component.translatable("item.alexscaves.cloak_of_darkness.equip"), true);
-                    }
-                    stack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
-                } else if (AlexsCaves.PROXY.getClientSidePlayer() == entity && getMeterProgress(stack) >= 1.0F && AlexsCaves.PROXY.isKeyDown(2)) {
-                    AlexsCaves.sendMSGToServer(new ArmorKeyMessage(EquipmentSlot.CHEST.ordinal(), living.getId(), 2));
-                    onKeyPacket(living, stack, 2);
                 }
             }
         }

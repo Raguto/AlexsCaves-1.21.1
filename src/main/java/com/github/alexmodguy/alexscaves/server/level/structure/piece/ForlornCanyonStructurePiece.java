@@ -35,9 +35,15 @@ public class ForlornCanyonStructurePiece extends AbstractCaveGenerationStructure
         int cornerX = this.chunkCorner.getX();
         int cornerY = this.chunkCorner.getY();
         int cornerZ = this.chunkCorner.getZ();
+        
+        // Debug: log that postProcess is being called
+        com.github.alexmodguy.alexscaves.AlexsCaves.LOGGER.info("[Forlorn Debug] postProcess called: corner={},{},{} center={},{},{} height={} radius={}", 
+            cornerX, cornerY, cornerZ, holeCenter.getX(), holeCenter.getY(), holeCenter.getZ(), height, radius);
+        
         BlockPos.MutableBlockPos carve = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos carveBelow = new BlockPos.MutableBlockPos();
         carve.set(cornerX, cornerY, cornerZ);
+        int carvedBlocks = 0;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 MutableBoolean doFloor = new MutableBoolean(false);
@@ -48,6 +54,7 @@ public class ForlornCanyonStructurePiece extends AbstractCaveGenerationStructure
                         surroundCornerOfLiquid(level, carve);
                         carveBelow.set(carve.getX(), carve.getY() - 1, carve.getZ());
                         doFloor.setTrue();
+                        carvedBlocks++;
                     } else if (doFloor.isTrue()) {
                         break;
                     }
@@ -57,6 +64,9 @@ public class ForlornCanyonStructurePiece extends AbstractCaveGenerationStructure
                     doFloor.setFalse();
                 }
             }
+        }
+        if (carvedBlocks > 0) {
+            com.github.alexmodguy.alexscaves.AlexsCaves.LOGGER.info("[Forlorn Debug] Carved {} blocks in this piece", carvedBlocks);
         }
     }
 

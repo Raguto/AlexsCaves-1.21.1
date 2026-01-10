@@ -1,6 +1,6 @@
 {
   "type": "alexscaves:volcano",
-  "biomes": "alexscaves:primordial_caves",
+  "biomes": "#alexscaves:has_cave_structures",
   "step": "underground_structures",
   "start_height": {
     "absolute": 0

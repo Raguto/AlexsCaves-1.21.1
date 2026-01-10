@@ -2,7 +2,6 @@ package com.github.alexmodguy.alexscaves.server.level.structure;
 
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
 import com.github.alexmodguy.alexscaves.server.level.structure.piece.ForlornCanyonStructurePiece;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.levelgen.RandomState;
@@ -34,7 +33,7 @@ public class ForlornCanyonStructure extends AbstractCaveGenerationStructure {
 
     @Override
     public int getWidthRadius(WorldgenRandom random) {
-        return 100;
+        return BOWL_WIDTH_RADIUS;
     }
 
     @Override

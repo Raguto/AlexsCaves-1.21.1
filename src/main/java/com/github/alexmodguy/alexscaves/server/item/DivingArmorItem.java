@@ -23,8 +23,11 @@ public class DivingArmorItem extends ArmorItem {
     private static final UUID[] ARMOR_MODIFIERS = new UUID[]{UUID.fromString("845DB27C-C624-495F-8C9F-6020A9A58B77"), UUID.fromString("D8499B04-0E66-4726-AB29-64469D734E12"), UUID.fromString("9F3D476D-C118-4544-8365-64846904B43F"), UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB111")};
     private Multimap<Holder<Attribute>, AttributeModifier> divingArmorAttributes;
 
+    private static final int[] DURABILITY_PER_SLOT = new int[]{13, 15, 16, 11};
+    private static final int DURABILITY_MULTIPLIER = 25;
+
     public DivingArmorItem(Holder<ArmorMaterial> armorMaterial, Type slot) {
-        super(armorMaterial, slot, new Properties());
+        super(armorMaterial, slot, new Properties().durability(DURABILITY_PER_SLOT[slot.getSlot().getIndex()] * DURABILITY_MULTIPLIER));
         ImmutableMultimap.Builder<Holder<Attribute>, AttributeModifier> builder = ImmutableMultimap.builder();
         ResourceLocation armorId = ResourceLocation.fromNamespaceAndPath("alexscaves", "armor." + type.getSlot().getName());
         builder.put(Attributes.ARMOR, new AttributeModifier(armorId, (double)this.getDefense(), AttributeModifier.Operation.ADD_VALUE));

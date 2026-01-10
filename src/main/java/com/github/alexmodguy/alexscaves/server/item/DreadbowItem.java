@@ -64,6 +64,10 @@ public class DreadbowItem extends ProjectileWeaponItem implements UpdatesStackTa
             CompoundTag tag = itemstack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
             tag.putString("LastUsedArrowType", BuiltInRegistries.ENTITY_TYPE.getKey(lastArrowType).toString());
             itemstack.set(DataComponents.CUSTOM_DATA, CustomData.of(tag));
+            // Sync the tag to client so the arrow renders correctly
+            if (!level.isClientSide && player instanceof net.minecraft.server.level.ServerPlayer serverPlayer) {
+                AlexsCaves.sendNonLocal(new UpdateItemTagMessage(player.getId(), itemstack), serverPlayer);
+            }
             player.startUsingItem(interactionHand);
             return InteractionResultHolder.consume(itemstack);
         }else{

@@ -2,14 +2,18 @@ package com.github.alexmodguy.alexscaves.server.level.biome;
 
 import com.github.alexmodguy.alexscaves.AlexsCaves;
 import com.github.alexmodguy.alexscaves.server.config.BiomeGenerationConfig;
+import com.github.alexmodguy.alexscaves.server.config.BiomeGenerationNoiseCondition;
 import com.github.alexmodguy.alexscaves.server.misc.VoronoiGenerator;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Map;
 
 public class ACBiomeRarity {
     private static long lastTestedSeed = 0;
@@ -67,10 +71,88 @@ public class ACBiomeRarity {
 
     @Nullable
     public static int getRareBiomeOffsetId(VoronoiGenerator.VoronoiInfo voronoiInfo) {
-        return (int) (((voronoiInfo.hash() + 1D) * 0.5D) * (double) BiomeGenerationConfig.getBiomeCount());
+        // Hash ranges from -1 to 1, convert to 0-1 range then multiply by biome count
+        // Use Math.min to clamp to valid range (prevents offset = biomeCount when hash = 1.0)
+        double normalized = (voronoiInfo.hash() + 1D) * 0.5D; // 0.0 to 1.0
+        int biomeCount = BiomeGenerationConfig.getBiomeCount();
+        int offset = (int) (normalized * biomeCount);
+        // Clamp to valid range [0, biomeCount-1]
+        return Math.min(offset, biomeCount - 1);
     }
 
     public static boolean isQuartInRareBiome(long worldSeed, int x, int z) {
         return ACBiomeRarity.getRareBiomeInfoForQuad(worldSeed, x, z) != null;
+    }
+
+    /**
+     * Gets the AC biome that would generate at a given block position.
+     * This is used by the /locateacbiome command to find biome locations.
+     * 
+     * @param worldSeed The world seed
+     * @param blockX Block X coordinate
+     * @param blockZ Block Z coordinate
+     * @return The biome key if an AC biome would generate here, null otherwise
+     */
+    @Nullable
+    public static ResourceKey<Biome> getACBiomeForPosition(long worldSeed, int blockX, int blockZ) {
+        ensureInitialized();
+        
+        // Convert block coords to quart coords (biome sampling uses quart coords)
+        int quartX = blockX >> 2;
+        int quartZ = blockZ >> 2;
+        
+        VoronoiGenerator.VoronoiInfo voronoiInfo = getRareBiomeInfoForQuad(worldSeed, quartX, quartZ);
+        if (voronoiInfo == null) {
+            return null;
+        }
+        
+        int rarityOffset = getRareBiomeOffsetId(voronoiInfo);
+        
+        // Get the biome center for distance checking
+        Vec3 biomeCenter = getRareBiomeCenter(voronoiInfo);
+        if (biomeCenter == null) {
+            return null;
+        }
+        
+        // Convert biome center from quart coords to block coords for distance check
+        int centerBlockX = (int) biomeCenter.x * 4;
+        int centerBlockZ = (int) biomeCenter.z * 4;
+        
+        // Find the biome with matching rarity offset AND check distance from spawn
+        for (Map.Entry<ResourceKey<Biome>, BiomeGenerationNoiseCondition> entry : BiomeGenerationConfig.BIOMES.entrySet()) {
+            if (entry.getValue().getRarityOffset() == rarityOffset) {
+                // Check if biome center is far enough from spawn
+                int distFromSpawn = entry.getValue().getDistanceFromSpawn();
+                if (centerBlockX * centerBlockX + centerBlockZ * centerBlockZ < distFromSpawn * distFromSpawn) {
+                    return null; // Too close to spawn
+                }
+                return entry.getKey();
+            }
+        }
+        
+        return null;
+    }
+
+    /**
+     * Gets the center position of an AC biome region.
+     * 
+     * @param worldSeed The world seed
+     * @param blockX Block X coordinate within the biome region
+     * @param blockZ Block Z coordinate within the biome region
+     * @return The center position of the biome region, or null if not in an AC biome
+     */
+    @Nullable
+    public static Vec3 getACBiomeCenterForPosition(long worldSeed, int blockX, int blockZ) {
+        ensureInitialized();
+        
+        int quartX = blockX >> 2;
+        int quartZ = blockZ >> 2;
+        
+        VoronoiGenerator.VoronoiInfo voronoiInfo = getRareBiomeInfoForQuad(worldSeed, quartX, quartZ);
+        if (voronoiInfo == null) {
+            return null;
+        }
+        
+        return getRareBiomeCenter(voronoiInfo);
     }
 }
