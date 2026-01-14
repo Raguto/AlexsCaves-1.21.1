@@ -81,19 +81,7 @@ public class SubmarineRenderer extends EntityRenderer<SubmarineEntity> {
         }
         poseStack.pushPose();
         MODEL.setupAnim(entity, 0.0F, 0.0F, ageInTicks, 0.0F, 0.0F);
-        for (Entity passenger : entity.getPassengers()) {
-            if (passenger == player && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
-                continue;
-            }
-            AlexsCaves.PROXY.releaseRenderingEntity(passenger.getUUID());
-            poseStack.pushPose();
-            poseStack.translate(0, 0.65F, -0.75F);
-            poseStack.mulPose(Axis.XN.rotationDegrees(180F));
-            poseStack.mulPose(Axis.YN.rotationDegrees(360 - submarineYaw));
-            renderPassenger(passenger, 0, 0, 0, 0, partialTicks, poseStack, source, lightIn);
-            poseStack.popPose();
-            AlexsCaves.PROXY.blockRenderingEntity(passenger.getUUID());
-        }
+        // Render submarine model first
         VertexConsumer textureBuffer = source.getBuffer(RenderType.entityCutoutNoCull(getSubmarineBaseTexture(entity)));
         MODEL.renderToBuffer(poseStack, textureBuffer, lightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
         VertexConsumer damageBuffer = source.getBuffer(RenderType.entityTranslucent(getSubmarineDamageTexture(entity)));
@@ -107,10 +95,24 @@ public class SubmarineRenderer extends EntityRenderer<SubmarineEntity> {
                 MODEL.renderToBuffer(poseStack, glowBuffer, lightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
             }
         }
-        if (maskWater) {
+        // Only render water mask if no passengers (to avoid culling player legs)
+        if (maskWater && !entity.isVehicle()) {
             VertexConsumer waterMask = source.getBuffer(ACRenderTypes.getSubmarineMask());
             MODEL.setupWaterMask(entity, partialTicks);
             MODEL.getWaterMask().render(poseStack, waterMask, lightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        }
+        for (Entity passenger : entity.getPassengers()) {
+            if (passenger == player && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
+                continue;
+            }
+            AlexsCaves.PROXY.releaseRenderingEntity(passenger.getUUID());
+            poseStack.pushPose();
+            poseStack.translate(0, 0.65F, -0.75F);
+            poseStack.mulPose(Axis.XN.rotationDegrees(180F));
+            poseStack.mulPose(Axis.YN.rotationDegrees(360 - submarineYaw));
+            renderPassenger(passenger, 0, 0, 0, 0, partialTicks, poseStack, source, lightIn);
+            poseStack.popPose();
+            AlexsCaves.PROXY.blockRenderingEntity(passenger.getUUID());
         }
         if (!isFirstPersonFloodlightsMode(entity) && entity.areLightsOn() && entity.isVehicle()) {
             Entity first = entity.getFirstPassenger();

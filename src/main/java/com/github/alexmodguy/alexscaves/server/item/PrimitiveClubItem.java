@@ -5,47 +5,51 @@ import com.github.alexmodguy.alexscaves.server.enchantment.ACEnchantmentRegistry
 import com.github.alexmodguy.alexscaves.server.message.UpdateEffectVisualityEntityMessage;
 import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.UUID;
-
 public class PrimitiveClubItem extends Item {
-    private static final ResourceLocation BASE_ATTACK_DAMAGE_ID = ResourceLocation.fromNamespaceAndPath("alexscaves", "base_attack_damage");
-    private static final ResourceLocation BASE_ATTACK_SPEED_ID = ResourceLocation.fromNamespaceAndPath("alexscaves", "base_attack_speed");
-    private final Multimap<Holder<Attribute>, AttributeModifier>[] defaultModifiers = new ImmutableMultimap[4];
+    
+    /**
+     * Creates the attribute modifiers for the Primitive Club.
+     * Attack damage: 8 (total 9 with base 1)
+     * Attack speed: -3.75 (very slow, 0.25 attacks per second)
+     */
+    public static ItemAttributeModifiers createAttributes() {
+        return ItemAttributeModifiers.builder()
+            .add(Attributes.ATTACK_DAMAGE, 
+                new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath("alexscaves", "base_attack_damage"), 
+                    8.0D, 
+                    AttributeModifier.Operation.ADD_VALUE), 
+                EquipmentSlotGroup.MAINHAND)
+            .add(Attributes.ATTACK_SPEED, 
+                new AttributeModifier(
+                    ResourceLocation.fromNamespaceAndPath("alexscaves", "base_attack_speed"), 
+                    -3.75D, 
+                    AttributeModifier.Operation.ADD_VALUE), 
+                EquipmentSlotGroup.MAINHAND)
+            .build();
+    }
 
     public PrimitiveClubItem(Item.Properties properties) {
         super(properties);
-        for (int i = 0; i <= 3; i++) {
-            this.defaultModifiers[i] = getStatsForEnchantmentLevel(i);
-        }
-    }
-
-    private ImmutableMultimap<Holder<Attribute>, AttributeModifier> getStatsForEnchantmentLevel(int swiftwoodLevel) {
-        ImmutableMultimap.Builder<Holder<Attribute>, AttributeModifier> builder = ImmutableMultimap.builder();
-        builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_ID, 8.0D, AttributeModifier.Operation.ADD_VALUE));
-        builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_ID, (double) Math.min(0, -3.75F + 0.15F * swiftwoodLevel), AttributeModifier.Operation.ADD_VALUE));
-        return builder.build();
     }
 
     @Override
@@ -99,18 +103,6 @@ public class PrimitiveClubItem extends Item {
         }
 
         return true;
-    }
-
-    public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot == EquipmentSlot.MAINHAND) {
-            int swift = 0;
-            if(stack.getItem() instanceof PrimitiveClubItem){
-                // Get enchantment level from registry access if available
-                swift = 0; // Default to 0 since we can't access registry here
-            }
-            return defaultModifiers[Mth.clamp(swift, 0, 3)];
-        }
-        return ImmutableMultimap.of();
     }
 
     public boolean isValidRepairItem(ItemStack item, ItemStack repairItem) {

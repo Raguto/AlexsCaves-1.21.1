@@ -100,7 +100,17 @@ public class TrilocarisEntity extends WaterAnimal implements Bucketable {
     }
 
     protected void handleAirSupply(int air) {
+        // Trilocaris can breathe underwater - do nothing to prevent drowning
+    }
 
+    @Override
+    public void baseTick() {
+        int i = this.getAirSupply();
+        super.baseTick();
+        // Restore air supply to prevent drowning - trilocaris can breathe underwater
+        if (this.isInWater()) {
+            this.setAirSupply(i);
+        }
     }
 
     public static AttributeSupplier.Builder createAttributes() {

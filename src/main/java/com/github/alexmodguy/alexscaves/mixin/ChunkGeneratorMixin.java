@@ -82,12 +82,10 @@ public class ChunkGeneratorMixin {
                 try {
                     PlacedFeature feature = featureHolder.value();
                     BlockPos originPos = new BlockPos(centerX, foundY, centerZ);
-                    // Create unique random per feature using feature name hash
                     long featureSeed = seed ^ featureKey.location().hashCode() ^ chunkPos.toLong();
                     RandomSource random = RandomSource.create(featureSeed);
                     feature.placeWithBiomeCheck(level, (ChunkGenerator)(Object)this, random, originPos);
                 } catch (Exception e) {
-                    AlexsCaves.LOGGER.warn("[AC] Failed to place feature {}: {}", featureKey.location(), e.getMessage());
                 }
             }
         }

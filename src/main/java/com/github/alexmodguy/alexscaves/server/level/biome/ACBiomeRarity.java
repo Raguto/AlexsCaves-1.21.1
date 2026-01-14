@@ -25,6 +25,8 @@ public class ACBiomeRarity {
     private static double biomeSize;
     private static double seperationDistance;
     private static volatile boolean initialized = false;
+    
+    private static final double BIOME_BOUNDARY_EXTENSION = 1.2D;
 
     public static void init() {
         VORONOI_GENERATOR.setOffsetAmount(AlexsCaves.COMMON_CONFIG.caveBiomeSpacingRandomness.get());
@@ -57,7 +59,7 @@ public class ACBiomeRarity {
         double positionOffsetX = AlexsCaves.COMMON_CONFIG.caveBiomeWidthRandomness.get() * NOISE_X.getValue(sampleX, sampleZ, false);
         double positionOffsetZ = AlexsCaves.COMMON_CONFIG.caveBiomeWidthRandomness.get() * NOISE_Z.getValue(sampleX, sampleZ, false);
         VoronoiGenerator.VoronoiInfo info = VORONOI_GENERATOR.get2(sampleX + positionOffsetX, sampleZ + positionOffsetZ);
-        if (info.distance() < (biomeSize / seperationDistance)) {
+        if (info.distance() < (biomeSize / seperationDistance) * BIOME_BOUNDARY_EXTENSION) {
             return info;
         } else {
             return null;
@@ -71,12 +73,9 @@ public class ACBiomeRarity {
 
     @Nullable
     public static int getRareBiomeOffsetId(VoronoiGenerator.VoronoiInfo voronoiInfo) {
-        // Hash ranges from -1 to 1, convert to 0-1 range then multiply by biome count
-        // Use Math.min to clamp to valid range (prevents offset = biomeCount when hash = 1.0)
         double normalized = (voronoiInfo.hash() + 1D) * 0.5D; // 0.0 to 1.0
         int biomeCount = BiomeGenerationConfig.getBiomeCount();
         int offset = (int) (normalized * biomeCount);
-        // Clamp to valid range [0, biomeCount-1]
         return Math.min(offset, biomeCount - 1);
     }
 
@@ -84,20 +83,10 @@ public class ACBiomeRarity {
         return ACBiomeRarity.getRareBiomeInfoForQuad(worldSeed, x, z) != null;
     }
 
-    /**
-     * Gets the AC biome that would generate at a given block position.
-     * This is used by the /locateacbiome command to find biome locations.
-     * 
-     * @param worldSeed The world seed
-     * @param blockX Block X coordinate
-     * @param blockZ Block Z coordinate
-     * @return The biome key if an AC biome would generate here, null otherwise
-     */
     @Nullable
     public static ResourceKey<Biome> getACBiomeForPosition(long worldSeed, int blockX, int blockZ) {
         ensureInitialized();
         
-        // Convert block coords to quart coords (biome sampling uses quart coords)
         int quartX = blockX >> 2;
         int quartZ = blockZ >> 2;
         
@@ -108,17 +97,14 @@ public class ACBiomeRarity {
         
         int rarityOffset = getRareBiomeOffsetId(voronoiInfo);
         
-        // Get the biome center for distance checking
         Vec3 biomeCenter = getRareBiomeCenter(voronoiInfo);
         if (biomeCenter == null) {
             return null;
         }
         
-        // Convert biome center from quart coords to block coords for distance check
         int centerBlockX = (int) biomeCenter.x * 4;
         int centerBlockZ = (int) biomeCenter.z * 4;
         
-        // Find the biome with matching rarity offset AND check distance from spawn
         for (Map.Entry<ResourceKey<Biome>, BiomeGenerationNoiseCondition> entry : BiomeGenerationConfig.BIOMES.entrySet()) {
             if (entry.getValue().getRarityOffset() == rarityOffset) {
                 // Check if biome center is far enough from spawn
@@ -133,14 +119,6 @@ public class ACBiomeRarity {
         return null;
     }
 
-    /**
-     * Gets the center position of an AC biome region.
-     * 
-     * @param worldSeed The world seed
-     * @param blockX Block X coordinate within the biome region
-     * @param blockZ Block Z coordinate within the biome region
-     * @return The center position of the biome region, or null if not in an AC biome
-     */
     @Nullable
     public static Vec3 getACBiomeCenterForPosition(long worldSeed, int blockX, int blockZ) {
         ensureInitialized();

@@ -418,11 +418,11 @@ public class ClientProxy extends CommonProxy {
 
     public void onItemColors(RegisterColorHandlersEvent.Item event) {
         AlexsCaves.LOGGER.info("loaded in item colorizer");
-        event.register((stack, colorIn) -> colorIn != 1 ? -1 : CaveInfoItem.getBiomeColorOf(Minecraft.getInstance().level, stack, false), ACItemRegistry.CAVE_TABLET.get());
-        event.register((stack, colorIn) -> colorIn != 1 ? -1 : CaveInfoItem.getBiomeColorOf(Minecraft.getInstance().level, stack, false), ACItemRegistry.CAVE_CODEX.get());
-        event.register((stack, colorIn) -> colorIn != 0 ? -1 : GazingPearlItem.getPearlColor(stack), ACItemRegistry.GAZING_PEARL.get());
-        event.register((stack, colorIn) -> colorIn != 0 ? -1 : JellyBeanItem.getBeanColor(stack), ACItemRegistry.JELLY_BEAN.get());
-        event.register((stack, colorIn) -> colorIn != 1 ? -1 : BiomeTreatItem.getBiomeTreatColorOf(Minecraft.getInstance().level, stack), ACItemRegistry.BIOME_TREAT.get());
+        event.register((stack, colorIn) -> colorIn != 1 ? 0xFFFFFFFF : CaveInfoItem.getBiomeColorOf(Minecraft.getInstance().level, stack, false), ACItemRegistry.CAVE_TABLET.get());
+        event.register((stack, colorIn) -> colorIn != 1 ? 0xFFFFFFFF : CaveInfoItem.getBiomeColorOf(Minecraft.getInstance().level, stack, false), ACItemRegistry.CAVE_CODEX.get());
+        event.register((stack, colorIn) -> colorIn != 0 ? 0xFFFFFFFF : GazingPearlItem.getPearlColor(stack), ACItemRegistry.GAZING_PEARL.get());
+        event.register((stack, colorIn) -> colorIn != 0 ? 0xFFFFFFFF : JellyBeanItem.getBeanColor(stack), ACItemRegistry.JELLY_BEAN.get());
+        event.register((stack, colorIn) -> colorIn != 1 ? 0xFFFFFFFF : BiomeTreatItem.getBiomeTreatColorOf(Minecraft.getInstance().level, stack), ACItemRegistry.BIOME_TREAT.get());
     }
 
     public void onBlockColors(RegisterColorHandlersEvent.Block event) {

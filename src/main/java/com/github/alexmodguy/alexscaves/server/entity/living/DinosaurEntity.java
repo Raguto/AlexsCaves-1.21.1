@@ -381,4 +381,22 @@ public abstract class DinosaurEntity extends TamableAnimal implements IDancesToJ
         return this.isInSittingPose() || this.isVehicle() || this.isDancing();
     }
 
+    @Override
+    public boolean hurt(net.minecraft.world.damagesource.DamageSource source, float amount) {
+        // Prevent owner from damaging their own tamed dinosaur
+        Entity attacker = source.getEntity();
+        if (attacker instanceof LivingEntity living && this.isTame() && this.isOwnedBy(living)) {
+            return false;
+        }
+        return super.hurt(source, amount);
+    }
+
+    @Override
+    public boolean wantsToAttack(LivingEntity target, LivingEntity owner) {
+        // Don't attack other tamed animals owned by the same player
+        if (target instanceof TamableAnimal tamable && tamable.isTame()) {
+            return !tamable.isOwnedBy(owner);
+        }
+        return true;
+    }
 }

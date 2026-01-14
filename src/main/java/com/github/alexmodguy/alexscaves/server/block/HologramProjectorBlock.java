@@ -11,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -63,20 +64,25 @@ public class HologramProjectorBlock extends BaseEntityBlock implements SimpleWat
         return state.canSurvive(levelAccessor, blockPos) ? super.updateShape(state, direction, state1, levelAccessor, blockPos, blockPos1) : Blocks.AIR.defaultBlockState();
     }
 
-    public InteractionResult use(BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
-        ItemStack heldItem = player.getItemInHand(handIn);
+    @Override
+    protected ItemInteractionResult useItemOn(ItemStack heldItem, BlockState state, Level worldIn, BlockPos pos, Player player, InteractionHand handIn, BlockHitResult hit) {
         if (worldIn.getBlockEntity(pos) instanceof HologramProjectorBlockEntity projectorBlockEntity && !player.isShiftKeyDown() && heldItem.is(ACItemRegistry.HOLOCODER.get())) {
             CompoundTag entityTag = null;
             EntityType entityType = null;
             boolean flag = false;
-            net.minecraft.world.item.component.CustomData customData = heldItem.get(net.minecraft.core.component.DataComponents.ENTITY_DATA);
+            
+            // Read from CUSTOM_DATA where HolocoderItem stores the BoundEntityTag
+            net.minecraft.world.item.component.CustomData customData = heldItem.get(net.minecraft.core.component.DataComponents.CUSTOM_DATA);
             if (customData != null) {
-                CompoundTag entity = customData.copyTag();
-                Optional<EntityType<?>> optional = EntityType.by(entity);
-                if (optional.isPresent()) {
-                    entityType = optional.get();
-                    entityTag = entity;
-                    flag = true;
+                CompoundTag tag = customData.copyTag();
+                if (tag.contains("BoundEntityTag")) {
+                    CompoundTag entity = tag.getCompound("BoundEntityTag");
+                    Optional<EntityType<?>> optional = EntityType.by(entity);
+                    if (optional.isPresent()) {
+                        entityType = optional.get();
+                        entityTag = entity;
+                        flag = true;
+                    }
                 }
             }
             if (!flag) {
@@ -94,9 +100,9 @@ public class HologramProjectorBlock extends BaseEntityBlock implements SimpleWat
             if (!player.isCreative()) {
                 heldItem.shrink(1);
             }
-            return InteractionResult.SUCCESS;
+            return ItemInteractionResult.SUCCESS;
         }
-        return InteractionResult.PASS;
+        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
     }
 
 

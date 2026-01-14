@@ -101,9 +101,6 @@ public class ACCommands {
         int playerChunkX = playerPos.getX() >> 4;
         int playerChunkZ = playerPos.getZ() >> 4;
         
-        AlexsCaves.LOGGER.info("[AC] locateacbiome: searching for {} with seed {}, player at chunk [{}, {}]", 
-            biomeKey.location(), seed, playerChunkX, playerChunkZ);
-        
         // Search in expanding squares - check every 4 chunks for speed (AC biomes are large)
         int searchRadius = 500; // Search up to 500 chunks (8000 blocks)
         int step = 4; // Check every 4 chunks
@@ -121,18 +118,13 @@ public class ACCommands {
                     
                     // Check if this location would have the AC biome
                     ResourceKey<Biome> biomeAtPos = ACBiomeRarity.getACBiomeForPosition(seed, blockX, blockZ);
-                    if (biomeAtPos != null) {
-                        AlexsCaves.LOGGER.info("[AC] locateacbiome: found {} at [{}, {}]", 
-                            biomeAtPos.location(), blockX, blockZ);
-                        if (biomeAtPos.equals(biomeKey)) {
-                            return new BlockPos(blockX, 0, blockZ);
-                        }
+                    if (biomeAtPos != null && biomeAtPos.equals(biomeKey)) {
+                        return new BlockPos(blockX, 0, blockZ);
                     }
                 }
             }
         }
         
-        AlexsCaves.LOGGER.info("[AC] locateacbiome: no biome found after searching {} chunks", searchRadius);
         return null;
     }
 }

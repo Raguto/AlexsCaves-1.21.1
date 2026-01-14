@@ -351,9 +351,11 @@ public class SubmarineEntity extends Entity implements KeybindUsingMount {
                 tickController((Player) passenger);
             }
             float f1 = -(this.getXRot() / 40F);
+            // Position player in the cockpit - matching original 1.20 values
             Vec3 seatOffset = new Vec3(0F, -0.2F, 0.8F + f1).xRot((float) Math.toRadians(this.getXRot())).yRot((float) Math.toRadians(-this.getYRot()));
-            // In 1.21, getMyRidingOffset was removed - use a fixed offset for the player's eye position relative to seat
-            double d0 = this.getY() + this.getBbHeight() * 0.5F + seatOffset.y;
+            // In 1.21, getMyRidingOffset is deprecated/changed, use a fixed offset that matches player riding offset
+            double passengerRidingOffset = -0.6D; // Standard player riding offset
+            double d0 = this.getY() + this.getBbHeight() * 0.5F + seatOffset.y + passengerRidingOffset;
             moveFunction.accept(passenger, this.getX() + seatOffset.x, d0, this.getZ() + seatOffset.z);
             living.setAirSupply(Math.min(living.getAirSupply() + 2, living.getMaxAirSupply()));
         } else {

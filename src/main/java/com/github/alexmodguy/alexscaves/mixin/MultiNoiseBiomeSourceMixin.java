@@ -48,14 +48,10 @@ public class MultiNoiseBiomeSourceMixin implements MultiNoiseBiomeSourceAccessor
             cancellable = true
     )
     private void ac_getNoiseBiomeCoords(int x, int y, int z, Climate.Sampler sampler, CallbackInfoReturnable<Holder<Biome>> cir) {
-        if (y >= 16) { 
-            return;
-        }
-        
+
         long seed = ACWorldSeedHolder.isInitialized() ? ACWorldSeedHolder.getSeed() : lastSampledWorldSeed;
         ResourceKey<Level> dimension = ACWorldSeedHolder.isInitialized() ? ACWorldSeedHolder.getDimension() : lastSampledDimension;
-        
-        // Try to get biome map - first from static holder, then from instance
+
         Map<ResourceKey<Biome>, Holder<Biome>> biomeMap = null;
         if (ACBiomeMapHolder.isInitialized()) {
             biomeMap = ACBiomeMapHolder.getBiomeMap();
@@ -78,6 +74,15 @@ public class MultiNoiseBiomeSourceMixin implements MultiNoiseBiomeSourceAccessor
             for (Map.Entry<ResourceKey<Biome>, BiomeGenerationNoiseCondition> condition : BiomeGenerationConfig.BIOMES.entrySet()) {
                 if (foundRarityOffset == condition.getValue().getRarityOffset() &&
                     condition.getValue().test(x, y, z, unquantizedDepth, sampler, dimension, voronoiInfo)) {
+                    
+                    if (condition.getKey() == ACBiomeRegistry.ABYSSAL_CHASM) {
+                        Climate.TargetPoint localPoint = sampler.sample(x, y, z);
+                        float localContinentalness = Climate.unquantizeCoord(localPoint.continentalness());
+                        if (localContinentalness > -0.5F) {
+                            continue; // Skip this biome, let vanilla handle it
+                        }
+                    }
+                    
                     Holder<Biome> biomeHolder = biomeMap.get(condition.getKey());
                     if (biomeHolder != null) {
                         cir.setReturnValue(biomeHolder);
@@ -91,14 +96,12 @@ public class MultiNoiseBiomeSourceMixin implements MultiNoiseBiomeSourceAccessor
     @Override
     public void setLastSampledSeed(long seed) {
         lastSampledWorldSeed = seed;
-        // Also update static holder for cross-instance access
         ACWorldSeedHolder.setSeed(seed);
     }
 
     @Override
     public void setLastSampledDimension(ResourceKey<Level> dimension) {
         lastSampledDimension = dimension;
-        // Also update static holder for cross-instance access
         ACWorldSeedHolder.setDimension(dimension);
     }
 }

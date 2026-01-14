@@ -512,7 +512,8 @@ public class GumWormSegmentEntity extends Entity implements ICustomCollisions, K
         return false;
     }
     public Vec3 getRiderPosition(Entity playerOwner) {
-        float f = (float) (this.getBbHeight() + 0.25F);
+        double ridingOffset = -0.6D;
+        float f = (float) (this.getBbHeight() + 0.25F + ridingOffset);
         Vec3 offset = new Vec3(0.0F, f, 0.15F).xRot((float) -Math.toRadians(this.getXRot())).yRot((float) -Math.toRadians(this.getYRot()));
         Vec3 position = this.position().add(offset);
         double setY = surfaceY;

@@ -26,22 +26,26 @@ import java.util.function.Predicate;
 public class BiomeGenerationConfig {
     public static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
     
-    private static final int CONFIG_VERSION = 3;
+    private static final int CONFIG_VERSION = 7;
 
-    private static final String OVERWORLD = "minecraft:overworld";
+    // Empty dimensions array means biomes can spawn in any dimension
+    // Users can restrict to specific dimensions in their config files
 
+    // Depth ranges control vertical biome extent
+    // Minimum depth prevents biome from appearing at surface level
+    // Maximum depth allows biome to extend deep underground
     private static final BiomeGenerationNoiseCondition MAGNETIC_CAVES_CONDITION = new BiomeGenerationNoiseCondition.Builder()
-            .dimensions(OVERWORLD).distanceFromSpawn(400).alexscavesRarityOffset(0).continentalness(-1F, 1F).depth(0.1F, 2F).build();
+            .distanceFromSpawn(400).alexscavesRarityOffset(0).continentalness(-1F, 1F).depth(0.05F, 2F).build();
     private static final BiomeGenerationNoiseCondition PRIMORDIAL_CAVES_CONDITION = new BiomeGenerationNoiseCondition.Builder()
-            .dimensions(OVERWORLD).distanceFromSpawn(450).alexscavesRarityOffset(1).continentalness(0.4F, 1F).depth(0.15F, 1.5F).build();
+            .distanceFromSpawn(450).alexscavesRarityOffset(1).continentalness(0.4F, 1F).depth(0.05F, 2F).build();
     private static final BiomeGenerationNoiseCondition TOXIC_CAVES_CONDITION = new BiomeGenerationNoiseCondition.Builder()
-            .dimensions(OVERWORLD).distanceFromSpawn(650).alexscavesRarityOffset(2).continentalness(0.5F, 1F).depth(0.3F, 1.5F).build();
+            .distanceFromSpawn(650).alexscavesRarityOffset(2).continentalness(0.5F, 1F).depth(0.05F, 2F).build();
     private static final BiomeGenerationNoiseCondition ABYSSAL_CHASM_CONDITION = new BiomeGenerationNoiseCondition.Builder()
-            .dimensions(OVERWORLD).distanceFromSpawn(400).alexscavesRarityOffset(3).continentalness(-0.95F, -0.65F).temperature(-1.0F, 0.5F).depth(0.2F, 1.5F).build();
+            .distanceFromSpawn(400).alexscavesRarityOffset(3).continentalness(-0.95F, -0.65F).temperature(-1.0F, 0.5F).depth(0.05F, 2F).build();
     private static final BiomeGenerationNoiseCondition FORLORN_HOLLOWS_CONDITION = new BiomeGenerationNoiseCondition.Builder()
-            .dimensions(OVERWORLD).distanceFromSpawn(650).alexscavesRarityOffset(4).continentalness(-1F, 1F).depth(0.1F, 2F).build();
+            .distanceFromSpawn(650).alexscavesRarityOffset(4).continentalness(-1F, 1F).depth(0.05F, 2F).build();
     private static final BiomeGenerationNoiseCondition CANDY_CAVITY_CONDITION = new BiomeGenerationNoiseCondition.Builder()
-            .dimensions(OVERWORLD).distanceFromSpawn(500).alexscavesRarityOffset(5).continentalness(0.5F, 1F).depth(0.15F, 1.5F).build();
+            .distanceFromSpawn(500).alexscavesRarityOffset(5).continentalness(0.5F, 1F).depth(0.05F, 2F).build();
     public static final LinkedHashMap<ResourceKey<Biome>, BiomeGenerationNoiseCondition> BIOMES = new LinkedHashMap<>();
 
     public static void reloadConfig() {

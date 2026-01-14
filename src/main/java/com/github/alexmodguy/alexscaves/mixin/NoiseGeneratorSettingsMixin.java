@@ -3,9 +3,7 @@ package com.github.alexmodguy.alexscaves.mixin;
 import com.github.alexthe666.citadel.server.generation.SurfaceRulesManager;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.SurfaceRules;
-import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -14,24 +12,28 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 /**
  * This mixin injects custom surface rules from Citadel's SurfaceRulesManager into the world generation.
- * Citadel 1.21.1 has this mixin in its source but it's not registered in the mixin config,
- * so we add it here to ensure Alex's Caves surface rules are applied.
+ * Uses priority 1500 to run after Citadel's mixin (priority 500) to ensure rules are merged.
  */
-@Mixin(value = NoiseGeneratorSettings.class, priority = 500)
+@Mixin(value = NoiseGeneratorSettings.class, priority = 1500)
 public class NoiseGeneratorSettingsMixin {
-    @Mutable
-    @Final
     @Shadow
     private SurfaceRules.RuleSource surfaceRule;
 
     @Unique
-    private boolean alexscaves$mergedSurfaceRules = false;
+    private SurfaceRules.RuleSource alexscaves$mergedRules = null;
 
-    @Inject(method = "surfaceRule", at = @At("HEAD"))
+    @Unique
+    private boolean alexscaves$initialized = false;
+
+    @Inject(method = "surfaceRule", at = @At("RETURN"), cancellable = true)
     private void alexscaves$surfaceRule(CallbackInfoReturnable<SurfaceRules.RuleSource> cir) {
-        if (!this.alexscaves$mergedSurfaceRules) {
-            this.surfaceRule = SurfaceRulesManager.mergeOverworldRules(surfaceRule);
-            this.alexscaves$mergedSurfaceRules = true;
+        if (!this.alexscaves$initialized) {
+            SurfaceRules.RuleSource currentRules = cir.getReturnValue();
+            this.alexscaves$mergedRules = SurfaceRulesManager.mergeOverworldRules(currentRules);
+            this.alexscaves$initialized = true;
+        }
+        if (this.alexscaves$mergedRules != null) {
+            cir.setReturnValue(this.alexscaves$mergedRules);
         }
     }
 }

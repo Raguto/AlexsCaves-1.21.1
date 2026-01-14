@@ -33,7 +33,7 @@ public class BiomeGenerationNoiseCondition {
         this.weirdness = weirdness;
         this.depth = depth;
         this.alexscavesRarityOffset = alexscavesRarityOffset;
-        this.dimensions = List.of(dimensions);
+        this.dimensions = dimensions != null && dimensions.length > 0 ? List.of(dimensions) : List.of();
     }
 
     @Deprecated(forRemoval = true, since="1.21")
@@ -64,7 +64,6 @@ public class BiomeGenerationNoiseCondition {
         float f2 = Climate.unquantizeCoord(centerTargetPoint.temperature());
         float f3 = Climate.unquantizeCoord(centerTargetPoint.humidity());
         float f4 = Climate.unquantizeCoord(centerTargetPoint.weirdness());
-        //for these values, sample the center of the possible biome instead of every quad
         if (continentalness != null && continentalness.length >= 2 && (f < continentalness[0] || f > continentalness[1])) {
             return false;
         }
@@ -80,25 +79,22 @@ public class BiomeGenerationNoiseCondition {
         if (weirdness != null && weirdness.length >= 2 && (f4 < weirdness[0] || f4 > weirdness[1])) {
             return false;
         }
-        // sample depth per coord - we don't want biomes bleeding onto the surface
         if (depth != null && depth.length >= 2 && (unquantizedDepth < depth[0] || unquantizedDepth > depth[1])) {
             return false;
         }
-        if(dimension != null && !dimensions.contains(dimension.location().toString())){
+        if(dimension != null && dimensions != null && !dimensions.isEmpty() && !dimensions.contains(dimension.location().toString())){
             return false;
         }
         return true;
     }
 
     private static boolean isFarEnoughFromSpawn(int xIn, int zIn, double dist) {
-        // xIn and zIn are in quart positions (biome coordinates), convert to block coordinates
         int x = QuartPos.toBlock(xIn);
         int z = QuartPos.toBlock(zIn);
         return x * x + z * z >= dist * dist;
     }
     
     private static boolean isFarEnoughFromSpawnBlock(int blockX, int blockZ, double dist) {
-        // blockX and blockZ are already in block coordinates
         return blockX * blockX + blockZ * blockZ >= dist * dist;
     }
 
@@ -108,7 +104,7 @@ public class BiomeGenerationNoiseCondition {
     }
 
     public boolean isInvalid() {
-        return dimensions == null && !disabledCompletely;
+        return false;
     }
 
     public int getRarityOffset(){

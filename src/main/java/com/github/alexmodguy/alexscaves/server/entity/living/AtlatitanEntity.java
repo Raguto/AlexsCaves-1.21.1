@@ -338,7 +338,8 @@ public class AtlatitanEntity extends SauropodBaseEntity implements KeybindUsingM
             passenger.setYBodyRot(this.yBodyRot);
             passenger.fallDistance = 0.0F;
             clampRotation(living, 105);
-            moveFunction.accept(passenger, this.getX() + seatOffset.x, this.getY() + seatOffset.y - this.getLegSolverBodyOffset(), this.getZ() + seatOffset.z);
+            double ridingOffset = 6.0D;
+            moveFunction.accept(passenger, this.getX() + seatOffset.x, this.getY() + seatOffset.y + ridingOffset - this.getLegSolverBodyOffset(), this.getZ() + seatOffset.z);
         } else {
             super.positionRider(passenger, moveFunction);
         }

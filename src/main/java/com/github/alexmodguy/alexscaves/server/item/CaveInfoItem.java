@@ -45,7 +45,7 @@ public class CaveInfoItem extends Item {
         if (tag != null && tag.getBoolean("Rainbow")) {
             float hue = (System.currentTimeMillis() % 4000) / 4000f;
             int rainbow = Color.HSBtoRGB(hue, 1f, 0.8f);
-            return rainbow;
+            return rainbow | 0xFF000000; // Ensure alpha is set
         }
         if (stack.getItem() instanceof CaveInfoItem) {
             ResourceKey<Biome> biomeResourceKey = getCaveBiome(stack);
@@ -55,12 +55,14 @@ public class CaveInfoItem extends Item {
             }
             if(darken && biomeResourceKey != null){
                 if(biomeResourceKey.equals(ACBiomeRegistry.TOXIC_CAVES)){
-                    return 0X45BE24;
+                    return 0XFF45BE24; // Added alpha
                 }
             }
-            return biomeResourceKey == null ? -1 : getBiomeColor(level, biomeResourceKey);
+            int color = biomeResourceKey == null ? 0xFFFFFFFF : getBiomeColor(level, biomeResourceKey);
+            // Ensure alpha channel is set for proper rendering in 1.21
+            return color | 0xFF000000;
         }
-        return -1;
+        return 0xFFFFFFFF;
     }
 
     protected static int getBiomeColor(Level level, ResourceKey<Biome> biomeResourceKey){
@@ -69,12 +71,13 @@ public class CaveInfoItem extends Item {
             if (level != null) {
                 Registry<Biome> registry = level.registryAccess().registry(Registries.BIOME).orElse(null);
                 if (registry != null && registry.getHolder(biomeResourceKey).isPresent()) {
-                    return ConversionCrucibleBlockEntity.calculateBiomeColor(registry.getHolder(biomeResourceKey));
+                    int calcColor = ConversionCrucibleBlockEntity.calculateBiomeColor(registry.getHolder(biomeResourceKey));
+                    return calcColor | 0xFF000000; // Ensure alpha
                 }
             }
-            return 0;
+            return 0xFFFFFFFF;
         } else {
-            return color;
+            return color | 0xFF000000; // Ensure alpha channel is set
         }
     }
 
@@ -136,7 +139,8 @@ public class CaveInfoItem extends Item {
         CompoundTag tag = stack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag();
         if (tag != null) {
             String s = tag.getString("CaveBiome");
-            return s == null ? null : ResourceKey.create(Registries.BIOME, ResourceLocation.parse(s));
+            // getString returns empty string if key doesn't exist, not null
+            return s == null || s.isEmpty() ? null : ResourceKey.create(Registries.BIOME, ResourceLocation.parse(s));
         }
         return null;
     }

@@ -5,7 +5,7 @@
   ],
   "passes": [
     {
-      "name": "blur",
+      "name": "alexscaves:blur",
       "intarget": "final",
       "outtarget": "swap",
       "uniforms": [
@@ -20,7 +20,7 @@
       ]
     },
     {
-      "name": "blur",
+      "name": "alexscaves:blur",
       "intarget": "swap",
       "outtarget": "final",
       "uniforms": [

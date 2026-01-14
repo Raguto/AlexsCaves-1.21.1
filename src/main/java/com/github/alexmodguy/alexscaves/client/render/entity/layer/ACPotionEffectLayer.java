@@ -11,6 +11,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -85,11 +86,34 @@ public class ACPotionEffectLayer extends RenderLayer {
             if (living.hasEffect(ACEffectRegistry.IRRADIATED) && AlexsCaves.CLIENT_CONFIG.radiationGlowEffect.get()) {
                 PostEffectRegistry.renderEffectForNextTick(ClientProxy.IRRADIATED_SHADER);
                 int level = living.getEffect(ACEffectRegistry.IRRADIATED).getAmplifier() + 1;
-                VertexConsumer ivertexbuilder = bufferIn.getBuffer(level >= IrradiatedEffect.BLUE_LEVEL ? ACRenderTypes.getBlueRadiationGlow(getTextureLocation(entity)) : ACRenderTypes.getRadiationGlow(getTextureLocation(entity)));
-                float alpha = level >= IrradiatedEffect.BLUE_LEVEL ? 0.9F : Math.min(level * 0.33F, 1F);
+                boolean isBlue = level >= IrradiatedEffect.BLUE_LEVEL;
+                float alpha = isBlue ? 0.9F : Math.min(level * 0.33F, 1F);
+                
+                // Pulsating glow effect
+                float pulse = (float) ((Math.sin(ageInTicks * 0.15) + 1.0) * 0.5); // 0..1
+                float glowAlpha = alpha * (0.5f + 0.3f * pulse);
+                
+                // Color values for green (normal) or blue (high level) radiation
+                int r, g, b;
+                if (isBlue) {
+                    // Blue radiation glow
+                    r = (int) (50 + 30 * pulse);
+                    g = (int) (150 + 50 * pulse);
+                    b = 255;
+                } else {
+                    // Green radiation glow
+                    r = (int) (40 + 20 * pulse);
+                    g = (int) (230 + 25 * pulse);
+                    b = (int) (50 + 30 * pulse);
+                }
+                int a = (int) (glowAlpha * 255);
+                
+                // Pack color as ARGB
+                int color = (a << 24) | (r << 16) | (g << 8) | b;
+                
                 poseStack.pushPose();
-                int argb = ((int)(alpha * 255) << 24) | ((int)(1 * 255) << 16) | ((int)(1 * 255) << 8) | (int)(1 * 255);
-                this.getParentModel().renderToBuffer(poseStack, ivertexbuilder, packedLightIn, LivingEntityRenderer.getOverlayCoords((LivingEntity) entity, 0), argb);
+                VertexConsumer vertexConsumer = bufferIn.getBuffer(RenderType.entityTranslucentEmissive(getTextureLocation(entity)));
+                this.getParentModel().renderToBuffer(poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, LivingEntityRenderer.getOverlayCoords(living, 0), color);
                 poseStack.popPose();
             }
             if (living.hasEffect(ACEffectRegistry.BUBBLED) && living.isAlive()) {
@@ -149,4 +173,5 @@ public class ACPotionEffectLayer extends RenderLayer {
         vertexConsumer.addVertex(matrix4f, f2, f4, f7).setColor(colorR, colorG, colorB, colorA).setUv((float) textureScaleXZ, (float) uvOffset).setOverlay(overlayCoords).setLight(packedLightIn).setNormal(pose, 0.0F, -1.0F, 0.0F);
         vertexConsumer.addVertex(matrix4f, f1, f4, f8).setColor(colorR, colorG, colorB, colorA).setUv((float) 0, (float) uvOffset).setOverlay(overlayCoords).setLight(packedLightIn).setNormal(pose, 0.0F, -1.0F, 0.0F);
     }
+
 }

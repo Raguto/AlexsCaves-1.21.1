@@ -1,6 +1,7 @@
 package com.github.alexmodguy.alexscaves.server.entity.util;
 
 import com.github.alexmodguy.alexscaves.AlexsCaves;
+import com.github.alexmodguy.alexscaves.server.block.ACBlockRegistry;
 import com.github.alexmodguy.alexscaves.server.block.poi.ACPOIRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.item.AbstractMovingBlockEntity;
 import com.github.alexmodguy.alexscaves.server.entity.item.MovingMetalBlockEntity;
@@ -31,37 +32,101 @@ import java.util.stream.Stream;
 public class MagnetUtil {
 
     private static Stream<BlockPos> getNearbyAttractingMagnets(BlockPos blockpos, ServerLevel world, int range) {
+        // Try POI system first
         PoiManager pointofinterestmanager = world.getPoiManager();
-        return pointofinterestmanager.findAll(poiTypeHolder -> poiTypeHolder.is(ACPOIRegistry.ATTRACTING_MAGNETS.getKey()), Predicates.alwaysTrue(), blockpos, range, PoiManager.Occupancy.ANY);
+        Stream<BlockPos> poiResult = pointofinterestmanager.findAll(poiTypeHolder -> poiTypeHolder.is(ACPOIRegistry.ATTRACTING_MAGNETS.getKey()), Predicates.alwaysTrue(), blockpos, range, PoiManager.Occupancy.ANY);
+        
+        // Also do a direct block scan as fallback (POI system can be unreliable)
+        List<BlockPos> directScan = new ArrayList<>();
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+        for (int x = -range; x <= range; x++) {
+            for (int y = -range; y <= range; y++) {
+                for (int z = -range; z <= range; z++) {
+                    mutable.set(blockpos.getX() + x, blockpos.getY() + y, blockpos.getZ() + z);
+                    BlockState state = world.getBlockState(mutable);
+                    if (state.is(ACBlockRegistry.SCARLET_NEODYMIUM_NODE.get()) || 
+                        state.is(ACBlockRegistry.SCARLET_NEODYMIUM_PILLAR.get()) ||
+                        state.is(ACBlockRegistry.BLOCK_OF_SCARLET_NEODYMIUM.get())) {
+                        directScan.add(mutable.immutable());
+                    }
+                }
+            }
+        }
+        
+        return Stream.concat(poiResult, directScan.stream()).distinct();
     }
 
     private static Stream<BlockPos> getNearbyRepellingMagnets(BlockPos blockpos, ServerLevel world, int range) {
+        // Try POI system first
         PoiManager pointofinterestmanager = world.getPoiManager();
-        return pointofinterestmanager.findAll(poiTypeHolder -> poiTypeHolder.is(ACPOIRegistry.REPELLING_MAGNETS.getKey()), Predicates.alwaysTrue(), blockpos, range, PoiManager.Occupancy.ANY);
+        Stream<BlockPos> poiResult = pointofinterestmanager.findAll(poiTypeHolder -> poiTypeHolder.is(ACPOIRegistry.REPELLING_MAGNETS.getKey()), Predicates.alwaysTrue(), blockpos, range, PoiManager.Occupancy.ANY);
+        
+        // Also do a direct block scan as fallback (POI system can be unreliable)
+        List<BlockPos> directScan = new ArrayList<>();
+        BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
+        for (int x = -range; x <= range; x++) {
+            for (int y = -range; y <= range; y++) {
+                for (int z = -range; z <= range; z++) {
+                    mutable.set(blockpos.getX() + x, blockpos.getY() + y, blockpos.getZ() + z);
+                    BlockState state = world.getBlockState(mutable);
+                    if (state.is(ACBlockRegistry.AZURE_NEODYMIUM_NODE.get()) || 
+                        state.is(ACBlockRegistry.AZURE_NEODYMIUM_PILLAR.get()) ||
+                        state.is(ACBlockRegistry.BLOCK_OF_AZURE_NEODYMIUM.get())) {
+                        directScan.add(mutable.immutable());
+                    }
+                }
+            }
+        }
+        
+        return Stream.concat(poiResult, directScan.stream()).distinct();
     }
 
     public static void tickMagnetism(Entity entity) {
         if (!entity.level().isClientSide && entity.level() instanceof ServerLevel serverLevel) {
             int range = 5;
-            Stream<BlockPos> attracts = getNearbyAttractingMagnets(entity.blockPosition(), serverLevel, range);
-            Stream<BlockPos> repels = getNearbyRepellingMagnets(entity.blockPosition(), serverLevel, range);
-            attracts.forEach((magnet) -> {
+            List<BlockPos> attractList = getNearbyAttractingMagnets(entity.blockPosition(), serverLevel, range).toList();
+            List<BlockPos> repelList = getNearbyRepellingMagnets(entity.blockPosition(), serverLevel, range).toList();
+            
+            // Get strength multiplier (weaker for potion effect)
+            float strengthMultiplier = getMagnetismStrengthMultiplier(entity);
+            
+            Vec3 totalPull = Vec3.ZERO;
+            
+            for (BlockPos magnet : attractList) {
                 Vec3 center = Vec3.atCenterOf(magnet);
                 double distance = Mth.clamp(Math.sqrt(entity.distanceToSqr(center)) / range, 0, 1);
                 Vec3 pull = Vec3.atCenterOf(magnet).subtract(entity.position());
                 Vec3 pullNorm = pull.length() < 1.0F ? pull : pull.normalize();
-                Vec3 pullScale = pullNorm.scale((1 - distance) * 0.25F);
-                setEntityMagneticDelta(entity, getEntityMagneticDelta(entity).scale(0.9).add(pullScale));
-            });
-            repels.forEach((magnet) -> {
+                // Reduced from 0.25F to 0.08F for more subtle magnetism
+                Vec3 pullScale = pullNorm.scale((1 - distance) * 0.08F * strengthMultiplier);
+                totalPull = totalPull.add(pullScale);
+            }
+            
+            for (BlockPos magnet : repelList) {
                 Vec3 center = Vec3.atCenterOf(magnet);
                 double distance = Mth.clamp(Math.sqrt(entity.distanceToSqr(center)) / range, 0, 1);
                 Vec3 pull = entity.position().subtract(Vec3.atCenterOf(magnet));
                 Vec3 pullNorm = pull.length() < 1.0F ? pull : pull.normalize();
-                Vec3 pullScale = pullNorm.scale((1 - distance) * 0.25F);
-                setEntityMagneticDelta(entity, getEntityMagneticDelta(entity).scale(0.9).add(pullScale));
-            });
+                // Reduced from 0.25F to 0.08F for more subtle magnetism
+                Vec3 pullScale = pullNorm.scale((1 - distance) * 0.08F * strengthMultiplier);
+                totalPull = totalPull.add(pullScale);
+            }
+            
+            // Apply magnetic force directly to entity movement on server
+            if (totalPull != Vec3.ZERO) {
+                Vec3 currentDelta = getEntityMagneticDelta(entity);
+                // Reduced from 0.1 to 0.04 for more subtle effect
+                Vec3 newDelta = currentDelta.scale(0.5).add(totalPull.scale(0.04));
+                setEntityMagneticDelta(entity, newDelta);
+                
+                // Apply movement directly on server - this will sync to client
+                // Reduced from 0.05 to 0.02 for gentler pull that players can walk against
+                entity.setDeltaMovement(entity.getDeltaMovement().add(newDelta.scale(0.02)));
+                entity.hurtMarked = true; // Force sync to client
+            }
         }
+        
+        // The rest handles wall-walking which needs the magnetic delta
         Vec3 vec3 = getEntityMagneticDelta(entity);
         Direction dir = getEntityMagneticDirection(entity);
         MagneticEntityAccessor magneticAccessor = (MagneticEntityAccessor) entity;
@@ -250,6 +315,28 @@ public class MagnetUtil {
             }
         }
         return false;
+    }
+
+    // Returns true if entity is ONLY magnetic due to potion (not wearing any magnetic items)
+    private static boolean isMagneticFromPotionOnly(LivingEntity entity) {
+        if (!entity.hasEffect(ACEffectRegistry.MAGNETIZING)) {
+            return false;
+        }
+        // Check if wearing any magnetic items
+        for (EquipmentSlot slot : EquipmentSlot.values()) {
+            if (entity.getItemBySlot(slot).is(ACTagRegistry.MAGNETIC_ITEMS)) {
+                return false; // Has magnetic items, not potion-only
+            }
+        }
+        return true; // Only magnetic due to potion
+    }
+
+    // Get magnetism strength multiplier - weaker for potion effect
+    public static float getMagnetismStrengthMultiplier(Entity entity) {
+        if (entity instanceof LivingEntity living && isMagneticFromPotionOnly(living)) {
+            return 0.3F; // Potion effect is 30% strength of armor
+        }
+        return 1.0F;
     }
 
     private static boolean isSpectatorPlayer(Entity entity){

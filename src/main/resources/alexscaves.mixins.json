@@ -25,6 +25,7 @@
     "MapDecorationMixin",
     "MapDecorationTypeMixin",
     "MinecraftServerMixin",
+    "MineshaftStructureMixin",
     "MobMixin",
     "MonsterMixin",
     "MultifaceGrowthFeatureMixin",
@@ -33,9 +34,12 @@
     "OceanMonumentStructureMixin",
     "PlayerMixin",
     "PotionUtilsMixin",
+    "RuinedPortalStructureMixin",
     "SeagrassFeatureMixin",
     "ShipwreckStructureMixin",
+    "StrongholdStructureMixin",
     "SwampHutPieceMixin",
+    "UtilMixin",
     "WorldGenOptionsMixin"
   ],
   "client": [

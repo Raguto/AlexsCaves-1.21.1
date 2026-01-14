@@ -519,7 +519,9 @@ public class TremorsaurusEntity extends DinosaurEntity implements KeybindUsingMo
             float heightBackLeft = legSolver.legs[0].getHeight(1.0F);
             float heightBackRight = legSolver.legs[1].getHeight(1.0F);
             float maxLegSolverHeight = (1F - ACMath.smin(1F - heightBackLeft, 1F - heightBackRight, 0.1F)) * 0.8F;
-            moveFunction.accept(passenger, this.getX() + seatOffset.x, this.getY() + seatOffset.y + passenger.getPassengerRidingPosition(this).y - maxLegSolverHeight, this.getZ() + seatOffset.z);
+            // Use a fixed riding offset of 2.6 for the Tremorsaurus (similar to original getPassengersRidingOffset)
+            double ridingOffset = 2.6D;
+            moveFunction.accept(passenger, this.getX() + seatOffset.x, this.getY() + seatOffset.y + ridingOffset - maxLegSolverHeight, this.getZ() + seatOffset.z);
         } else {
             super.positionRider(passenger, moveFunction);
         }

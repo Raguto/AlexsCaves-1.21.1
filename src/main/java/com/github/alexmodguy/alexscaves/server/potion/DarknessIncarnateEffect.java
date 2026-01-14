@@ -86,8 +86,9 @@ public class DarknessIncarnateEffect extends MobEffect {
                         darknessIncarnateUserAccessor.setSlowFallingFlag(true);
                     }
                 }
+                player.onUpdateAbilities();
             }
-            if (prevFlying != flight) {
+            if (prevFlying != flight && flight) {
                 player.onUpdateAbilities();
             }
         }

@@ -755,7 +755,8 @@ public class CandicornEntity extends TamableAnimal implements KeybindUsingMount,
             Vec3 seatOffset = new Vec3(0F, -0.4F + animationUp, -0.2F - animationBack).yRot((float) Math.toRadians(-this.yBodyRot));
             passenger.setYBodyRot(this.yBodyRot);
             passenger.fallDistance = 0.0F;
-            moveFunction.accept(passenger, this.getX() + seatOffset.x, this.getY() + seatOffset.y, this.getZ() + seatOffset.z);
+            double ridingOffset = 1.4D;
+            moveFunction.accept(passenger, this.getX() + seatOffset.x, this.getY() + seatOffset.y + ridingOffset, this.getZ() + seatOffset.z);
         } else {
             super.positionRider(passenger, moveFunction);
         }
@@ -816,6 +817,16 @@ public class CandicornEntity extends TamableAnimal implements KeybindUsingMount,
     public boolean canBeAffected(MobEffectInstance effectInstance) {
         return super.canBeAffected(effectInstance) && !effectInstance.is(MobEffects.HUNGER);
     }
+
+    @Override
+    public boolean hurt(DamageSource source, float amount) {
+        // Prevent passengers from damaging their own mount
+        if (source.getEntity() != null && source.getEntity().isPassengerOfSameVehicle(this)) {
+            return false;
+        }
+        return super.hurt(source, amount);
+    }
+
     protected void playStepSound(BlockPos blockPos, BlockState blockState) {
         if (!blockState.liquid()) {
             BlockState blockstate = this.level().getBlockState(blockPos.above());

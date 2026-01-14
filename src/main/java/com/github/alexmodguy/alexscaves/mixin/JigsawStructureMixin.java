@@ -28,17 +28,29 @@ public class JigsawStructureMixin {
             at = @At(value = "HEAD")
     )
     private void ac_findGenerationPoint(Structure.GenerationContext context, CallbackInfoReturnable<Optional<Structure.GenerationStub>> cir) {
-        if(this.startJigsawName.isPresent() && this.startJigsawName.get().toString().equals("minecraft:city_anchor")){ // limit to only ancient cities
+        if (this.startJigsawName.isPresent()) {
+            String jigsawName = this.startJigsawName.get().toString();
             int i = context.chunkPos().getBlockX(9);
             int j = context.chunkPos().getBlockZ(9);
 
-            for (Holder<Biome> holder : ACMath.getBiomesWithinAtY(context.biomeSource(), i, context.chunkGenerator().getSeaLevel() - 80, j, 80, context.randomState().sampler())) {
-                if (holder.is(ACTagRegistry.HAS_NO_ANCIENT_CITIES_IN)) {
-                    cir.setReturnValue(Optional.empty());
+            if (jigsawName.equals("minecraft:city_anchor")) {
+                for (Holder<Biome> holder : ACMath.getBiomesWithinAtY(context.biomeSource(), i, context.chunkGenerator().getSeaLevel() - 80, j, 80, context.randomState().sampler())) {
+                    if (holder.is(ACTagRegistry.HAS_NO_ANCIENT_CITIES_IN)) {
+                        cir.setReturnValue(Optional.empty());
+                        return;
+                    }
                 }
             }
 
+            if (jigsawName.equals("minecraft:trial_chambers/spawner/contents/all") || jigsawName.contains("trial_chambers")) {
+                // Extended radius (80 blocks) to prevent trial chambers from starting near AC biomes
+                for (Holder<Biome> holder : context.biomeSource().getBiomesWithin(i, context.chunkGenerator().getSeaLevel() - 40, j, 80, context.randomState().sampler())) {
+                    if (holder.is(ACTagRegistry.HAS_NO_VANILLA_STRUCTURES_IN)) {
+                        cir.setReturnValue(Optional.empty());
+                        return;
+                    }
+                }
+            }
         }
     }
-
 }

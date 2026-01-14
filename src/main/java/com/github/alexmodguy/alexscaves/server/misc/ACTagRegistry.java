@@ -80,6 +80,7 @@ public class ACTagRegistry {
     public static final TagKey<Biome> OVERRIDE_UNDERWATER_AMBIENCE_IN = registerBiomeTag("override_underwater_ambience_in");
     public static final TagKey<Biome> ONLY_AMBIENT_LOOP_UNDERWATER = registerBiomeTag("only_ambient_loop_underwater");
     public static final TagKey<Biome> HAS_NO_ANCIENT_CITIES_IN = registerBiomeTag("has_no_ancient_cities_in");
+    public static final TagKey<Biome> HAS_NO_VANILLA_STRUCTURES_IN = registerBiomeTag("has_no_vanilla_structures_in");
     public static final TagKey<EntityType<?>> RESISTS_BUBBLED = registerEntityTag("resists_bubbled");
     public static final TagKey<Block> DRAIN_BREAKS = registerBlockTag("drain_breaks");
     public static final TagKey<Block> CORRODENT_BLOCKS_DIGGING = registerBlockTag("corrodent_blocks_digging");

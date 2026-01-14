@@ -58,6 +58,7 @@ public abstract class LivingEntityMixin extends Entity implements HeadRotationEn
     private boolean watcherPossessionFlag;
     private boolean slowFallingFlag;
     private boolean frostmintFreezingFlag;
+    private boolean hadDarknessIncarnateEffect;
 
     public LivingEntityMixin(EntityType<?> entityType, Level level) {
         super(entityType, level);
@@ -97,6 +98,20 @@ public abstract class LivingEntityMixin extends Entity implements HeadRotationEn
                 frostmintFreezingFlag = false;
             }
         }
+        boolean hasDarknessNow = this.hasEffect(ACEffectRegistry.DARKNESS_INCARNATE);
+        if (hadDarknessIncarnateEffect && !hasDarknessNow) {
+            LivingEntity self = (LivingEntity) (Object) this;
+            if (!self.level().isClientSide && self instanceof net.minecraft.server.level.ServerPlayer player) {
+                if (!player.isCreative() && !player.isSpectator()) {
+                    player.getAbilities().mayfly = false;
+                    player.getAbilities().flying = false;
+                    player.getAbilities().setFlyingSpeed(0.05F);
+                    player.onUpdateAbilities();
+                    setSlowFallingFlag(true);
+                }
+            }
+        }
+        hadDarknessIncarnateEffect = hasDarknessNow;
     }
 
     @Inject(

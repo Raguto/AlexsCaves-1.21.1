@@ -91,7 +91,7 @@ public class ACItemRegistry {
     public static final DeferredHolder<Item, Item> PRIMORDIAL_SOUP = DEF_REG.register("primordial_soup", () -> new PrehistoricMixtureItem(new Item.Properties().stacksTo(1).food(ACFoods.PRIMORDIAL_SOUP)));
     public static final DeferredHolder<Item, Item> TOUGH_HIDE = DEF_REG.register("tough_hide", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> HEAVY_BONE = DEF_REG.register("heavy_bone", () -> new Item(new Item.Properties().stacksTo(16)));
-    public static final DeferredHolder<Item, Item> PRIMITIVE_CLUB = DEF_REG.register("primitive_club", () -> new PrimitiveClubItem(new Item.Properties().durability(120)));
+    public static final DeferredHolder<Item, Item> PRIMITIVE_CLUB = DEF_REG.register("primitive_club", () -> new PrimitiveClubItem(new Item.Properties().durability(120).attributes(PrimitiveClubItem.createAttributes())));
     public static final DeferredHolder<Item, Item> PRIMITIVE_CLUB_SPRITE = DEF_REG.register("primitive_club_inventory", () -> new Item(new Item.Properties()));
     public static final DeferredHolder<Item, Item> PRIMORDIAL_HELMET = DEF_REG.register("primordial_helmet", () -> new PrimordialArmorItem(ACArmorMaterial.PRIMORDIAL, ArmorItem.Type.HELMET));
     public static final DeferredHolder<Item, Item> PRIMORDIAL_TUNIC = DEF_REG.register("primordial_tunic", () -> new PrimordialArmorItem(ACArmorMaterial.PRIMORDIAL, ArmorItem.Type.CHESTPLATE));

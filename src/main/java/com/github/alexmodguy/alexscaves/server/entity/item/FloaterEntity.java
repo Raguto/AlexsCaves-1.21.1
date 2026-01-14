@@ -100,7 +100,8 @@ public class FloaterEntity extends Entity {
 
     public void positionRider(Entity passenger, MoveFunction moveFunction) {
         if (this.isPassengerOfSameVehicle(passenger) && passenger instanceof LivingEntity living && !this.touchingUnloadedChunk()) {
-            double d0 = this.getY() + 0.7F;
+            double ridingOffset = -0.6D;
+            double d0 = this.getY() + 0.7F + ridingOffset;
             moveFunction.accept(passenger, this.getX(), d0, this.getZ());
             passenger.fallDistance = 0.0F;
         } else {

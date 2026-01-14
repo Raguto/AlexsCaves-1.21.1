@@ -1,18 +1,14 @@
 package com.github.alexmodguy.alexscaves.mixin;
 
-import com.github.alexmodguy.alexscaves.server.entity.util.ACEntityDataSerializers;
 import com.github.alexmodguy.alexscaves.server.entity.util.MagnetUtil;
 import com.github.alexmodguy.alexscaves.server.entity.util.MagneticEntityAccessor;
 import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import com.github.alexmodguy.alexscaves.server.item.RainbounceBootsItem;
 import com.github.alexmodguy.alexscaves.server.misc.ACTagRegistry;
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
-import com.github.alexthe666.citadel.CitadelConstants;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
@@ -77,6 +73,12 @@ public abstract class EntityMixin implements MagneticEntityAccessor {
 
     private BlockPos lastStepPos;
     private Vec3 lastBouncePos;
+    
+    // Magnetic data stored as instance fields since we can't inject into abstract defineSynchedData
+    private float magnetDeltaX = 0F;
+    private float magnetDeltaY = 0F;
+    private float magnetDeltaZ = 0F;
+    private Direction magnetAttachmentDirection = Direction.DOWN;
 
     @Inject(
             method = {"Lnet/minecraft/world/entity/Entity;tick()V"},
@@ -106,19 +108,6 @@ public abstract class EntityMixin implements MagneticEntityAccessor {
                 this.setMagneticAttachmentFace(Direction.DOWN);
                 this.refreshDimensions();
             }
-        }
-    }
-
-    @Inject(
-            method = {"Lnet/minecraft/world/entity/Entity;onSyncedDataUpdated(Lnet/minecraft/network/syncher/EntityDataAccessor;)V"},
-            remap = true,
-            at = @At(value = "TAIL")
-    )
-    public void ac_onSyncedDataUpdated(EntityDataAccessor<?> entityDataAccessor, CallbackInfo ci) {
-        if (ACEntityDataSerializers.MAGNET_ATTACHMENT_DIRECTION != null && 
-            ACEntityDataSerializers.MAGNET_ATTACHMENT_DIRECTION.equals(entityDataAccessor)) {
-            this.prevAttachChangeProgress = 0.0F;
-            this.attachChangeProgress = 0.0F;
         }
     }
 
@@ -159,7 +148,6 @@ public abstract class EntityMixin implements MagneticEntityAccessor {
         Entity thisEntity = (Entity) (Object) this;
         //AC CODE START
         List<VoxelShape> list;
-        //fix infinity voxel collection crash for ItemEntity
         if (this.getY() > this.level().getMinBuildHeight() - 200) {
             list = this.level().getEntityCollisions(thisEntity, aabb.expandTowards(deltaIn));
             List<VoxelShape> list2 = MagnetUtil.getMovingBlockCollisions(thisEntity, aabb);
@@ -248,38 +236,22 @@ public abstract class EntityMixin implements MagneticEntityAccessor {
 
     @Override
     public float getMagneticDeltaX() {
-        try {
-            return entityData.get(ACEntityDataSerializers.MAGNET_DELTA_X);
-        } catch (Exception e) {
-            return 0.0F;
-        }
+        return magnetDeltaX;
     }
 
     @Override
     public float getMagneticDeltaY() {
-        try {
-            return entityData.get(ACEntityDataSerializers.MAGNET_DELTA_Y);
-        } catch (Exception e) {
-            return 0.0F;
-        }
+        return magnetDeltaY;
     }
 
     @Override
     public float getMagneticDeltaZ() {
-        try {
-            return entityData.get(ACEntityDataSerializers.MAGNET_DELTA_Z);
-        } catch (Exception e) {
-            return 0.0F;
-        }
+        return magnetDeltaZ;
     }
 
     @Override
     public Direction getMagneticAttachmentFace() {
-        try {
-            return entityData.get(ACEntityDataSerializers.MAGNET_ATTACHMENT_DIRECTION);
-        } catch (Exception e) {
-            return Direction.DOWN;
-        }
+        return magnetAttachmentDirection;
     }
 
     @Override
@@ -294,30 +266,22 @@ public abstract class EntityMixin implements MagneticEntityAccessor {
 
     @Override
     public void setMagneticDeltaX(float f) {
-        try {
-            entityData.set(ACEntityDataSerializers.MAGNET_DELTA_X, f);
-        } catch (Exception ignored) {}
+        magnetDeltaX = f;
     }
 
     @Override
     public void setMagneticDeltaY(float f) {
-        try {
-            entityData.set(ACEntityDataSerializers.MAGNET_DELTA_Y, f);
-        } catch (Exception ignored) {}
+        magnetDeltaY = f;
     }
 
     @Override
     public void setMagneticDeltaZ(float f) {
-        try {
-            entityData.set(ACEntityDataSerializers.MAGNET_DELTA_Z, f);
-        } catch (Exception ignored) {}
+        magnetDeltaZ = f;
     }
 
     @Override
     public void setMagneticAttachmentFace(Direction dir) {
-        try {
-            entityData.set(ACEntityDataSerializers.MAGNET_ATTACHMENT_DIRECTION, dir);
-        } catch (Exception ignored) {}
+        magnetAttachmentDirection = dir;
     }
 
     @Override
