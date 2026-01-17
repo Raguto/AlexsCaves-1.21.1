@@ -97,8 +97,12 @@ public class MagnetUtil {
                 double distance = Mth.clamp(Math.sqrt(entity.distanceToSqr(center)) / range, 0, 1);
                 Vec3 pull = Vec3.atCenterOf(magnet).subtract(entity.position());
                 Vec3 pullNorm = pull.length() < 1.0F ? pull : pull.normalize();
-                // Reduced from 0.25F to 0.08F for more subtle magnetism
-                Vec3 pullScale = pullNorm.scale((1 - distance) * 0.08F * strengthMultiplier);
+                
+                BlockState state = serverLevel.getBlockState(magnet);
+                float blockStrength = (state.is(ACBlockRegistry.SCARLET_NEODYMIUM_NODE.get()) || 
+                                      state.is(ACBlockRegistry.AZURE_NEODYMIUM_NODE.get())) ? 0.4F : 1.0F;
+                
+                Vec3 pullScale = pullNorm.scale((1 - distance) * 0.15F * blockStrength);
                 totalPull = totalPull.add(pullScale);
             }
             
@@ -107,22 +111,27 @@ public class MagnetUtil {
                 double distance = Mth.clamp(Math.sqrt(entity.distanceToSqr(center)) / range, 0, 1);
                 Vec3 pull = entity.position().subtract(Vec3.atCenterOf(magnet));
                 Vec3 pullNorm = pull.length() < 1.0F ? pull : pull.normalize();
-                // Reduced from 0.25F to 0.08F for more subtle magnetism
-                Vec3 pullScale = pullNorm.scale((1 - distance) * 0.08F * strengthMultiplier);
+                
+                BlockState state = serverLevel.getBlockState(magnet);
+                float blockStrength = (state.is(ACBlockRegistry.SCARLET_NEODYMIUM_NODE.get()) || 
+                                      state.is(ACBlockRegistry.AZURE_NEODYMIUM_NODE.get())) ? 0.4F : 1.0F;
+                
+                Vec3 pullScale = pullNorm.scale((1 - distance) * 0.15F * blockStrength);
                 totalPull = totalPull.add(pullScale);
             }
             
-            // Apply magnetic force directly to entity movement on server
             if (totalPull != Vec3.ZERO) {
                 Vec3 currentDelta = getEntityMagneticDelta(entity);
-                // Reduced from 0.1 to 0.04 for more subtle effect
                 Vec3 newDelta = currentDelta.scale(0.5).add(totalPull.scale(0.04));
                 setEntityMagneticDelta(entity, newDelta);
                 
-                // Apply movement directly on server - this will sync to client
-                // Reduced from 0.05 to 0.02 for gentler pull that players can walk against
-                entity.setDeltaMovement(entity.getDeltaMovement().add(newDelta.scale(0.02)));
-                entity.hurtMarked = true; // Force sync to client
+                Direction magneticDir = getEntityMagneticDirection(entity);
+                boolean isWallWalking = magneticDir != Direction.DOWN && attachesToMagnets(entity);
+                
+                if (!isWallWalking) {
+                    entity.setDeltaMovement(entity.getDeltaMovement().add(newDelta.scale(0.005F * strengthMultiplier)));
+                    entity.hurtMarked = true; // Force sync to client
+                }
             }
         }
         

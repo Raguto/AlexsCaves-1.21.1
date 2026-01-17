@@ -1,5 +1,6 @@
 package com.github.alexmodguy.alexscaves.server.level.structure.piece;
 
+import com.github.alexmodguy.alexscaves.server.block.ACBlockRegistry;
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
 import com.github.alexmodguy.alexscaves.server.misc.ACMath;
 import com.github.alexmodguy.alexscaves.server.misc.ACTagRegistry;
@@ -20,6 +21,8 @@ import net.minecraft.world.level.levelgen.structure.pieces.StructurePieceSeriali
 import org.apache.commons.lang3.mutable.MutableBoolean;
 
 public class DinoBowlStructurePiece extends AbstractCaveGenerationStructurePiece {
+
+    private static final int SHELL_THICKNESS = 16;
 
     public DinoBowlStructurePiece(BlockPos chunkCorner, BlockPos holeCenter, int bowlHeight, int bowlRadius) {
         super(ACStructurePieceRegistry.DINO_BOWL.get(), chunkCorner, holeCenter, bowlHeight, bowlRadius);
@@ -62,6 +65,16 @@ public class DinoBowlStructurePiece extends AbstractCaveGenerationStructurePiece
                 MutableBoolean doFloor = new MutableBoolean(false);
                 for (int y = 15; y >= 0; y--) {
                     carve.set(worldX, Mth.clamp(cornerY + y, level.getMinBuildHeight(), level.getMaxBuildHeight()), worldZ);
+                    
+                    // First, paint the shell (solid blocks just outside the cave)
+                    if (inShell(carve) && !checkedGetBlock(level, carve).is(Blocks.BEDROCK)) {
+                        BlockState currentBlock = checkedGetBlock(level, carve);
+                        if (!currentBlock.isAir() && isVanillaStone(currentBlock)) {
+                            checkedSetBlock(level, carve, ACBlockRegistry.LIMESTONE.get().defaultBlockState());
+                        }
+                    }
+                    
+                    // Then carve the interior
                     if (inCircle(carve) && !checkedGetBlock(level, carve).is(Blocks.BEDROCK)) {
                         flag = true;
                         checkedSetBlock(level, carve, Blocks.CAVE_AIR.defaultBlockState());
@@ -82,6 +95,32 @@ public class DinoBowlStructurePiece extends AbstractCaveGenerationStructurePiece
         if (flag) {
             replaceBiomes(level, ACBiomeRegistry.PRIMORDIAL_CAVES, 32);
         }
+    }
+    
+    private boolean inShell(BlockPos pos) {
+        if (inCircle(pos)) {
+            return false;
+        }
+        return inCircleExpanded(pos, SHELL_THICKNESS);
+    }
+    
+    private boolean inCircleExpanded(BlockPos carve, int expansion) {
+        float wallNoise = (ACMath.sampleNoise3D(carve.getX(), (int) (carve.getY() * 0.1F), carve.getZ(), 40) + 1.0F) * 0.5F;
+        // Extend further below to cover floor edges
+        double yDist = ACMath.smin(1F - Math.abs(this.holeCenter.getY() - carve.getY()) / (float) ((height + expansion * 2) * 0.5F), 1.0F, 0.3F);
+        double distToCenter = carve.distToLowCornerSqr(this.holeCenter.getX(), carve.getY(), this.holeCenter.getZ());
+        double expandedRadius = radius + expansion;
+        double targetRadius = yDist * (expandedRadius * wallNoise) * expandedRadius;
+        return distToCenter < targetRadius;
+    }
+    
+    private boolean isVanillaStone(BlockState state) {
+        return state.is(Blocks.STONE) || state.is(Blocks.DEEPSLATE) || 
+               state.is(Blocks.GRANITE) || state.is(Blocks.DIORITE) || state.is(Blocks.ANDESITE) ||
+               state.is(Blocks.TUFF) || state.is(Blocks.CALCITE) || state.is(Blocks.SMOOTH_BASALT) ||
+               state.is(Blocks.DIRT) || state.is(Blocks.GRAVEL) ||
+               state.is(Blocks.COBBLED_DEEPSLATE) || state.is(Blocks.INFESTED_STONE) ||
+               state.is(Blocks.INFESTED_DEEPSLATE);
     }
 
     /**

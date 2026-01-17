@@ -26,7 +26,7 @@ public class ACBiomeRarity {
     private static double seperationDistance;
     private static volatile boolean initialized = false;
     
-    private static final double BIOME_BOUNDARY_EXTENSION = 1.2D;
+    private static final double BIOME_BOUNDARY_EXTENSION = 1.0D;
 
     public static void init() {
         VORONOI_GENERATOR.setOffsetAmount(AlexsCaves.COMMON_CONFIG.caveBiomeSpacingRandomness.get());

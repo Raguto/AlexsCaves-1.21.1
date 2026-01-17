@@ -19,6 +19,8 @@ import org.apache.commons.lang3.mutable.MutableBoolean;
 
 public class ForlornCanyonStructurePiece extends AbstractCaveGenerationStructurePiece {
 
+    private static final int SHELL_THICKNESS = 16;
+
     public ForlornCanyonStructurePiece(BlockPos chunkCorner, BlockPos holeCenter, int bowlHeight, int bowlRadius) {
         super(ACStructurePieceRegistry.FORLORN_CANYON.get(), chunkCorner, holeCenter, bowlHeight, bowlRadius);
     }
@@ -36,25 +38,33 @@ public class ForlornCanyonStructurePiece extends AbstractCaveGenerationStructure
         int cornerY = this.chunkCorner.getY();
         int cornerZ = this.chunkCorner.getZ();
         
-        // Debug: log that postProcess is being called
-        com.github.alexmodguy.alexscaves.AlexsCaves.LOGGER.info("[Forlorn Debug] postProcess called: corner={},{},{} center={},{},{} height={} radius={}", 
-            cornerX, cornerY, cornerZ, holeCenter.getX(), holeCenter.getY(), holeCenter.getZ(), height, radius);
-        
         BlockPos.MutableBlockPos carve = new BlockPos.MutableBlockPos();
         BlockPos.MutableBlockPos carveBelow = new BlockPos.MutableBlockPos();
         carve.set(cornerX, cornerY, cornerZ);
-        int carvedBlocks = 0;
+        int carvedCount = 0;
+        int shellCount = 0;
         for (int x = 0; x < 16; x++) {
             for (int z = 0; z < 16; z++) {
                 MutableBoolean doFloor = new MutableBoolean(false);
                 for (int y = 15; y >= 0; y--) {
                     carve.set(cornerX + x, Mth.clamp(cornerY + y, level.getMinBuildHeight(), level.getMaxBuildHeight()), cornerZ + z);
+                    
+                    // First, paint the shell (solid blocks just outside the cave)
+                    if (inShell(carve) && !checkedGetBlock(level, carve).is(Blocks.BEDROCK)) {
+                        BlockState currentBlock = checkedGetBlock(level, carve);
+                        if (!currentBlock.isAir() && isVanillaStone(currentBlock)) {
+                            checkedSetBlock(level, carve, ACBlockRegistry.GUANOSTONE.get().defaultBlockState());
+                            shellCount++;
+                        }
+                    }
+                    
+                    // Then carve the interior
                     if (inCircle(carve) && !checkedGetBlock(level, carve).is(Blocks.BEDROCK)) {
                         checkedSetBlock(level, carve, Blocks.CAVE_AIR.defaultBlockState());
                         surroundCornerOfLiquid(level, carve);
                         carveBelow.set(carve.getX(), carve.getY() - 1, carve.getZ());
                         doFloor.setTrue();
-                        carvedBlocks++;
+                        carvedCount++;
                     } else if (doFloor.isTrue()) {
                         break;
                     }
@@ -65,9 +75,33 @@ public class ForlornCanyonStructurePiece extends AbstractCaveGenerationStructure
                 }
             }
         }
-        if (carvedBlocks > 0) {
-            com.github.alexmodguy.alexscaves.AlexsCaves.LOGGER.info("[Forlorn Debug] Carved {} blocks in this piece", carvedBlocks);
+        
+        // Note: biome is already set by voronoi system, no need to call replaceBiomes
+    }
+    
+    private boolean inShell(BlockPos pos) {
+        if (inCircle(pos)) {
+            return false;
         }
+        return inCircleExpanded(pos, SHELL_THICKNESS);
+    }
+    
+    private boolean inCircleExpanded(BlockPos carve, int expansion) {
+        float wallNoise = (ACMath.sampleNoise3D(carve.getX(), (int) (carve.getY() * 0.1F), carve.getZ(), 40) + 1.0F) * 0.5F;
+        double yDist = ACMath.smin(1F - Math.abs(this.holeCenter.getY() - carve.getY()) / (float) ((height + expansion * 2) * 0.5F), 1.0F, 0.3F);
+        double distToCenter = carve.distToLowCornerSqr(this.holeCenter.getX(), carve.getY(), this.holeCenter.getZ());
+        double expandedRadius = radius + expansion;
+        double targetRadius = yDist * (expandedRadius * wallNoise) * expandedRadius;
+        return distToCenter < targetRadius;
+    }
+    
+    private boolean isVanillaStone(BlockState state) {
+        return state.is(Blocks.STONE) || state.is(Blocks.DEEPSLATE) || 
+               state.is(Blocks.GRANITE) || state.is(Blocks.DIORITE) || state.is(Blocks.ANDESITE) ||
+               state.is(Blocks.TUFF) || state.is(Blocks.CALCITE) || state.is(Blocks.SMOOTH_BASALT) ||
+               state.is(Blocks.DIRT) || state.is(Blocks.GRAVEL) ||
+               state.is(Blocks.COBBLED_DEEPSLATE) || state.is(Blocks.INFESTED_STONE) ||
+               state.is(Blocks.INFESTED_DEEPSLATE);
     }
 
     private void surroundCornerOfLiquid(WorldGenLevel level, BlockPos.MutableBlockPos center) {
@@ -82,27 +116,15 @@ public class ForlornCanyonStructurePiece extends AbstractCaveGenerationStructure
         }
     }
 
-    private boolean inCircle(BlockPos.MutableBlockPos carve) {
-        float pillarNoise = (ACMath.sampleNoise3D(carve.getX(), (int) (carve.getY() * 0.4F), carve.getZ(), 30) + 1.0F) * 0.5F;
-        float verticalNoise = (ACMath.sampleNoise2D(carve.getX(), carve.getZ(), 50) + 1.0F) * 0.2F - (ACMath.smin(ACMath.sampleNoise2D(carve.getX(), carve.getZ(), 20), -0.5F, 0.1F) + 0.5F) * 0.7F;
+    // Use DinoBowl-style inCircle that works
+    private boolean inCircle(BlockPos carve) {
+        float wallNoise = (ACMath.sampleNoise3D(carve.getX(), (int) (carve.getY() * 0.1F), carve.getZ(), 40) + 1.0F) * 0.5F;
+        double yDist = ACMath.smin(1F - Math.abs(this.holeCenter.getY() - carve.getY()) / (float) (height * 0.5F), 1.0F, 0.3F);
         double distToCenter = carve.distToLowCornerSqr(this.holeCenter.getX(), carve.getY(), this.holeCenter.getZ());
-        float f = getHeightOf(carve);
-        float f1 = (float) Math.pow(ACMath.canyonStep(f, 10), 2.5F);
-        float rawHeight = Math.abs(this.holeCenter.getY() - carve.getY()) / (float) (height * 0.5F);
-        float reverseRawHeight = 1F - rawHeight;
-        double yDist = ACMath.smin((float) Math.pow(reverseRawHeight, 0.3F), 1.0F, 0.1F);
-        double targetRadius = (yDist * (radius * pillarNoise * f1) * radius);
-        return distToCenter < targetRadius && rawHeight < 1 - verticalNoise;
+        double targetRadius = yDist * (radius * wallNoise) * radius;
+        return distToCenter < targetRadius;
     }
 
-    private float getHeightOf(BlockPos.MutableBlockPos carve) {
-        int halfHeight = this.height / 2;
-        if (carve.getY() > this.holeCenter.getY() + halfHeight + 1 || carve.getY() < this.holeCenter.getY() - halfHeight) {
-            return 0.0F;
-        } else {
-            return 1F - ((this.holeCenter.getY() + halfHeight - carve.getY()) / (float) (height * 2));
-        }
-    }
     private void decorateFloor(WorldGenLevel level, RandomSource rand, BlockPos.MutableBlockPos carveBelow) {
         float floorNoise = (ACMath.sampleNoise2D(carveBelow.getX(), carveBelow.getZ(), 50) + 1.0F) * 0.5F;
         checkedSetBlock(level, carveBelow, Blocks.PACKED_MUD.defaultBlockState());

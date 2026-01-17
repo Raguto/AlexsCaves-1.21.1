@@ -8,7 +8,7 @@ config="alexscaves.mixins.json"
 
 [[mods]]
 modId="alexscaves"
-version="2.0.6"
+version="2.0.7"
 displayName="Alex's Caves"
 displayURL="https://www.curseforge.com/minecraft/mc-mods/alexs-caves"
 logoFile="assets/alexscaves/textures/misc/mod_logo.png"

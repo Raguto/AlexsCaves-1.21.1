@@ -21,6 +21,8 @@ import net.minecraft.world.level.material.FluidState;
 
 public class AcidPitStructurePiece extends AbstractCaveGenerationStructurePiece {
 
+    private static final int SHELL_THICKNESS = 16;
+
     public AcidPitStructurePiece(BlockPos chunkCorner, BlockPos holeCenter, int bowlHeight, int bowlRadius) {
         super(ACStructurePieceRegistry.ACID_PIT.get(), chunkCorner, holeCenter, bowlHeight, bowlRadius);
     }
@@ -47,6 +49,15 @@ public class AcidPitStructurePiece extends AbstractCaveGenerationStructurePiece 
                 for (int y = 15; y >= 0; y--) {
                     carve.set(cornerX + x, Mth.clamp(cornerY + y, level.getMinBuildHeight(), level.getMaxBuildHeight()), cornerZ + z);
                     carveAbove.set(carve.getX(), carve.getY() + 1, carve.getZ());
+                    
+                    // Paint shell first
+                    if (inShell(carve) && !checkedGetBlock(level, carve).is(Blocks.BEDROCK)) {
+                        BlockState currentBlock = checkedGetBlock(level, carve);
+                        if (!currentBlock.isAir() && isVanillaStone(currentBlock)) {
+                            checkedSetBlock(level, carve, ACBlockRegistry.RADROCK.get().defaultBlockState());
+                        }
+                    }
+                    
                     float widthSimplexNoise1 = Math.min(ACMath.sampleNoise3D(carve.getX(), carve.getY(), carve.getZ(), radius) - 0.5F, 1.0F) * 0.94F;
                     float heightSimplexNoise1 = ACMath.sampleNoise3D(carve.getX() + 440, 0, carve.getZ() - 440, 20) * 0.5F + 0.5F;
                     double yDist = ACMath.smin(1F - Math.abs(this.holeCenter.getY() - carve.getY()) / (float) (height * heightSimplexNoise1), 0.7F, 0.3F);
@@ -81,6 +92,32 @@ public class AcidPitStructurePiece extends AbstractCaveGenerationStructurePiece 
         if (flag) {
             replaceBiomes(level, ACBiomeRegistry.TOXIC_CAVES, 20);
         }
+    }
+    
+    private boolean inShell(BlockPos pos) {
+        float widthSimplexNoise1 = Math.min(ACMath.sampleNoise3D(pos.getX(), pos.getY(), pos.getZ(), radius) - 0.5F, 1.0F) * 0.94F;
+        float heightSimplexNoise1 = ACMath.sampleNoise3D(pos.getX() + 440, 0, pos.getZ() - 440, 20) * 0.5F + 0.5F;
+        double yDist = ACMath.smin(1F - Math.abs(this.holeCenter.getY() - pos.getY()) / (float) (height * heightSimplexNoise1), 0.7F, 0.3F);
+        double distToCenter = pos.distToLowCornerSqr(this.holeCenter.getX(), pos.getY(), this.holeCenter.getZ());
+        double targetRadius = yDist * (radius + widthSimplexNoise1 * radius) * radius;
+        
+        if (distToCenter <= targetRadius) {
+            return false;
+        }
+        
+        double expandedYDist = ACMath.smin(1F - Math.abs(this.holeCenter.getY() - pos.getY()) / (float) ((height + SHELL_THICKNESS * 2) * heightSimplexNoise1), 0.7F, 0.3F);
+        double expandedRadius = radius + SHELL_THICKNESS;
+        double expandedTargetRadius = expandedYDist * (expandedRadius + widthSimplexNoise1 * expandedRadius) * expandedRadius;
+        return distToCenter <= expandedTargetRadius;
+    }
+    
+    private boolean isVanillaStone(BlockState state) {
+        return state.is(Blocks.STONE) || state.is(Blocks.DEEPSLATE) || 
+               state.is(Blocks.GRANITE) || state.is(Blocks.DIORITE) || state.is(Blocks.ANDESITE) ||
+               state.is(Blocks.TUFF) || state.is(Blocks.CALCITE) || state.is(Blocks.SMOOTH_BASALT) ||
+               state.is(Blocks.DIRT) || state.is(Blocks.GRAVEL) ||
+               state.is(Blocks.COBBLED_DEEPSLATE) || state.is(Blocks.INFESTED_STONE) ||
+               state.is(Blocks.INFESTED_DEEPSLATE);
     }
 
     private boolean isPillarBlocking(BlockPos.MutableBlockPos carve, double yDist) {

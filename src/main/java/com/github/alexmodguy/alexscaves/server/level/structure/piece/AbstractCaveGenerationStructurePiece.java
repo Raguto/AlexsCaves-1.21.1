@@ -70,7 +70,14 @@ public abstract class AbstractCaveGenerationStructurePiece extends StructurePiec
           return;
         }
         try {
-            Holder<Biome> biomeHolder = level.registryAccess().registryOrThrow(Registries.BIOME).getHolderOrThrow(with);
+            // Use getHolder() to get a proper Reference holder with valid registry ID
+            var registry = level.registryAccess().registryOrThrow(Registries.BIOME);
+            var optionalHolder = registry.getHolder(with);
+            if (optionalHolder.isEmpty()) {
+                AlexsCaves.LOGGER.warn("Could not find biome {} in registry for replaceBiomes", with.location());
+                return;
+            }
+            Holder<Biome> biomeHolder = optionalHolder.get();
             ChunkAccess chunkAccess = level.getChunk(this.chunkCorner);
             int stopY = level.getSeaLevel() - belowLevel;
             BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();

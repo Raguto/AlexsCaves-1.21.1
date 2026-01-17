@@ -52,6 +52,8 @@ public class CakeCaveStructurePiece extends AbstractCaveGenerationStructurePiece
         this(tag);
     }
 
+    private static final int SHELL_THICKNESS = 12; // How many blocks deep to paint the shell
+
     public void postProcess(WorldGenLevel level, StructureManager featureManager, ChunkGenerator chunkGen, RandomSource random, BoundingBox boundingBox, ChunkPos chunkPos, BlockPos blockPos) {
         if (voronoiGenerator == null) {
             voronoiGenerator = new VoronoiGenerator(level.getSeed());
@@ -74,6 +76,17 @@ public class CakeCaveStructurePiece extends AbstractCaveGenerationStructurePiece
                 for (int y = 15; y >= 0; y--) {
                     carve.set(cornerX + x, Mth.clamp(cornerY + y, level.getMinBuildHeight(), level.getMaxBuildHeight()), cornerZ + z);
                     carveAbove.set(carve.getX(), carve.getY() + 1, carve.getZ());
+                    
+                    // First, paint the shell (solid blocks just outside the cave)
+                    if (inShell(carve) && !checkedGetBlock(level, carve).is(Blocks.BEDROCK)) {
+                        BlockState currentBlock = checkedGetBlock(level, carve);
+                        // Only replace solid vanilla blocks, not air or AC blocks
+                        if (!currentBlock.isAir() && isVanillaStone(currentBlock)) {
+                            checkedSetBlock(level, carve, ACBlockRegistry.CAKE_LAYER.get().defaultBlockState());
+                        }
+                    }
+                    
+                    // Then carve the interior
                     if (inCircle(carve) && !checkedGetBlock(level, carve).is(Blocks.BEDROCK)) {
                         checkedSetBlock(level, carve, Blocks.CAVE_AIR.defaultBlockState());
                         flag = true;
@@ -94,6 +107,40 @@ public class CakeCaveStructurePiece extends AbstractCaveGenerationStructurePiece
         if (flag) {
             replaceBiomes(level, ACBiomeRegistry.CANDY_CAVITY, 32);
         }
+    }
+    
+    private boolean inShell(BlockPos pos) {
+        if (inCircle(pos)) {
+            return false;
+        }
+        return inCircleExpanded(pos, SHELL_THICKNESS);
+    }
+    
+    /**
+     * Same as inCircle but with an expanded radius to define the shell boundary.
+     */
+    private boolean inCircleExpanded(BlockPos carve, int expansion) {
+        double plateauHeight = calculatePlateauHeight(carve.getX(), carve.getZ(), 7, true);
+        double distToCenterXZ = carve.distToLowCornerSqr(this.holeCenter.getX(), carve.getY(), this.holeCenter.getZ());
+        if (carve.getY() < (int) plateauHeight - expansion * 2) {
+            return false;
+        }
+        double ceilingNoise = 1.0F + (1.0F + ACMath.sampleNoise2D(carve.getX() + 9000, carve.getZ() - 9000, 120)) * 10 + (1.0F + ACMath.sampleNoise2D(carve.getX() + 3000, carve.getZ() + 2000, 40)) * 4;
+        double wallNoise = 0.9F + ACMath.sampleNoise2D(carve.getX() + 9000, carve.getZ() - 9000, 120) * 0.1F;
+        double celingHeightScaled = this.height * 0.85F - ceilingNoise + expansion;
+        float yDome = (float) Math.pow(Math.abs(this.holeCenter.getY() - carve.getY()) / (float) (height + expansion), 4);
+        double yDist = ACMath.smin(1F - yDome, 1.0F, 0.2F);
+        double expandedRadius = radius + expansion;
+        return distToCenterXZ < yDist * (expandedRadius * wallNoise) * expandedRadius && carve.getY() < this.holeCenter.getY() + celingHeightScaled;
+    }
+    
+    private boolean isVanillaStone(BlockState state) {
+        return state.is(Blocks.STONE) || state.is(Blocks.DEEPSLATE) || 
+               state.is(Blocks.GRANITE) || state.is(Blocks.DIORITE) || state.is(Blocks.ANDESITE) ||
+               state.is(Blocks.TUFF) || state.is(Blocks.CALCITE) || state.is(Blocks.SMOOTH_BASALT) ||
+               state.is(Blocks.DIRT) || state.is(Blocks.GRAVEL) ||
+               state.is(Blocks.COBBLED_DEEPSLATE) || state.is(Blocks.INFESTED_STONE) ||
+               state.is(Blocks.INFESTED_DEEPSLATE);
     }
 
     private void surroundCornerOfLiquid(WorldGenLevel level, BlockPos.MutableBlockPos center) {

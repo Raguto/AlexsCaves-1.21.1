@@ -67,27 +67,32 @@ public class ChunkGeneratorMixin {
         
         long seed = level.getSeed();
         
-        for (int step = 0; step < biomeFeatures.size(); step++) {
-            HolderSet<PlacedFeature> featuresForStep = biomeFeatures.get(step);
-            
-            for (Holder<PlacedFeature> featureHolder : featuresForStep) {
-                Optional<ResourceKey<PlacedFeature>> keyOpt = featureHolder.unwrapKey();
-                if (keyOpt.isEmpty()) continue;
+        try {
+            for (int step = 0; step < biomeFeatures.size(); step++) {
+                HolderSet<PlacedFeature> featuresForStep = biomeFeatures.get(step);
                 
-                ResourceKey<PlacedFeature> featureKey = keyOpt.get();
-                if (!featureKey.location().getNamespace().equals(AlexsCaves.MODID)) {
-                    continue;
-                }
-                
-                try {
-                    PlacedFeature feature = featureHolder.value();
-                    BlockPos originPos = new BlockPos(centerX, foundY, centerZ);
-                    long featureSeed = seed ^ featureKey.location().hashCode() ^ chunkPos.toLong();
-                    RandomSource random = RandomSource.create(featureSeed);
-                    feature.placeWithBiomeCheck(level, (ChunkGenerator)(Object)this, random, originPos);
-                } catch (Exception e) {
+                for (Holder<PlacedFeature> featureHolder : featuresForStep) {
+                    Optional<ResourceKey<PlacedFeature>> keyOpt = featureHolder.unwrapKey();
+                    if (keyOpt.isEmpty()) continue;
+                    
+                    ResourceKey<PlacedFeature> featureKey = keyOpt.get();
+                    if (!featureKey.location().getNamespace().equals(AlexsCaves.MODID)) {
+                        continue;
+                    }
+                    
+                    try {
+                        PlacedFeature feature = featureHolder.value();
+                        BlockPos originPos = new BlockPos(centerX, foundY, centerZ);
+                        long featureSeed = seed ^ featureKey.location().hashCode() ^ chunkPos.toLong();
+                        RandomSource random = RandomSource.create(featureSeed);
+                        feature.placeWithBiomeCheck(level, (ChunkGenerator)(Object)this, random, originPos);
+                    } catch (Exception e) {
+                    }
                 }
             }
+        } catch (IndexOutOfBoundsException e) {
+            // c2me parallel chunk generation can cause race conditions with feature list access
+            // Silently ignore and let the chunk generate without AC features in this case
         }
     }
 }
