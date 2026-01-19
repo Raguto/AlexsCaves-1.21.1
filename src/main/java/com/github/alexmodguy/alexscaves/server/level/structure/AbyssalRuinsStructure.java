@@ -1,13 +1,17 @@
 package com.github.alexmodguy.alexscaves.server.level.structure;
 
 import com.github.alexmodguy.alexscaves.AlexsCaves;
+import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRarity;
+import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
 import com.github.alexmodguy.alexscaves.server.level.structure.piece.AbyssalRuinsStructurePiece;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.LevelHeightAccessor;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Heightmap;
@@ -32,6 +36,17 @@ public class AbyssalRuinsStructure extends Structure {
     }
 
     public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
+        int x = context.chunkPos().getMiddleBlockX();
+        int z = context.chunkPos().getMiddleBlockZ();
+        
+        // Use ACBiomeRarity voronoi system to check if we're in Abyssal Chasm
+        long seed = context.seed();
+        ResourceKey<Biome> biomeAtLocation = ACBiomeRarity.getACBiomeForPosition(seed, x, z);
+        
+        if (biomeAtLocation == null || !biomeAtLocation.equals(ACBiomeRegistry.ABYSSAL_CHASM)) {
+            return Optional.empty();
+        }
+        
         Rotation rotation = Rotation.getRandom(context.random());
         LevelHeightAccessor levelHeight = context.heightAccessor();
         int y = context.chunkGenerator().getBaseHeight(context.chunkPos().getMinBlockX(), context.chunkPos().getMinBlockZ(), Heightmap.Types.OCEAN_FLOOR_WG, levelHeight, context.randomState());

@@ -253,6 +253,7 @@ public class GumWormSegmentEntity extends Entity implements ICustomCollisions, K
     @Override
     public void tick() {
         super.tick();
+        this.noPhysics = true;
         this.prevZRot = zRot;
         prevSurfacePosition = surfacePosition;
         surfacePosition = calculateLightAbovePosition();
@@ -423,16 +424,15 @@ public class GumWormSegmentEntity extends Entity implements ICustomCollisions, K
 
     @Override
     public boolean canPassThrough(BlockPos blockPos, BlockState blockState, VoxelShape voxelShape) {
-        boolean ridingMode = this.getHeadEntity() instanceof GumWormEntity gumWorm && gumWorm.isRidingMode();
-        return GumWormEntity.canDigBlock(blockState) && (!ridingMode || !level().getBlockState(blockPos.above()).isSolid() || !blockState.isSuffocating(level(), blockPos));
+        return true;
     }
 
     public boolean isColliding(BlockPos pos, BlockState blockstate) {
-        return GumWormEntity.canDigBlock(blockstate) && super.isColliding(pos, blockstate);
+        return false;
     }
 
     public Vec3 collide(Vec3 vec3) {
-        return ICustomCollisions.getAllowedMovementForEntity(this, vec3);
+        return vec3;
     }
 
     @Override

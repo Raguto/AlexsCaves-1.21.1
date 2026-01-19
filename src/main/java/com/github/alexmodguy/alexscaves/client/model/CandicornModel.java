@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector4f;
@@ -322,6 +323,15 @@ public class CandicornModel extends AdvancedEntityModel<CandicornEntity> {
         animator.rotate(right_backLeg, (float) Math.toRadians(35), 0, 0);
     }
 
+    @Override
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, int packedColor) {
+        float alpha = FastColor.ARGB32.alpha(packedColor) / 255.0F;
+        float red = FastColor.ARGB32.red(packedColor) / 255.0F;
+        float green = FastColor.ARGB32.green(packedColor) / 255.0F;
+        float blue = FastColor.ARGB32.blue(packedColor) / 255.0F;
+        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    }
+
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         this.horn.showModel = !this.young;
         if (this.young) {
@@ -357,6 +367,7 @@ public class CandicornModel extends AdvancedEntityModel<CandicornEntity> {
 
     public void setupAnim(CandicornEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetToDefaultPose();
+        this.young = entity.isBaby();
         animate(entity);
         boolean saddled = entity.isSaddled();
         float partialTicks = ageInTicks - entity.tickCount;

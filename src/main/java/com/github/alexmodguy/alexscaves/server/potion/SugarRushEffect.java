@@ -29,6 +29,8 @@ public class SugarRushEffect extends MobEffect {
     public boolean applyEffectTick(LivingEntity entity, int amplifier) {
         if(entity.level().isClientSide){
             AlexsCaves.PROXY.playWorldSound(entity, (byte)18);
+        } else if (entity.getDeltaMovement().y > 0) {
+            entity.setDeltaMovement(entity.getDeltaMovement().multiply(1.0D, 0.7D, 1.0D));
         }
         return true;
     }

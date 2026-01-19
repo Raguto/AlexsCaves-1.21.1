@@ -44,7 +44,9 @@
       "minecraft:monster_room",
       "minecraft:monster_room_deep"
     ],
-    [],
+    [
+      "alexscaves:guano_pile"
+    ],
     [
       "alexscaves:thornwood_tree_with_branches"
     ],
@@ -82,10 +84,7 @@
       "minecraft:disk_gravel",
       "alexscaves:peering_coprolith"
     ],
-    [
-      "alexscaves:forlorn_ruins",
-      "alexscaves:guano_pile"
-    ],
+    [],
     [
       "minecraft:spring_water",
       "minecraft:spring_lava"
@@ -96,7 +95,6 @@
       "alexscaves:forlorn_hollows_brown_mushroom",
       "minecraft:glow_lichen",
       "minecraft:patch_tall_grass_2",
-      "minecraft:trees_plains",
       "minecraft:flower_plains",
       "minecraft:patch_grass_plain",
       "minecraft:brown_mushroom_normal",
@@ -105,7 +103,7 @@
       "minecraft:patch_pumpkin"
     ],
     [
-      "minecraft:freeze_top_layer"
+      "alexscaves:forlorn_ruins"
     ]
   ],
   "precipitation": "rain",

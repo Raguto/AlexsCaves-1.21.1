@@ -102,6 +102,15 @@ public class GummyBearModel extends AdvancedEntityModel<GummyBearEntity> impleme
         this.alpha = alpha;
     }
 
+    @Override
+    public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, int packedColor) {
+        float alpha = FastColor.ARGB32.alpha(packedColor) / 255.0F;
+        float red = FastColor.ARGB32.red(packedColor) / 255.0F;
+        float green = FastColor.ARGB32.green(packedColor) / 255.0F;
+        float blue = FastColor.ARGB32.blue(packedColor) / 255.0F;
+        this.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+    }
+
     public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha) {
         if (alpha * this.alpha > 0.0F || ignoreColor) {
             float redIn = ignoreColor ? 1.0F : red * this.red;
@@ -250,6 +259,7 @@ public class GummyBearModel extends AdvancedEntityModel<GummyBearEntity> impleme
 
     public void setupAnim(GummyBearEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         this.resetToDefaultPose();
+        this.young = entity.isBaby();
         animate(entity);
         boolean november13th = entity.lookForTheGummyBearAlbumInStoresOnNovember13th;
         float partialTicks = ageInTicks - entity.tickCount;

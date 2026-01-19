@@ -1,7 +1,6 @@
 package com.github.alexmodguy.alexscaves.client.particle;
 
 import com.github.alexmodguy.alexscaves.AlexsCaves;
-import com.github.alexmodguy.alexscaves.client.render.ACRenderTypes;
 import com.github.alexmodguy.alexscaves.server.entity.living.SauropodBaseEntity;
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -13,14 +12,13 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
@@ -42,7 +40,8 @@ public class StunStarParticle extends AbstractTrailParticle {
         this.yd = 0;
         this.offset = offset;
         this.zd = 0;
-        this.alpha = 1;
+    this.alpha = 1.0F;
+    this.setColor(1.0F, 1.0F, 1.0F);
         this.entityId = entityId;
         this.hasPhysics = false;
         this.reverseOrbit = random.nextBoolean();
@@ -75,13 +74,13 @@ public class StunStarParticle extends AbstractTrailParticle {
             quaternion.mul(Axis.ZP.rotation(f3));
         }
 
-        MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer vertexconsumer = multibuffersource$buffersource.getBuffer(ACRenderTypes.itemEntityTranslucentCull(CENTER_TEXTURE));
+    MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
+    VertexConsumer vertexconsumer = multibuffersource$buffersource.getBuffer(RenderType.entityTranslucentEmissive(CENTER_TEXTURE));
 
         Vector3f vector3f1 = new Vector3f(-1.0F, -1.0F, 0.0F);
         vector3f1.rotate(quaternion);
         Vector3f[] avector3f = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
-        float f4 = 0.3F;
+    float f4 = 0.225F;
 
         for (int i = 0; i < 4; ++i) {
             Vector3f vector3f = avector3f[i];
@@ -93,16 +92,18 @@ public class StunStarParticle extends AbstractTrailParticle {
         float f8 = 1;
         float f5 = 0;
         float f6 = 1;
-        float alpha = 1;
+    float alpha = this.alpha;
         int j = 240;
         PoseStack posestack = new PoseStack();
-        PoseStack.Pose posestack$pose = posestack.last();
-        Matrix4f matrix4f = posestack$pose.pose();
-        Matrix3f matrix3f = posestack$pose.normal();
-        vertexconsumer.addVertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).setColor(this.rCol, this.gCol, this.bCol, alpha).setUv(f8, f6).setOverlay(NO_OVERLAY).setLight(j).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
-        vertexconsumer.addVertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).setColor(this.rCol, this.gCol, this.bCol, alpha).setUv(f8, f5).setOverlay(NO_OVERLAY).setLight(j).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
-        vertexconsumer.addVertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).setColor(this.rCol, this.gCol, this.bCol, alpha).setUv(f7, f5).setOverlay(NO_OVERLAY).setLight(j).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
-        vertexconsumer.addVertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).setColor(this.rCol, this.gCol, this.bCol, alpha).setUv(f7, f6).setOverlay(NO_OVERLAY).setLight(j).setNormal(posestack$pose, 0.0F, 1.0F, 0.0F);
+    PoseStack.Pose posestack$pose = posestack.last();
+    int red = (int) (this.rCol * 255);
+    int green = (int) (this.gCol * 255);
+    int blue = (int) (this.bCol * 255);
+    int alphaI = (int) (alpha * 255);
+    vertexconsumer.addVertex(avector3f[0].x(), avector3f[0].y(), avector3f[0].z()).setColor(red, green, blue, alphaI).setUv(f8, f6).setOverlay(NO_OVERLAY).setUv2(j & 0xFFFF, j >> 16).setNormal(posestack$pose, -1.0F, 0.0F, 0.0F);
+    vertexconsumer.addVertex(avector3f[1].x(), avector3f[1].y(), avector3f[1].z()).setColor(red, green, blue, alphaI).setUv(f8, f5).setOverlay(NO_OVERLAY).setUv2(j & 0xFFFF, j >> 16).setNormal(posestack$pose, -1.0F, 0.0F, 0.0F);
+    vertexconsumer.addVertex(avector3f[2].x(), avector3f[2].y(), avector3f[2].z()).setColor(red, green, blue, alphaI).setUv(f7, f5).setOverlay(NO_OVERLAY).setUv2(j & 0xFFFF, j >> 16).setNormal(posestack$pose, -1.0F, 0.0F, 0.0F);
+    vertexconsumer.addVertex(avector3f[3].x(), avector3f[3].y(), avector3f[3].z()).setColor(red, green, blue, alphaI).setUv(f7, f6).setOverlay(NO_OVERLAY).setUv2(j & 0xFFFF, j >> 16).setNormal(posestack$pose, -1.0F, 0.0F, 0.0F);
         multibuffersource$buffersource.endBatch();
         super.render(vertexConsumer, camera, partialTick);
     }

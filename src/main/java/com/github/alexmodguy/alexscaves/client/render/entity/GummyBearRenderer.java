@@ -35,6 +35,7 @@ public class GummyBearRenderer extends MobRenderer<GummyBearEntity, GummyBearMod
 
     public GummyBearRenderer(EntityRendererProvider.Context renderManagerIn) {
         super(renderManagerIn, new GummyBearModel(-1.8F), 0.85F);
+        OUTSIDE_MODEL.ignoreColor = true;
         this.addLayer(new LayerOutside());
         this.addLayer(new ItemInHandLayer<>(this, renderManagerIn.getItemInHandRenderer()));
         this.addLayer(new GummyBearHeldMobLayer(this));
@@ -43,6 +44,8 @@ public class GummyBearRenderer extends MobRenderer<GummyBearEntity, GummyBearMod
 
 
     protected void scale(GummyBearEntity mob, PoseStack matrixStackIn, float partialTicks) {
+        this.model.young = mob.isBaby();
+        OUTSIDE_MODEL.young = mob.isBaby();
         float r = mob.getStomachRed();
         float g = mob.getStomachGreen();
         float b = mob.getStomachBlue();
@@ -98,6 +101,7 @@ public class GummyBearRenderer extends MobRenderer<GummyBearEntity, GummyBearMod
         public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, GummyBearEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (!entitylivingbaseIn.isInvisible()) {
                 this.getParentModel().copyPropertiesTo(OUTSIDE_MODEL);
+                OUTSIDE_MODEL.young = entitylivingbaseIn.isBaby();
                 OUTSIDE_MODEL.setupAnim(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
                 OUTSIDE_MODEL.renderToBuffer(matrixStackIn, bufferIn.getBuffer(sepia ? ACRenderTypes.getBookWidget(getOutsideTextureLocation(entitylivingbaseIn), true) : RenderType.entityTranslucent(getOutsideTextureLocation(entitylivingbaseIn))), packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 1.0F, 1.0F, 1.0F, 1.0F);
             }

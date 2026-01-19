@@ -236,6 +236,20 @@ public abstract class DeepOneBaseEntity extends PathfinderMob implements IAnimat
     }
 
     @Override
+    public void baseTick() {
+        int i = this.getAirSupply();
+        super.baseTick();
+        // Restore air supply to prevent drowning - deep ones can breathe underwater
+        if (this.isInWater()) {
+            this.setAirSupply(i);
+        }
+    }
+
+    protected void handleAirSupply(int air) {
+        // Deep ones can breathe underwater - do nothing to prevent drowning
+    }
+
+    @Override
     public void aiStep() {
         this.updateSwingTime();
         this.updateNoActionTime();

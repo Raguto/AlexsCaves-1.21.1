@@ -1,19 +1,16 @@
 package com.github.alexmodguy.alexscaves.server.level.structure;
 
+import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRarity;
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
 import com.github.alexmodguy.alexscaves.server.level.structure.piece.DonutArchStructurePiece;
-import com.github.alexmodguy.alexscaves.server.level.structure.piece.ForlornBridgeStructurePiece;
 import com.github.alexmodguy.alexscaves.server.misc.ACMath;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Holder;
-import net.minecraft.core.QuartPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.structure.Structure;
 import net.minecraft.world.level.levelgen.structure.StructureType;
@@ -50,15 +47,22 @@ public class DonutArchStructure extends Structure {
         worldgenrandom.setLargeFeatureSeed(context.seed(), context.chunkPos().x, context.chunkPos().z);
         int i = context.chunkPos().getMinBlockX();
         int j = context.chunkPos().getMinBlockZ();
-        int k = context.chunkGenerator().getSeaLevel();
+        long seed = context.seed();
+        
+        // Check if we're actually in Candy Cavity using ACBiomeRarity
+        ResourceKey<Biome> biomeAtLocation = ACBiomeRarity.getACBiomeForPosition(seed, i, j);
+        if (biomeAtLocation == null || !biomeAtLocation.equals(ACBiomeRegistry.CANDY_CAVITY)) {
+            return;
+        }
+        
         BlockPos xzCoords = new BlockPos(i, -30, j);
-        int biomeUp = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.UP, xzCoords, 25);
-        int biomeDown = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), Direction.DOWN, xzCoords, 16);
+        int biomeUp = biomeContinuesInDirectionFor(seed, Direction.UP, xzCoords, 25);
+        int biomeDown = biomeContinuesInDirectionFor(seed, Direction.DOWN, xzCoords, 16);
         BlockPos center = xzCoords.below(biomeDown).above(5 + worldgenrandom.nextInt(Math.max(biomeUp, 10)));
         Direction donutFacing = Util.getRandom(ACMath.HORIZONTAL_DIRECTIONS, worldgenrandom);
         int donutRadius = 32;
-        int biomeLeft = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), donutFacing.getClockWise(), center, donutRadius);
-        int biomeRight = biomeContinuesInDirectionFor(context.biomeSource(), context.randomState(), donutFacing.getCounterClockWise(), center, donutRadius);
+        int biomeLeft = biomeContinuesInDirectionFor(seed, donutFacing.getClockWise(), center, donutRadius);
+        int biomeRight = biomeContinuesInDirectionFor(seed, donutFacing.getCounterClockWise(), center, donutRadius);
         int widthChunks = (int) Math.ceil(biomeRight + biomeLeft) / 2 / DONUT_SECTION_WIDTH;
         int frostingType = worldgenrandom.nextInt(3);
         for (int chunkXZ = -widthChunks; chunkXZ <= widthChunks; chunkXZ++) {
@@ -69,16 +73,12 @@ public class DonutArchStructure extends Structure {
         }
     }
 
-    private static Holder<Biome> getBiomeHolder(BiomeSource biomeSource, RandomState randomState, BlockPos pos) {
-        return biomeSource.getNoiseBiome(QuartPos.fromBlock(pos.getX()), QuartPos.fromBlock(pos.getY()), QuartPos.fromBlock(pos.getZ()), randomState.sampler());
-    }
-
-    protected int biomeContinuesInDirectionFor(BiomeSource biomeSource, RandomState randomState, Direction direction, BlockPos start, int cutoff) {
+    protected int biomeContinuesInDirectionFor(long seed, Direction direction, BlockPos start, int cutoff) {
         int i = 0;
         while (i < cutoff) {
             BlockPos check = start.relative(direction, i);
-            Holder<Biome> biomeHolder = getBiomeHolder(biomeSource, randomState, check);
-            if (!biomeHolder.is(ACBiomeRegistry.CANDY_CAVITY)) {
+            ResourceKey<Biome> biomeAtPos = ACBiomeRarity.getACBiomeForPosition(seed, check.getX(), check.getZ());
+            if (biomeAtPos == null || !biomeAtPos.equals(ACBiomeRegistry.CANDY_CAVITY)) {
                 break;
             }
             i += 16;

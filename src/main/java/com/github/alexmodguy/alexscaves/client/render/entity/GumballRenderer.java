@@ -44,7 +44,7 @@ public class GumballRenderer extends EntityRenderer<GumballEntity> {
         poseStack.mulPose(Axis.YP.rotationDegrees(180.0F));
         PoseStack.Pose posestack$pose = poseStack.last();
         Matrix4f matrix4f = posestack$pose.pose();
-        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityCutout(getTextureLocation(entity)));
+        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         vertex(vertexconsumer, matrix4f, posestack$pose, packedLight, 0.0F, 0, 0, 1, 1F);
         vertex(vertexconsumer, matrix4f, posestack$pose, packedLight, 1.0F, 0, 1, 1, 1F);
         vertex(vertexconsumer, matrix4f, posestack$pose, packedLight, 1.0F, 1, 1, 0, 1F);

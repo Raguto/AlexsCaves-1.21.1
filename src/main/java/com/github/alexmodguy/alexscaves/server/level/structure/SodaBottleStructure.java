@@ -1,14 +1,13 @@
 package com.github.alexmodguy.alexscaves.server.level.structure;
 
 import com.github.alexmodguy.alexscaves.AlexsCaves;
+import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRarity;
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
 import com.github.alexmodguy.alexscaves.server.level.structure.piece.SodaBottleStructurePiece;
-import com.github.alexmodguy.alexscaves.server.misc.ACMath;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
@@ -39,11 +38,15 @@ public class SodaBottleStructure extends Structure {
     public Optional<GenerationStub> findGenerationPoint(GenerationContext context) {
         int i = context.chunkPos().getBlockX(9);
         int j = context.chunkPos().getBlockZ(9);
-        for (Holder<Biome> holder : ACMath.getBiomesWithinAtY(context.biomeSource(), i, -30, j, 20, context.randomState().sampler())) {
-            if (!holder.is(ACBiomeRegistry.CANDY_CAVITY)) {
-                return Optional.empty();
-            }
+        
+        // Use ACBiomeRarity voronoi system instead of biome source (which has timing issues with mixin-injected biomes)
+        long seed = context.seed();
+        ResourceKey<Biome> biomeAtLocation = ACBiomeRarity.getACBiomeForPosition(seed, i, j);
+        
+        if (biomeAtLocation == null || !biomeAtLocation.equals(ACBiomeRegistry.CANDY_CAVITY)) {
+            return Optional.empty();
         }
+        
         Rotation rotation = Rotation.getRandom(context.random());
         BlockPos blockpos = new BlockPos(context.chunkPos().getMinBlockX(), Y, context.chunkPos().getMinBlockZ());
         ResourceLocation res = Util.getRandom(SODA_NBT, context.random());

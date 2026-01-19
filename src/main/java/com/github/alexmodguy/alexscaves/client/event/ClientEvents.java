@@ -121,6 +121,7 @@ public class ClientEvents {
         }
     }
 
+
     @SubscribeEvent
     public void preRenderLiving(RenderLivingEvent.Pre event) {
         if (event.getEntity() instanceof HeadRotationEntityAccessor magnetic) {
@@ -563,6 +564,15 @@ public class ClientEvents {
             event.getModel().head.yRot = headYRot * ((float) Math.PI / 180F) + Mth.sin(walkPos * speedModifier + (float) Math.PI) * 1.0F * walkSpeed * 0.5F / deltaSpeed;
             event.getModel().leftLeg.xRot = Mth.cos(walkPos * speedModifier + (float) Math.PI) * 4.0F * walkSpeed * 0.5F / deltaSpeed;
             event.getModel().rightLeg.xRot = Mth.cos(walkPos * speedModifier) * 4.0F * walkSpeed * 0.5F / deltaSpeed;
+            float flailTime = (player.tickCount + partialTicks) * speedModifier;
+            float armFlail = Mth.sin(flailTime * 0.9F) * 0.7F;
+            float legFlail = Mth.cos(flailTime * 0.9F) * 0.5F;
+            event.getModel().rightArm.xRot += armFlail;
+            event.getModel().leftArm.xRot -= armFlail;
+            event.getModel().rightArm.zRot += armFlail * 0.35F;
+            event.getModel().leftArm.zRot -= armFlail * 0.35F;
+            event.getModel().rightLeg.xRot -= legFlail;
+            event.getModel().leftLeg.xRot += legFlail;
             event.setResult(net.neoforged.neoforge.common.util.TriState.TRUE);
         }
     }

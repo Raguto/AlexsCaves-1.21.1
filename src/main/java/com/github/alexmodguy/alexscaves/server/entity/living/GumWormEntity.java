@@ -101,6 +101,7 @@ public class GumWormEntity extends Monster implements ICustomCollisions, KaijuMo
     private int ridingModeTicks;
     private int recentlyLeaptTicks;
     private int forceMouthOpenTicks;
+    private int mouthIdleCooldown;
     private Player ridingPlayer;
     private int attackNoiseCooldown;
     private int stopDiggingNoiseCooldown;
@@ -176,6 +177,7 @@ public class GumWormEntity extends Monster implements ICustomCollisions, KaijuMo
     @Override
     public void tick() {
         super.tick();
+        this.noPhysics = true;
         prevSurfacePosition = surfacePosition;
         prevScreenShakeAmount = screenShakeAmount;
         prevMouthOpenProgress = mouthOpenProgress;
@@ -285,12 +287,23 @@ public class GumWormEntity extends Monster implements ICustomCollisions, KaijuMo
         }
         if(ridingModeTicks > 0){
             ridingModeTicks--;
+            if(ridingModeTicks == 0){
+                // Reset step height when exiting riding mode
+                this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(0.6D);
+            }
         }
         if(recentlyLeaptTicks > 0 && !this.isLeaping()){
             recentlyLeaptTicks--;
         }
         if(forceMouthOpenTicks > 0){
             forceMouthOpenTicks--;
+        }
+        if(mouthIdleCooldown > 0){
+            mouthIdleCooldown--;
+        }
+        if(mouthIdleCooldown == 0 && forceMouthOpenTicks == 0 && !this.isLeaping() && !this.isBiting()){
+            forceMouthOpenTicks = 20;
+            mouthIdleCooldown = 60 + random.nextInt(80);
         }
         if(attackNoiseCooldown > 0){
             attackNoiseCooldown--;
@@ -473,7 +486,7 @@ public class GumWormEntity extends Monster implements ICustomCollisions, KaijuMo
     }
 
     public boolean isMouthOpen() {
-        return this.isLeaping() || this.isBiting();
+        return this.isLeaping() || this.isBiting() || this.isMouthForcedOpen();
     }
 
     public void setTargetDigPitch(float pitch) {
@@ -629,15 +642,15 @@ public class GumWormEntity extends Monster implements ICustomCollisions, KaijuMo
 
     @Override
     public boolean canPassThrough(BlockPos blockPos, BlockState blockState, VoxelShape voxelShape) {
-        return canDigBlock(blockState) && (!isRidingMode() || !level().getBlockState(blockPos.above()).isSolid() || !blockState.isSuffocating(level(), blockPos));
+        return true;
     }
 
     public boolean isColliding(BlockPos pos, BlockState blockstate) {
-        return canDigBlock(blockstate) && super.isColliding(pos, blockstate);
+        return false;
     }
 
     public Vec3 collide(Vec3 vec3) {
-        return ICustomCollisions.getAllowedMovementForEntity(this, vec3);
+        return vec3;
     }
 
     public static boolean isSafeDig(BlockGetter level, BlockPos pos) {
@@ -648,6 +661,11 @@ public class GumWormEntity extends Monster implements ICustomCollisions, KaijuMo
 
     @Override
     public boolean isPushable() {
+        return false;
+    }
+
+    @Override
+    public boolean canBeCollidedWith() {
         return false;
     }
 
@@ -771,6 +789,8 @@ public class GumWormEntity extends Monster implements ICustomCollisions, KaijuMo
         this.entityData.set(VALID_RIDER, isRidingPlayer(ridingPlayer));
         if(hasARidingHook()){
             ridingModeTicks = 10;
+            // Set higher step height when in riding mode
+            this.getAttribute(Attributes.STEP_HEIGHT).setBaseValue(5.0D);
         }
     }
 
@@ -821,7 +841,7 @@ public class GumWormEntity extends Monster implements ICustomCollisions, KaijuMo
                 float digSpeed = 0.25F;
                 Vec3 vector3d1 = vector3d.scale(this.speedModifier * digSpeed / d0);
                 boolean safeDig = isSafeDig(level(), BlockPos.containing(wantedX, Mth.clamp(this.wantedY, this.mob.getY() - 1.0, this.mob.getY() + 1.0), wantedZ));
-                if (isSafeDig(level(), BlockPos.containing(wantedX, wantedY, wantedZ))) {
+                if (safeDig && isSafeDig(level(), BlockPos.containing(wantedX, wantedY, wantedZ))) {
                     mob.setDeltaMovement(mob.getDeltaMovement().add(vector3d1).scale(0.9F));
                 } else {
                     mob.setDeltaMovement(mob.getDeltaMovement().add(0, 0.1, 0).scale(0.7F));

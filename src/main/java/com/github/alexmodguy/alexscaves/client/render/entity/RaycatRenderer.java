@@ -9,6 +9,7 @@ import com.github.alexthe666.citadel.client.shader.PostEffectRegistry;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -19,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
@@ -112,8 +112,9 @@ public class RaycatRenderer extends MobRenderer<RaycatEntity, RaycatModel> imple
         }
 
         public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, RaycatEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            VertexConsumer ivertexbuilder1 = bufferIn.getBuffer(RaycatRenderer.this.sepia ? ACRenderTypes.getBookWidget(TEXTURE, true) : RenderType.entityCutoutNoCull(TEXTURE));
-            this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder1, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 0xFFFFFFFF);
+            int fullBright = LightTexture.FULL_BRIGHT;
+            VertexConsumer ivertexbuilder1 = bufferIn.getBuffer(RaycatRenderer.this.sepia ? ACRenderTypes.getBookWidget(TEXTURE, true) : ACRenderTypes.getRaycatBones(TEXTURE));
+            this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder1, fullBright, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 0xFFFFFFFF);
             VertexConsumer ivertexbuilder2 = bufferIn.getBuffer(RaycatRenderer.this.sepia ? ACRenderTypes.getBookWidget(TEXTURE_EYES, true) : ACRenderTypes.getEyesAlphaEnabled(TEXTURE_EYES));
             this.getParentModel().renderToBuffer(matrixStackIn, ivertexbuilder2, packedLightIn, LivingEntityRenderer.getOverlayCoords(entitylivingbaseIn, 0.0F), 0xFFFFFFFF);
         }

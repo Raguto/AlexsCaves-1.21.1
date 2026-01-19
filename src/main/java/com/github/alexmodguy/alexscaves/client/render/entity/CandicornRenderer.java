@@ -6,7 +6,6 @@ import com.github.alexmodguy.alexscaves.client.render.entity.layer.CandicornRide
 import com.github.alexmodguy.alexscaves.client.render.entity.layer.LicowitchPossessionLayer;
 import com.github.alexmodguy.alexscaves.server.entity.living.CandicornEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -24,8 +23,8 @@ public class CandicornRenderer extends MobRenderer<CandicornEntity, CandicornMod
         this.addLayer(new LicowitchPossessionLayer(this));
     }
 
-    public void render(CandicornEntity entity, float entityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource source, int packedLight) {
-        super.render(entity, entityYaw, partialTicks, poseStack, source, packedLight);
+    protected void scale(CandicornEntity mob, PoseStack matrixStackIn, float partialTicks) {
+        this.model.young = mob.isBaby();
     }
 
     public ResourceLocation getTextureLocation(CandicornEntity entity) {

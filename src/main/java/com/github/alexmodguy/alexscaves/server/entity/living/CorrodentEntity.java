@@ -377,7 +377,11 @@ public class CorrodentEntity extends Monster implements ICustomCollisions, IAnim
 
 
     public boolean isColliding(BlockPos pos, BlockState blockstate) {
-        return (!this.isDigging() || canDigBlock(blockstate)) && super.isColliding(pos, blockstate);
+        // If we're digging but can't dig this block, we must collide with it
+        if (this.isDigging() && !canDigBlock(blockstate)) {
+            return true;
+        }
+        return super.isColliding(pos, blockstate);
     }
 
     public static boolean canDigBlock(BlockState state) {
@@ -480,7 +484,7 @@ public class CorrodentEntity extends Monster implements ICustomCollisions, IAnim
     static class DiggingNodeEvaluator extends FlyNodeEvaluator {
 
         protected PathType evaluateBlockPathType(BlockGetter level, BlockPos pos, PathType typeIn) {
-            PathType def = typeIn;
+            PathType def = WalkNodeEvaluator.getPathTypeStatic(this.currentContext, pos.mutable());
             if (def == PathType.LAVA || def == PathType.OPEN || def == PathType.WATER || def == PathType.WATER_BORDER || def == PathType.DANGER_OTHER || def == PathType.DAMAGE_FIRE || def == PathType.DANGER_POWDER_SNOW) {
                 return PathType.BLOCKED;
             }

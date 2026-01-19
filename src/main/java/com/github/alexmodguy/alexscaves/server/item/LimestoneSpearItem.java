@@ -22,7 +22,8 @@ public class LimestoneSpearItem extends SpearItem {
             int i = this.getUseDuration(itemStack, livingEntity) - i1;
             float f = getPowerForTime(i);
             if (f > 0.1D) {
-                LimestoneSpearEntity spearEntity = new LimestoneSpearEntity(level, player, itemStack);
+                ItemStack thrownStack = itemStack.copyWithCount(1);
+                LimestoneSpearEntity spearEntity = new LimestoneSpearEntity(level, player, thrownStack);
                 spearEntity.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, f * 2.5F, 1.0F);
                 if (player.getAbilities().instabuild) {
                     spearEntity.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
