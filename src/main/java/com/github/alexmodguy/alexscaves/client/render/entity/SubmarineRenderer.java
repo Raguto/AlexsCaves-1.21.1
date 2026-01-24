@@ -67,8 +67,8 @@ public class SubmarineRenderer extends EntityRenderer<SubmarineEntity> {
     public static void renderSubmarine(SubmarineEntity entity, float partialTicks, PoseStack poseStack, MultiBufferSource source, int lightIn, boolean maskWater) {
         Player player = Minecraft.getInstance().player;
         float ageInTicks = entity.tickCount + partialTicks;
-        float submarineYaw = entity.getViewYRot(partialTicks);
-        float submarinePitch = entity.getViewXRot(partialTicks);
+    float submarineYaw = entity.getRenderYaw(partialTicks);
+    float submarinePitch = entity.getRenderPitch(partialTicks);
         poseStack.pushPose();
         poseStack.translate(0.0D, 1.5D, 0.0D);
         poseStack.mulPose(Axis.YP.rotationDegrees(180 - submarineYaw));
@@ -95,8 +95,7 @@ public class SubmarineRenderer extends EntityRenderer<SubmarineEntity> {
                 MODEL.renderToBuffer(poseStack, glowBuffer, lightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
             }
         }
-        // Only render water mask if no passengers (to avoid culling player legs)
-        if (maskWater && !entity.isVehicle()) {
+        if (maskWater) {
             VertexConsumer waterMask = source.getBuffer(ACRenderTypes.getSubmarineMask());
             MODEL.setupWaterMask(entity, partialTicks);
             MODEL.getWaterMask().render(poseStack, waterMask, lightIn, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);

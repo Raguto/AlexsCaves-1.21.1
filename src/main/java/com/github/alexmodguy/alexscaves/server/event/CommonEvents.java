@@ -30,6 +30,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
@@ -45,6 +46,7 @@ import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.goal.AvoidEntityGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.animal.Fox;
@@ -79,6 +81,7 @@ import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.event.village.WandererTradesEvent;
+import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -88,7 +91,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+@SuppressWarnings({"null", "deprecation", "unused"})
 public class CommonEvents {
+
+    private static final ResourceLocation DIVING_SWIM_SPEED_MODIFIER = ResourceLocation.fromNamespaceAndPath("alexscaves", "diving_swim_speed");
 
     @SubscribeEvent
     public void livingDie(LivingDeathEvent event) {
@@ -207,8 +213,14 @@ public class CommonEvents {
         if (living.hasEffect(ACEffectRegistry.DARKNESS_INCARNATE) && living.tickCount % 5 == 0 && DarknessIncarnateEffect.isInLight(living, 11)) {
             living.removeEffect(ACEffectRegistry.DARKNESS_INCARNATE);
         }
-        if (living.getItemBySlot(EquipmentSlot.HEAD).is(ACItemRegistry.DIVING_HELMET.get()) && (!living.isEyeInFluid(FluidTags.WATER) || living.getVehicle() instanceof SubmarineEntity)) {
+        if (living.getItemBySlot(EquipmentSlot.HEAD).is(ACItemRegistry.DIVING_HELMET.get())) {
             living.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 810, 0, false, false, true));
+            if (living.isEyeInFluid(FluidTags.WATER) || living.getVehicle() instanceof SubmarineEntity) {
+                int maxAir = living.getMaxAirSupply();
+                if (living.getAirSupply() < maxAir) {
+                    living.setAirSupply(maxAir);
+                }
+            }
         }
         if (!living.level().isClientSide && living instanceof Mob mob && mob.getTarget() instanceof VallumraptorEntity vallumraptor && vallumraptor.getHideFor() > 0) {
             mob.setTarget(null);
@@ -376,6 +388,23 @@ public class CommonEvents {
 
     @SubscribeEvent
     public void playerTick(PlayerTickEvent.Post event) {
+        Player player = event.getEntity();
+        if (player.getItemBySlot(EquipmentSlot.HEAD).is(ACItemRegistry.DIVING_HELMET.get())) {
+            player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 210, 0, false, false, true));
+            if (player.isEyeInFluid(FluidTags.WATER) || player.getVehicle() instanceof SubmarineEntity) {
+                int maxAir = player.getMaxAirSupply();
+                if (player.getAirSupply() < maxAir) {
+                    player.setAirSupply(maxAir);
+                }
+            }
+        }
+        var swimSpeed = player.getAttribute(NeoForgeMod.SWIM_SPEED);
+        if (swimSpeed != null) {
+            swimSpeed.removeModifier(DIVING_SWIM_SPEED_MODIFIER);
+            if (player.getItemBySlot(EquipmentSlot.LEGS).is(ACItemRegistry.DIVING_LEGGINGS.get())) {
+                swimSpeed.addTransientModifier(new AttributeModifier(DIVING_SWIM_SPEED_MODIFIER, 0.5D, AttributeModifier.Operation.ADD_VALUE));
+            }
+        }
         if (!event.getEntity().isCreative()) {
             if (event.getEntity().getItemInHand(InteractionHand.MAIN_HAND).is(ACTagRegistry.RESTRICTED_BIOME_LOCATORS)) {
                 checkAndDestroyExploitItem(event.getEntity(), EquipmentSlot.MAINHAND);

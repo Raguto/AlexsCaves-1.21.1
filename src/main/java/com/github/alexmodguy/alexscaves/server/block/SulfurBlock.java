@@ -1,16 +1,27 @@
 package com.github.alexmodguy.alexscaves.server.block;
 
 import com.github.alexmodguy.alexscaves.server.block.fluid.ACFluidRegistry;
+import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+
+import java.util.List;
 
 public class SulfurBlock extends Block {
 
@@ -38,5 +49,38 @@ public class SulfurBlock extends Block {
         }
         BlockState acidState = level.getBlockState(pos);
         return acidState.is(ACBlockRegistry.ACIDIC_RADROCK.get());
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+        ItemStack tool = builder.getOptionalParameter(LootContextParams.TOOL);
+        Holder<Enchantment> silkTouch = builder.getLevel().registryAccess()
+            .registryOrThrow(Registries.ENCHANTMENT)
+            .getHolderOrThrow(Enchantments.SILK_TOUCH);
+        if (tool != null && EnchantmentHelper.getItemEnchantmentLevel(silkTouch, tool) > 0) {
+            return List.of(new ItemStack(this));
+        }
+
+        List<ItemStack> drops = super.getDrops(state, builder);
+        ItemStack dust = new ItemStack(ACItemRegistry.SULFUR_DUST.get());
+        boolean hasDust = drops.stream().anyMatch(stack -> ItemStack.isSameItemSameComponents(stack, dust));
+        if (hasDust) {
+            return drops;
+        }
+
+        RandomSource random = builder.getLevel().getRandom();
+        int count = 1 + random.nextInt(3);
+        if (tool != null) {
+            Holder<Enchantment> fortune = builder.getLevel().registryAccess()
+                .registryOrThrow(Registries.ENCHANTMENT)
+                .getHolderOrThrow(Enchantments.FORTUNE);
+            int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(fortune, tool);
+            if (fortuneLevel > 0) {
+                count += random.nextInt(fortuneLevel + 1);
+            }
+        }
+        count = Math.min(5, Math.max(1, count));
+        dust.setCount(count);
+        return List.of(dust);
     }
 }

@@ -53,16 +53,18 @@ public class ACBiomeRarity {
             return null;
         }
         
-        VORONOI_GENERATOR.setSeed(worldSeed);
-        double sampleX = x / seperationDistance;
-        double sampleZ = z / seperationDistance;
-        double positionOffsetX = AlexsCaves.COMMON_CONFIG.caveBiomeWidthRandomness.get() * NOISE_X.getValue(sampleX, sampleZ, false);
-        double positionOffsetZ = AlexsCaves.COMMON_CONFIG.caveBiomeWidthRandomness.get() * NOISE_Z.getValue(sampleX, sampleZ, false);
-        VoronoiGenerator.VoronoiInfo info = VORONOI_GENERATOR.get2(sampleX + positionOffsetX, sampleZ + positionOffsetZ);
-        if (info.distance() < (biomeSize / seperationDistance) * BIOME_BOUNDARY_EXTENSION) {
-            return info;
-        } else {
-            return null;
+        synchronized (VORONOI_GENERATOR) {
+            VORONOI_GENERATOR.setSeed(worldSeed);
+            double sampleX = x / seperationDistance;
+            double sampleZ = z / seperationDistance;
+            double positionOffsetX = AlexsCaves.COMMON_CONFIG.caveBiomeWidthRandomness.get() * NOISE_X.getValue(sampleX, sampleZ, false);
+            double positionOffsetZ = AlexsCaves.COMMON_CONFIG.caveBiomeWidthRandomness.get() * NOISE_Z.getValue(sampleX, sampleZ, false);
+            VoronoiGenerator.VoronoiInfo info = VORONOI_GENERATOR.get2(sampleX + positionOffsetX, sampleZ + positionOffsetZ);
+            if (info.distance() < (biomeSize / seperationDistance) * BIOME_BOUNDARY_EXTENSION) {
+                return info;
+            } else {
+                return null;
+            }
         }
     }
 
@@ -105,14 +107,16 @@ public class ACBiomeRarity {
         int centerBlockX = (int) biomeCenter.x * 4;
         int centerBlockZ = (int) biomeCenter.z * 4;
         
-        for (Map.Entry<ResourceKey<Biome>, BiomeGenerationNoiseCondition> entry : BiomeGenerationConfig.BIOMES.entrySet()) {
-            if (entry.getValue().getRarityOffset() == rarityOffset) {
-                // Check if biome center is far enough from spawn
-                int distFromSpawn = entry.getValue().getDistanceFromSpawn();
-                if (centerBlockX * centerBlockX + centerBlockZ * centerBlockZ < distFromSpawn * distFromSpawn) {
-                    return null; // Too close to spawn
+        synchronized (BiomeGenerationConfig.BIOMES_LOCK) {
+            for (Map.Entry<ResourceKey<Biome>, BiomeGenerationNoiseCondition> entry : BiomeGenerationConfig.BIOMES.entrySet()) {
+                if (entry.getValue().getRarityOffset() == rarityOffset) {
+                    // Check if biome center is far enough from spawn
+                    int distFromSpawn = entry.getValue().getDistanceFromSpawn();
+                    if (centerBlockX * centerBlockX + centerBlockZ * centerBlockZ < distFromSpawn * distFromSpawn) {
+                        return null; // Too close to spawn
+                    }
+                    return entry.getKey();
                 }
-                return entry.getKey();
             }
         }
         

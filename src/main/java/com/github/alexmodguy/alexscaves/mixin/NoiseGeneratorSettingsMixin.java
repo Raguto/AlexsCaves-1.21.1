@@ -1,6 +1,11 @@
 package com.github.alexmodguy.alexscaves.mixin;
 
 import com.github.alexthe666.citadel.server.generation.SurfaceRulesManager;
+import com.github.alexmodguy.alexscaves.server.level.biome.ACWorldSeedHolder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import org.spongepowered.asm.mixin.Mixin;
@@ -27,13 +32,37 @@ public class NoiseGeneratorSettingsMixin {
 
     @Inject(method = "surfaceRule", at = @At("RETURN"), cancellable = true)
     private void alexscaves$surfaceRule(CallbackInfoReturnable<SurfaceRules.RuleSource> cir) {
+        ResourceKey<Level> dimension = alexscaves$getDimensionForSettings((NoiseGeneratorSettings) (Object) this);
+        if (dimension != null) {
+            ACWorldSeedHolder.setDimension(dimension);
+        }
         if (!this.alexscaves$initialized) {
             SurfaceRules.RuleSource currentRules = cir.getReturnValue();
-            this.alexscaves$mergedRules = SurfaceRulesManager.mergeOverworldRules(currentRules);
+            if (Level.OVERWORLD.equals(dimension)) {
+                this.alexscaves$mergedRules = SurfaceRulesManager.mergeOverworldRules(currentRules);
+            }
             this.alexscaves$initialized = true;
         }
-        if (this.alexscaves$mergedRules != null) {
+        if (Level.OVERWORLD.equals(dimension) && this.alexscaves$mergedRules != null) {
             cir.setReturnValue(this.alexscaves$mergedRules);
         }
+    }
+
+    @Unique
+    private static ResourceKey<Level> alexscaves$getDimensionForSettings(NoiseGeneratorSettings settings) {
+        BlockState defaultBlock = settings.defaultBlock();
+        if (defaultBlock == null) {
+            return null;
+        }
+        if (defaultBlock.is(Blocks.NETHERRACK)) {
+            return Level.NETHER;
+        }
+        if (defaultBlock.is(Blocks.END_STONE)) {
+            return Level.END;
+        }
+        if (defaultBlock.is(Blocks.STONE)) {
+            return Level.OVERWORLD;
+        }
+        return null;
     }
 }

@@ -265,7 +265,7 @@ public abstract class LevelRendererMixin {
         // Render submarine first person view
         if (player != null && player.isPassenger() && player.getVehicle() instanceof SubmarineEntity submarine && SubmarineRenderer.isFirstPersonFloodlightsMode(submarine)) {
             PoseStack poseStack = new PoseStack();
-            Vec3 offset = submarine.getPosition(partialTicks).subtract(player.getEyePosition(partialTicks));
+            Vec3 offset = submarine.getRenderOffset(partialTicks);
             poseStack.pushPose();
             poseStack.translate(offset.x, offset.y, offset.z);
             SubmarineRenderer.renderSubFirstPerson(submarine, partialTicks, poseStack, minecraft.renderBuffers().bufferSource());

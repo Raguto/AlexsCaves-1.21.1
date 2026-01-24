@@ -10,6 +10,7 @@ import net.minecraft.world.level.Level;
 public class ACWorldSeedHolder {
     private static volatile long worldSeed = 0;
     private static volatile ResourceKey<Level> currentDimension = Level.OVERWORLD;
+    private static final ThreadLocal<ResourceKey<Level>> threadDimension = new ThreadLocal<>();
     private static volatile boolean initialized = false;
 
     public static synchronized void setSeed(long seed) {
@@ -23,10 +24,12 @@ public class ACWorldSeedHolder {
 
     public static synchronized void setDimension(ResourceKey<Level> dimension) {
         currentDimension = dimension;
+        threadDimension.set(dimension);
     }
 
     public static ResourceKey<Level> getDimension() {
-        return currentDimension;
+        ResourceKey<Level> threadValue = threadDimension.get();
+        return threadValue != null ? threadValue : currentDimension;
     }
 
     public static boolean isInitialized() {
@@ -36,6 +39,7 @@ public class ACWorldSeedHolder {
     public static synchronized void reset() {
         worldSeed = 0;
         currentDimension = Level.OVERWORLD;
+        threadDimension.remove();
         initialized = false;
     }
 }

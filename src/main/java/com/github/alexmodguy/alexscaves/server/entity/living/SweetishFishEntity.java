@@ -92,7 +92,7 @@ public class SweetishFishEntity extends WaterAnimal implements Bucketable, HasGu
             }
 
             public boolean isInLiquid() {
-                return SweetishFishEntity.this.isInLiquidInternal();
+                return SweetishFishEntity.this.isInLiquid();
             }
         };
     }
@@ -139,7 +139,8 @@ public class SweetishFishEntity extends WaterAnimal implements Bucketable, HasGu
         this.setGummyColor(GummyColors.fromOrdinal(compound.getInt("GummyColor")));
     }
 
-    private boolean isInLiquidInternal() {
+    @Override
+    public boolean isInLiquid() {
         return this.isInWaterOrBubble() || this.isInSoda();
     }
 
@@ -148,7 +149,7 @@ public class SweetishFishEntity extends WaterAnimal implements Bucketable, HasGu
     }
 
     protected void handleAirSupply(int prevAir) {
-        if (this.isAlive() && !isInLiquidInternal()) {
+        if (this.isAlive() && !isInLiquid()) {
             this.setAirSupply(prevAir - 1);
             if (this.getAirSupply() == -20) {
                 this.setAirSupply(0);
@@ -224,7 +225,7 @@ public class SweetishFishEntity extends WaterAnimal implements Bucketable, HasGu
         super.tick();
         prevLandProgress = landProgress;
         prevFishPitch = fishPitch;
-        boolean grounded = !isInLiquidInternal();
+        boolean grounded = !isInLiquid();
         if (grounded && landProgress < 5F) {
             landProgress++;
         }
@@ -262,7 +263,7 @@ public class SweetishFishEntity extends WaterAnimal implements Bucketable, HasGu
     }
 
     public void travel(Vec3 travelVector) {
-        if (this.isEffectiveAi() && this.isInLiquidInternal()) {
+        if (this.isEffectiveAi() && this.isInLiquid()) {
             this.moveRelative(this.getSpeed(), travelVector);
             Vec3 delta = this.getDeltaMovement();
             this.move(MoverType.SELF, delta);
@@ -337,9 +338,9 @@ public class SweetishFishEntity extends WaterAnimal implements Bucketable, HasGu
 
         @Override
         public boolean canUse() {
-            if (!SweetishFishEntity.this.isInLiquidInternal()) {
+            if (!SweetishFishEntity.this.isInLiquid()) {
                 return false;
-            } else if(SweetishFishEntity.this.random.nextInt(4) == 0){
+            } else if(SweetishFishEntity.this.random.nextInt(3) == 0){
                 BlockPos found = findMoveToPos();
                 if (found != null) {
                     target = found;
@@ -351,7 +352,7 @@ public class SweetishFishEntity extends WaterAnimal implements Bucketable, HasGu
 
         @Override
         public boolean canContinueToUse() {
-            return SweetishFishEntity.this.isInLiquidInternal() && !SweetishFishEntity.this.navigation.isDone() && timeout < 40;
+            return SweetishFishEntity.this.isInLiquid() && !SweetishFishEntity.this.navigation.isDone() && timeout < 80;
         }
 
         public void stop() {
@@ -366,6 +367,9 @@ public class SweetishFishEntity extends WaterAnimal implements Bucketable, HasGu
         @Override
         public void tick() {
             timeout++;
+            if (target != null && timeout % 20 == 0 && SweetishFishEntity.this.isInLiquid()) {
+                SweetishFishEntity.this.getNavigation().moveTo(target.getX() + 0.5F, target.getY() + 0.25F, target.getZ() + 0.5F, 1.0D);
+            }
         }
     }
 }

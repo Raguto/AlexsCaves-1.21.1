@@ -1,6 +1,8 @@
 package com.github.alexmodguy.alexscaves.mixin;
 
+import com.github.alexmodguy.alexscaves.server.entity.item.SubmarineEntity;
 import com.github.alexmodguy.alexscaves.server.entity.util.*;
+import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -15,6 +17,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.level.Level;
@@ -123,6 +126,20 @@ public abstract class LivingEntityMixin extends Entity implements HeadRotationEn
     protected void ac_increaseAirSupply(int air, CallbackInfoReturnable<Integer> cir) {
         if (this.hasEffect(ACEffectRegistry.BUBBLED)) {
             cir.setReturnValue(air);
+        }
+    }
+
+    @Inject(
+            method = {"Lnet/minecraft/world/entity/LivingEntity;canBreatheUnderwater()Z"},
+            remap = true,
+            cancellable = true,
+            at = @At(value = "HEAD")
+    )
+    private void ac_canBreatheUnderwater(CallbackInfoReturnable<Boolean> cir) {
+        LivingEntity self = (LivingEntity) (Object) this;
+        if (self.getItemBySlot(EquipmentSlot.HEAD).is(ACItemRegistry.DIVING_HELMET.get())
+                || self.getVehicle() instanceof SubmarineEntity) {
+            cir.setReturnValue(true);
         }
     }
 

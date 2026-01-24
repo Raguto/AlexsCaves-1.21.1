@@ -129,7 +129,7 @@ public class SubmarineModel extends AdvancedEntityModel<SubmarineEntity> {
         this.leftpropeller.rotateAngleZ += Math.toRadians(rightPropellerRot);
         this.backpropeller.rotateAngleZ += Math.toRadians(backPropellerRot);
         if (controllingPlayer instanceof LivingEntity living) {
-            float subYaw = 180 - entity.getViewYRot(partialTicks);
+            float subYaw = 180 - entity.getRenderYaw(partialTicks);
             float headYaw = 180 + (living.yHeadRotO + (living.getYHeadRot() - living.yHeadRotO) * partialTicks);
             this.periscope.rotateAngleY += Math.toRadians(subYaw + headYaw);
         }
@@ -144,7 +144,7 @@ public class SubmarineModel extends AdvancedEntityModel<SubmarineEntity> {
     }
 
     public void setupWaterMask(SubmarineEntity entity, float partialTicks) {
-        float xRot = (float) Math.toRadians(-entity.getViewXRot(partialTicks));
+    float xRot = (float) Math.toRadians(-entity.getRenderPitch(partialTicks));
         Vec3 vec3 = new Vec3(0F, entity.getWaterHeight(), 0F).xRot(xRot);
         /*float waterLevel = (float) vec3.y;
         if(waterLevel >= 1.2F && waterLevel < 3.0F){

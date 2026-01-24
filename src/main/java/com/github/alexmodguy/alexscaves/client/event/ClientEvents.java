@@ -29,7 +29,9 @@ import com.github.alexmodguy.alexscaves.server.potion.DarknessIncarnateEffect;
 import com.github.alexmodguy.alexscaves.server.potion.DeepsightEffect;
 import com.github.alexthe666.citadel.client.event.EventGetOutlineColor;
 import com.github.alexthe666.citadel.client.event.EventLivingRenderer;
+import net.minecraft.client.model.HumanoidModel;
 import com.github.alexthe666.citadel.client.event.EventPosePlayerHand;
+import com.github.alexthe666.citadel.client.event.EventLivingRenderer;
 import com.github.alexthe666.citadel.client.event.EventRenderSplashText;
 import com.github.alexthe666.citadel.client.tick.ClientTickRateTracker;
 import com.github.alexthe666.citadel.server.tick.TickRateTracker;
@@ -271,8 +273,11 @@ public class ClientEvents {
                     ClientProxy.randomTremorOffsets[2] = rng.nextFloat();
                     ClientProxy.lastTremorTick = player.tickCount;
                 }
-                // double intensity = tremorAmount * Minecraft.getInstance().options.screenEffectScale().get();
-                // ((CameraAccessor)event.getCamera()).invokeMove(ClientProxy.randomTremorOffsets[0] * 0.2F * intensity, ClientProxy.randomTremorOffsets[1] * 0.2F * intensity, ClientProxy.randomTremorOffsets[2] * 0.5F * intensity);
+                double intensity = tremorAmount * Minecraft.getInstance().options.screenEffectScale().get();
+                float shakeRoll = (float) ((ClientProxy.randomTremorOffsets[0] - 0.5F) * 0.9F * intensity);
+                float shakePitch = (float) ((ClientProxy.randomTremorOffsets[1] - 0.5F) * 1.6F * intensity);
+                event.setRoll(event.getRoll() + shakeRoll);
+                event.setPitch(event.getPitch() + shakePitch);
             }
         }
         // if (player != null && player.isPassenger() && player.getVehicle() instanceof SubmarineEntity && event.getCamera().isDetached()) {
@@ -496,42 +501,38 @@ public class ClientEvents {
             event.getModel().rightArm.zRot = 0;
             event.setResult(net.neoforged.neoforge.common.util.TriState.TRUE);
         }
-        if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof ShotGumItem && ShotGumItem.shouldBeHeldUpright(player.getItemInHand(InteractionHand.MAIN_HAND))) {
-            if (player.getMainArm() == HumanoidArm.RIGHT) {
-                event.getModel().rightArm.xRot = (event.getModel().head.xRot - (float) Math.toRadians(70F));
-                event.getModel().rightArm.yRot = event.getModel().head.yRot;
-                event.getModel().rightArm.zRot = 0;
-                event.getModel().leftArm.xRot = event.getModel().head.xRot - (float) Math.toRadians(70F);
-                event.getModel().leftArm.yRot = event.getModel().head.yRot + (float) Math.toRadians(40F);
-                event.getModel().leftArm.zRot = (float) Math.toRadians(20F);
+        ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
+        boolean mainShotGum = mainHand.getItem() instanceof ShotGumItem;
+        if (mainShotGum) {
+            boolean shotInRightHand = player.getMainArm() == HumanoidArm.RIGHT;
+            float aimXRot = -(float) Math.toRadians(110F);
+            float supportXRot = -(float) Math.toRadians(95F);
+            float aimYRot = event.getModel().head.yRot;
+            float supportYRot = event.getModel().head.yRot + (float) Math.toRadians(shotInRightHand ? 50F : -50F);
+            float supportZRot = (float) Math.toRadians(shotInRightHand ? 30F : -30F);
+            if (event.isLeftHand()) {
+                if (shotInRightHand) {
+                    event.getModel().leftArm.xRot = supportXRot;
+                    event.getModel().leftArm.yRot = supportYRot;
+                    event.getModel().leftArm.zRot = supportZRot;
+                } else {
+                    event.getModel().leftArm.xRot = aimXRot;
+                    event.getModel().leftArm.yRot = aimYRot;
+                    event.getModel().leftArm.zRot = 0;
+                }
+                event.setResult(net.neoforged.neoforge.common.util.TriState.TRUE);
             } else {
-                event.getModel().leftArm.xRot = (event.getModel().head.xRot - (float) Math.toRadians(70F));
-                event.getModel().leftArm.yRot = event.getModel().head.yRot;
-                event.getModel().leftArm.zRot = 0;
-                event.getModel().rightArm.xRot = event.getModel().head.xRot - (float) Math.toRadians(70F);
-                event.getModel().rightArm.yRot = event.getModel().head.yRot + (float) Math.toRadians(-40F);
-                event.getModel().rightArm.zRot = (float) Math.toRadians(-20F);
+                if (shotInRightHand) {
+                    event.getModel().rightArm.xRot = aimXRot;
+                    event.getModel().rightArm.yRot = aimYRot;
+                    event.getModel().rightArm.zRot = 0;
+                } else {
+                    event.getModel().rightArm.xRot = supportXRot;
+                    event.getModel().rightArm.yRot = supportYRot;
+                    event.getModel().rightArm.zRot = supportZRot;
+                }
+                event.setResult(net.neoforged.neoforge.common.util.TriState.TRUE);
             }
-            event.setResult(net.neoforged.neoforge.common.util.TriState.TRUE);
-        }
-        if (player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof ShotGumItem && ShotGumItem.shouldBeHeldUpright(player.getItemInHand(InteractionHand.OFF_HAND))) {
-            if (player.getMainArm() == HumanoidArm.RIGHT) {
-                event.getModel().leftArm.xRot = (event.getModel().head.xRot - (float) Math.toRadians(70F));
-                event.getModel().leftArm.yRot = event.getModel().head.yRot;
-                event.getModel().leftArm.zRot = 0;
-                event.getModel().rightArm.xRot = event.getModel().head.xRot - (float) Math.toRadians(70F);
-                event.getModel().rightArm.yRot = event.getModel().head.yRot + (float) Math.toRadians(-40F);
-                event.getModel().rightArm.zRot = (float) Math.toRadians(-20F);
-
-            } else {
-                event.getModel().rightArm.xRot = (event.getModel().head.xRot - (float) Math.toRadians(70F));
-                event.getModel().rightArm.yRot = event.getModel().head.yRot;
-                event.getModel().rightArm.zRot = 0;
-                event.getModel().leftArm.xRot = event.getModel().head.xRot - (float) Math.toRadians(70F);
-                event.getModel().leftArm.yRot = event.getModel().head.yRot + (float) Math.toRadians(40F);
-                event.getModel().leftArm.zRot = (float) Math.toRadians(20F);
-            }
-            event.setResult(net.neoforged.neoforge.common.util.TriState.TRUE);
         }
         if (player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof CandyCaneHookItem && CandyCaneHookItem.isActive(player.getItemInHand(InteractionHand.MAIN_HAND)) && player.getItemInHand(InteractionHand.OFF_HAND).getItem() instanceof CandyCaneHookItem && CandyCaneHookItem.isActive(player.getItemInHand(InteractionHand.OFF_HAND)) && player.getVehicle() instanceof GumWormSegmentEntity) {
             float rightWiggle = -Math.min(player.xxa, 0F) * (float) Math.sin(player.tickCount + AlexsCaves.PROXY.getPartialTicks()) * 25;
@@ -574,6 +575,42 @@ public class ClientEvents {
             event.getModel().rightLeg.xRot -= legFlail;
             event.getModel().leftLeg.xRot += legFlail;
             event.setResult(net.neoforged.neoforge.common.util.TriState.TRUE);
+        }
+    }
+
+    @SubscribeEvent
+    @OnlyIn(Dist.CLIENT)
+    public void onPostSetupAnimations(EventLivingRenderer.PostSetupAnimations event) {
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+        if (!(event.getModel() instanceof HumanoidModel<?> humanoidModel)) {
+            return;
+        }
+        ItemStack mainHand = player.getItemInHand(InteractionHand.MAIN_HAND);
+        if (!(mainHand.getItem() instanceof ShotGumItem)) {
+            return;
+        }
+        boolean shotInRightHand = player.getMainArm() == HumanoidArm.RIGHT;
+        float aimXRot = -(float) Math.toRadians(110F);
+        float supportXRot = -(float) Math.toRadians(95F);
+        float aimYRot = humanoidModel.head.yRot;
+        float supportYRot = humanoidModel.head.yRot + (float) Math.toRadians(shotInRightHand ? 50F : -50F);
+        float supportZRot = (float) Math.toRadians(shotInRightHand ? 30F : -30F);
+        if (shotInRightHand) {
+            humanoidModel.rightArm.xRot = aimXRot;
+            humanoidModel.rightArm.yRot = aimYRot;
+            humanoidModel.rightArm.zRot = 0.0F;
+            humanoidModel.leftArm.xRot = supportXRot;
+            humanoidModel.leftArm.yRot = supportYRot;
+            humanoidModel.leftArm.zRot = supportZRot;
+        } else {
+            humanoidModel.leftArm.xRot = aimXRot;
+            humanoidModel.leftArm.yRot = aimYRot;
+            humanoidModel.leftArm.zRot = 0.0F;
+            humanoidModel.rightArm.xRot = supportXRot;
+            humanoidModel.rightArm.yRot = supportYRot;
+            humanoidModel.rightArm.zRot = supportZRot;
         }
     }
 

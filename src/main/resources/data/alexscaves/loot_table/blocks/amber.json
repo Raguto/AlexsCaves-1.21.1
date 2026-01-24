@@ -27,36 +27,34 @@
               "name": "alexscaves:amber"
             },
             {
-              "type": "minecraft:alternatives",
-              "children": [
-                {
-                  "type": "minecraft:item",
-                  "conditions": [
-                    {
-                      "chances": [
-                        0.015,
-                        0.025,
-                        0.035,
-                        0.05
-                      ],
-                      "condition": "minecraft:table_bonus",
-                      "enchantment": "minecraft:fortune"
-                    }
-                  ],
-                  "name": "alexscaves:amber_curiosity"
-                },
-                {
-                  "type": "minecraft:item",
-                  "name": "alexscaves:amber"
-                }
-              ],
-              "conditions": [
-                {
-                  "condition": "minecraft:survives_explosion"
-                }
-              ]
+              "type": "minecraft:empty"
             }
           ]
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        },
+        {
+          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "enchantment": "minecraft:fortune",
+          "unenchanted_chance": 0.015,
+          "enchanted_chance": {
+            "type": "minecraft:linear",
+            "base": 0.025,
+            "per_level_above_first": 0.0125
+          }
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "alexscaves:amber_curiosity"
         }
       ],
       "rolls": 1.0

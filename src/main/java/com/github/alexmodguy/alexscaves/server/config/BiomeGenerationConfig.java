@@ -48,17 +48,20 @@ public class BiomeGenerationConfig {
     private static final BiomeGenerationNoiseCondition CANDY_CAVITY_CONDITION = new BiomeGenerationNoiseCondition.Builder()
             .dimensions(OVERWORLD).distanceFromSpawn(500).alexscavesRarityOffset(5).continentalness(0.5F, 1F).depth(0.05F, 2F).build();
     public static final LinkedHashMap<ResourceKey<Biome>, BiomeGenerationNoiseCondition> BIOMES = new LinkedHashMap<>();
+    public static final Object BIOMES_LOCK = new Object();
 
     public static void reloadConfig() {
         // Check version and delete old configs if needed BEFORE loading
         checkAndUpdateConfigVersion();
-        
-        BIOMES.put(ACBiomeRegistry.MAGNETIC_CAVES, getConfigData("magnetic_caves", MAGNETIC_CAVES_CONDITION));
-        BIOMES.put(ACBiomeRegistry.PRIMORDIAL_CAVES, getConfigData("primordial_caves", PRIMORDIAL_CAVES_CONDITION));
-        BIOMES.put(ACBiomeRegistry.TOXIC_CAVES, getConfigData("toxic_caves", TOXIC_CAVES_CONDITION));
-        BIOMES.put(ACBiomeRegistry.ABYSSAL_CHASM, getConfigData("abyssal_chasm", ABYSSAL_CHASM_CONDITION));
-        BIOMES.put(ACBiomeRegistry.FORLORN_HOLLOWS, getConfigData("forlorn_hollows", FORLORN_HOLLOWS_CONDITION));
-        BIOMES.put(ACBiomeRegistry.CANDY_CAVITY, getConfigData("candy_cavity", CANDY_CAVITY_CONDITION));
+
+        synchronized (BIOMES_LOCK) {
+            BIOMES.put(ACBiomeRegistry.MAGNETIC_CAVES, getConfigData("magnetic_caves", MAGNETIC_CAVES_CONDITION));
+            BIOMES.put(ACBiomeRegistry.PRIMORDIAL_CAVES, getConfigData("primordial_caves", PRIMORDIAL_CAVES_CONDITION));
+            BIOMES.put(ACBiomeRegistry.TOXIC_CAVES, getConfigData("toxic_caves", TOXIC_CAVES_CONDITION));
+            BIOMES.put(ACBiomeRegistry.ABYSSAL_CHASM, getConfigData("abyssal_chasm", ABYSSAL_CHASM_CONDITION));
+            BIOMES.put(ACBiomeRegistry.FORLORN_HOLLOWS, getConfigData("forlorn_hollows", FORLORN_HOLLOWS_CONDITION));
+            BIOMES.put(ACBiomeRegistry.CANDY_CAVITY, getConfigData("candy_cavity", CANDY_CAVITY_CONDITION));
+        }
     }
 
     @Nullable
@@ -68,12 +71,16 @@ public class BiomeGenerationConfig {
     }
 
     public static int getBiomeCount() {
-        return BIOMES.size();
+        synchronized (BIOMES_LOCK) {
+            return BIOMES.size();
+        }
     }
 
     public static boolean isBiomeDisabledCompletely(ResourceKey<Biome> biome){
-        BiomeGenerationNoiseCondition noiseCondition = BIOMES.get(biome);
-        return noiseCondition != null && noiseCondition.isDisabledCompletely();
+        synchronized (BIOMES_LOCK) {
+            BiomeGenerationNoiseCondition noiseCondition = BIOMES.get(biome);
+            return noiseCondition != null && noiseCondition.isDisabledCompletely();
+        }
     }
 
     private static <T> T getOrCreateConfigFile(File configDir, String configName, T defaults, Type type, Predicate<T> isInvalid) {

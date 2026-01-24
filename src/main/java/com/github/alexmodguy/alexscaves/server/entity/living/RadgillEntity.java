@@ -89,7 +89,7 @@ public class RadgillEntity extends WaterAnimal implements Bucketable {
             }
 
             public boolean isInLiquid() {
-                return RadgillEntity.this.isInLiquidInternal();
+                return RadgillEntity.this.isInLiquid();
             }
         };
     }
@@ -144,7 +144,7 @@ public class RadgillEntity extends WaterAnimal implements Bucketable {
         super.tick();
         prevLandProgress = landProgress;
         prevFishPitch = fishPitch;
-        boolean grounded = this.onGround() && !isInLiquidInternal();
+        boolean grounded = this.onGround() && !isInLiquid();
         if (grounded && landProgress < 5F) {
             landProgress++;
         }
@@ -159,7 +159,7 @@ public class RadgillEntity extends WaterAnimal implements Bucketable {
             }
             wasJustInAcid = inAcid;
         }
-        if (!isInLiquidInternal() && this.isAlive()) {
+        if (!isInLiquid() && this.isAlive()) {
             if (this.onGround() && random.nextFloat() < 0.1F) {
                 this.setDeltaMovement(this.getDeltaMovement().add((this.random.nextFloat() * 2.0F - 1.0F) * 0.2F, 0.5D, (this.random.nextFloat() * 2.0F - 1.0F) * 0.2F));
                 this.setYRot(this.random.nextFloat() * 360.0F);
@@ -172,12 +172,13 @@ public class RadgillEntity extends WaterAnimal implements Bucketable {
         return (prevFishPitch + (fishPitch - prevFishPitch) * partialTick);
     }
 
-    private boolean isInLiquidInternal() {
+    @Override
+    public boolean isInLiquid() {
         return this.isInWaterOrBubble() || this.isInAcid();
     }
 
     protected void handleAirSupply(int prevAir) {
-        if (this.isAlive() && !isInLiquidInternal()) {
+        if (this.isAlive() && !isInLiquid()) {
             this.setAirSupply(prevAir - 1);
             if (this.getAirSupply() == -20) {
                 this.setAirSupply(0);
@@ -297,7 +298,7 @@ public class RadgillEntity extends WaterAnimal implements Bucketable {
         public boolean canUse() {
             if (!RadgillEntity.this.isInLiquid()) {
                 return false;
-            } else if (RadgillEntity.this.getRandom().nextInt(10) == 0) {
+            } else if (RadgillEntity.this.getRandom().nextInt(4) == 0) {
                 boolean jump = random.nextFloat() <= 0.4F;
                 BlockPos found = findMoveToPos(jump);
                 if (found != null) {
@@ -311,7 +312,7 @@ public class RadgillEntity extends WaterAnimal implements Bucketable {
 
         @Override
         public boolean canContinueToUse() {
-            return (RadgillEntity.this.isInLiquid() && !hasJumped || isJump) && RadgillEntity.this.distanceToSqr(Vec3.atCenterOf(target)) < 3 && timeout < 200;
+            return (RadgillEntity.this.isInLiquid() || isJump) && timeout < 200 && (isJump || !RadgillEntity.this.navigation.isDone());
         }
 
         public void stop() {

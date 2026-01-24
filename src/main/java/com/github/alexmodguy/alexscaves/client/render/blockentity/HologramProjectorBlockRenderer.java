@@ -22,16 +22,18 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.DefaultPlayerSkin;
+import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import java.util.*;
+import java.util.Objects;
 
 import static com.github.alexmodguy.alexscaves.client.render.entity.NotorRenderer.renderEntityInHologram;
 
@@ -40,8 +42,8 @@ public class HologramProjectorBlockRenderer<T extends HologramProjectorBlockEnti
     private static final Map<BlockPos, HologramProjectorBlockEntity> allOnScreen = new HashMap<>();
     private static final Map<UUID, PlayerInfo> playerInfo = new HashMap<>();
 
-    private static PlayerModel playerModel = null;
-    private static PlayerModel slimPlayerModel = null;
+    private static PlayerModel<Player> playerModel = null;
+    private static PlayerModel<Player> slimPlayerModel = null;
 
     public HologramProjectorBlockRenderer(BlockEntityRendererProvider.Context rendererDispatcherIn) {
     }
@@ -138,40 +140,73 @@ public class HologramProjectorBlockRenderer<T extends HologramProjectorBlockEnti
     }
 
     private static PlayerInfo getPlayerInfo(UUID uuid) {
-        if (!playerInfo.containsKey(uuid)) {
-            playerInfo.put(uuid, Minecraft.getInstance().getConnection().getPlayerInfo(uuid));
+        if (uuid == null) {
+            return null;
         }
-        return playerInfo.get(uuid);
+        PlayerInfo info = playerInfo.get(uuid);
+        ClientPacketListener connection = Minecraft.getInstance().getConnection();
+        if (info == null && connection != null) {
+            info = connection.getPlayerInfo(uuid);
+            if (info != null) {
+                playerInfo.put(uuid, info);
+            }
+        }
+        return info;
     }
 
-    private static String getPlayerModelName(PlayerInfo playerInfo, UUID uuid) {
-        return playerInfo == null ? DefaultPlayerSkin.get(uuid).model().id() : playerInfo.getSkin().model().id();
+    private static PlayerSkin.Model getPlayerModelName(PlayerInfo playerInfo, UUID uuid) {
+        UUID safeUuid = Objects.requireNonNull(uuid, "uuid");
+        return playerInfo == null ? DefaultPlayerSkin.get(safeUuid).model() : playerInfo.getSkin().model();
     }
 
 
     private static ResourceLocation getPlayerSkinTextureLocation(PlayerInfo playerInfo, UUID uuid) {
-        return playerInfo == null ? DefaultPlayerSkin.get(uuid).texture() : playerInfo.getSkin().texture();
+        UUID safeUuid = Objects.requireNonNull(uuid, "uuid");
+        return playerInfo == null ? DefaultPlayerSkin.get(safeUuid).texture() : playerInfo.getSkin().texture();
     }
 
     private static void renderPlayerHologram(UUID lastPlayerUUID, float partialTicks, PoseStack poseStack, MultiBufferSource bufferIn, int i) {
         PostEffectRegistry.renderEffectForNextTick(ClientProxy.HOLOGRAM_SHADER);
-        PlayerInfo playerInfo = getPlayerInfo(lastPlayerUUID);
-        String modelName = getPlayerModelName(playerInfo, lastPlayerUUID);
+        if (lastPlayerUUID == null) {
+            return;
+        }
+        UUID safeUuid = Objects.requireNonNull(lastPlayerUUID, "lastPlayerUUID");
+    var level = Minecraft.getInstance().level;
+    Player playerEntity = level == null ? null : level.getPlayerByUUID(safeUuid);
+        if (playerEntity != null) {
+            renderEntityInHologram(playerEntity, 0, 0, 0, 0, partialTicks, poseStack, bufferIn, i);
+            return;
+        }
+        PlayerInfo playerInfo = getPlayerInfo(safeUuid);
+        PlayerSkin.Model modelName = getPlayerModelName(playerInfo, safeUuid);
         EntityRenderDispatcher manager = Minecraft.getInstance().getEntityRenderDispatcher();
         EntityRenderer<? extends Player> renderer = manager.getSkinMap().get(modelName);
+        if (renderer == null) {
+            renderer = manager.getSkinMap().get(PlayerSkin.Model.WIDE);
+        }
         if(playerModel == null || slimPlayerModel == null){
-            playerModel = new PlayerModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER), false);
-            slimPlayerModel = new PlayerModel(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER_SLIM), true);
+            playerModel = new PlayerModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER), false);
+            slimPlayerModel = new PlayerModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ModelLayers.PLAYER_SLIM), true);
         }
-        PlayerModel model = modelName.equals("slim") ? slimPlayerModel : playerModel;
+        PlayerModel<Player> model = modelName == PlayerSkin.Model.SLIM ? slimPlayerModel : playerModel;
         model.young = false;
-        if (renderer instanceof LivingEntityRenderer livingEntityRenderer) {
-            VertexConsumer ivertexbuilder = bufferIn.getBuffer(ACRenderTypes.getHologram(getPlayerSkinTextureLocation(playerInfo, lastPlayerUUID)));
-            poseStack.pushPose();
-            poseStack.scale(-1F, -1F, 1F);
-            model.renderToBuffer(poseStack, ivertexbuilder, 240, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
-            poseStack.popPose();
+        model.attackTime = 0.0F;
+        model.riding = false;
+        model.crouching = false;
+        model.setAllVisible(true);
+        Player animationPlayer = Minecraft.getInstance().player;
+        if (animationPlayer != null) {
+            model.setupAnim(animationPlayer, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
         }
+        if (renderer instanceof LivingEntityRenderer livingEntityRenderer && animationPlayer != null) {
+            ((com.github.alexmodguy.alexscaves.client.render.entity.LivingEntityRendererAccessor) livingEntityRenderer)
+                    .scaleForHologram(animationPlayer, poseStack, partialTicks);
+        }
+    VertexConsumer ivertexbuilder = bufferIn.getBuffer(ACRenderTypes.getHologram(getPlayerSkinTextureLocation(playerInfo, safeUuid)));
+        poseStack.pushPose();
+        poseStack.scale(-1F, -1F, 1F);
+        model.renderToBuffer(poseStack, ivertexbuilder, 240, OverlayTexture.NO_OVERLAY, 0xFFFFFFFF);
+        poseStack.popPose();
         Minecraft.getInstance().getMainRenderTarget().bindWrite(false);
     }
 

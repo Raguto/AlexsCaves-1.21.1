@@ -1,6 +1,15 @@
 package com.github.alexmodguy.alexscaves.server.block;
 
 import com.github.alexmodguy.alexscaves.client.particle.ACParticleRegistry;
+import com.github.alexmodguy.alexscaves.server.item.ACItemRegistry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.storage.loot.LootParams;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -25,6 +34,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
+import java.util.List;
 
 public class NeodymiumNodeBlock extends Block implements SimpleWaterloggedBlock {
     private boolean azure = false;
@@ -36,7 +46,7 @@ public class NeodymiumNodeBlock extends Block implements SimpleWaterloggedBlock 
     private static final VoxelShape SHAPE_EW = Block.box(0.0D, 1.0D, 1.0D, 16.0D, 15.0D, 15.0D);
 
     public NeodymiumNodeBlock(boolean azure) {
-        super(BlockBehaviour.Properties.of().mapColor(DyeColor.WHITE).requiresCorrectToolForDrops().strength(2F, 6.0F).sound(ACSoundTypes.NEODYMIUM).noOcclusion().dynamicShape().lightLevel((i) -> 3).emissiveRendering((state, level, pos) -> true));
+        super(BlockBehaviour.Properties.of().mapColor(DyeColor.WHITE).strength(2F, 6.0F).sound(ACSoundTypes.NEODYMIUM).noOcclusion().dynamicShape().lightLevel((i) -> 3).emissiveRendering((state, level, pos) -> true));
         this.registerDefaultState(this.defaultBlockState().setValue(WATERLOGGED, Boolean.valueOf(false)).setValue(FACING, Direction.UP));
         this.azure = azure;
     }
@@ -98,5 +108,38 @@ public class NeodymiumNodeBlock extends Block implements SimpleWaterloggedBlock 
         if (randomSource.nextInt(1) == 0) {
             level.addParticle(azure ? ACParticleRegistry.AZURE_MAGNETIC_ORBIT.get() : ACParticleRegistry.SCARLET_MAGNETIC_ORBIT.get(), center.x, center.y, center.z, center.x, center.y, center.z);
         }
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
+        ItemStack tool = builder.getOptionalParameter(LootContextParams.TOOL);
+        Holder<Enchantment> silkTouch = builder.getLevel().registryAccess()
+            .registryOrThrow(Registries.ENCHANTMENT)
+            .getHolderOrThrow(Enchantments.SILK_TOUCH);
+        if (tool != null && EnchantmentHelper.getItemEnchantmentLevel(silkTouch, tool) > 0) {
+            return List.of(new ItemStack(this));
+        }
+
+        List<ItemStack> drops = super.getDrops(state, builder);
+        ItemStack rawItem = new ItemStack(azure ? ACItemRegistry.RAW_AZURE_NEODYMIUM.get() : ACItemRegistry.RAW_SCARLET_NEODYMIUM.get());
+        boolean hasRaw = drops.stream().anyMatch(stack -> ItemStack.isSameItemSameComponents(stack, rawItem));
+        if (hasRaw) {
+            return drops;
+        }
+
+        RandomSource random = builder.getLevel().getRandom();
+        int count = 2 + random.nextInt(4);
+        if (tool != null) {
+            Holder<Enchantment> fortune = builder.getLevel().registryAccess()
+                .registryOrThrow(Registries.ENCHANTMENT)
+                .getHolderOrThrow(Enchantments.FORTUNE);
+            int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(fortune, tool);
+            if (fortuneLevel > 0) {
+                count += random.nextInt(fortuneLevel + 1);
+            }
+        }
+        count = Math.min(5, Math.max(1, count));
+        rawItem.setCount(count);
+        return List.of(rawItem);
     }
 }

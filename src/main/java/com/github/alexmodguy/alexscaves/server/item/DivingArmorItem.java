@@ -3,16 +3,26 @@ package com.github.alexmodguy.alexscaves.server.item;
 import com.github.alexmodguy.alexscaves.AlexsCaves;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.tags.FluidTags;
+import com.github.alexmodguy.alexscaves.server.entity.item.SubmarineEntity;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
@@ -32,7 +42,7 @@ public class DivingArmorItem extends ArmorItem {
         ResourceLocation armorId = ResourceLocation.fromNamespaceAndPath("alexscaves", "armor." + type.getSlot().getName());
         builder.put(Attributes.ARMOR, new AttributeModifier(armorId, (double)this.getDefense(), AttributeModifier.Operation.ADD_VALUE));
         if (slot == Type.LEGGINGS) {
-            builder.put(net.neoforged.neoforge.common.NeoForgeMod.SWIM_SPEED, new AttributeModifier(ResourceLocation.fromNamespaceAndPath("alexscaves", "swim_speed"), 0.5D, AttributeModifier.Operation.ADD_VALUE));
+            builder.put(NeoForgeMod.SWIM_SPEED, new AttributeModifier(ResourceLocation.fromNamespaceAndPath("alexscaves", "swim_speed"), 0.5D, AttributeModifier.Operation.ADD_VALUE));
         }else if (slot == Type.CHESTPLATE) {
             builder.put(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(ResourceLocation.fromNamespaceAndPath("alexscaves", "armor_toughness"), (double)armorMaterial.value().toughness(), AttributeModifier.Operation.ADD_VALUE));
         }
@@ -50,6 +60,27 @@ public class DivingArmorItem extends ArmorItem {
 
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(EquipmentSlot equipmentSlot, ItemStack stack) {
         return equipmentSlot == this.type.getSlot() ? this.divingArmorAttributes : ImmutableMultimap.of();
+    }
+
+    public void onArmorTick(ItemStack stack, Level level, Player player) {
+        if (!level.isClientSide && this.type == Type.HELMET) {
+            player.addEffect(new MobEffectInstance(MobEffects.WATER_BREATHING, 220, 0, false, false, true));
+            if (player.isEyeInFluid(FluidTags.WATER) || player.getVehicle() instanceof SubmarineEntity) {
+                int maxAir = player.getMaxAirSupply();
+                if (player.getAirSupply() < maxAir) {
+                    player.setAirSupply(maxAir);
+                }
+            }
+        }
+    }
+
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, java.util.List<Component> tooltip, TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltip, flag);
+        if (this.type == Type.LEGGINGS) {
+            String amount = "0.5";
+            Component attributeName = Component.translatable(NeoForgeMod.SWIM_SPEED.value().getDescriptionId());
+            tooltip.add(Component.translatable("attribute.modifier.plus.0", amount, attributeName).withStyle(ChatFormatting.BLUE));
+        }
     }
 
     @Override

@@ -41,7 +41,7 @@ public class StunStarParticle extends AbstractTrailParticle {
         this.offset = offset;
         this.zd = 0;
     this.alpha = 1.0F;
-    this.setColor(1.0F, 1.0F, 1.0F);
+    this.setColor(1.35F, 1.35F, 1.35F);
         this.entityId = entityId;
         this.hasPhysics = false;
         this.reverseOrbit = random.nextBoolean();

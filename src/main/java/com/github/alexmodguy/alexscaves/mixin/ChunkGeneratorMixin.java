@@ -19,6 +19,7 @@ import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
@@ -29,6 +30,15 @@ import java.util.Optional;
  */
 @Mixin(ChunkGenerator.class)
 public class ChunkGeneratorMixin {
+
+    @Redirect(method = "applyBiomeDecoration", at = @At(value = "INVOKE", target = "Ljava/util/List;get(I)Ljava/lang/Object;"))
+    private Object ac_clampBiomeDecorationIndex(List<?> list, int index) {
+        if (index < 0 || index >= list.size()) {
+            int safeIndex = Math.max(0, Math.min(index, list.size() - 1));
+            return list.get(safeIndex);
+        }
+        return list.get(index);
+    }
 
     @Inject(method = "applyBiomeDecoration", at = @At("TAIL"))
     private void ac_applyBiomeDecoration(WorldGenLevel level, ChunkAccess chunk, StructureManager structureManager, CallbackInfo ci) {

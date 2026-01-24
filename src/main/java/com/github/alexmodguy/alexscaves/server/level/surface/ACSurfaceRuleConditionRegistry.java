@@ -3,6 +3,7 @@ package com.github.alexmodguy.alexscaves.server.level.surface;
 
 import com.github.alexmodguy.alexscaves.AlexsCaves;
 import com.github.alexmodguy.alexscaves.server.config.BiomeGenerationConfig;
+import com.github.alexmodguy.alexscaves.server.config.BiomeGenerationNoiseCondition;
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRarity;
 import com.github.alexmodguy.alexscaves.server.level.biome.ACBiomeRegistry;
 import com.github.alexmodguy.alexscaves.server.level.biome.ACWorldSeedHolder;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.SurfaceRules;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -54,6 +56,10 @@ public class ACSurfaceRuleConditionRegistry {
                 }
 
                 public boolean test() {
+                    ResourceKey<Level> dimension = ACWorldSeedHolder.getDimension();
+                    if (dimension != null && !Level.OVERWORLD.equals(dimension)) {
+                        return false;
+                    }
                     int x = context.blockX;
                     int y = context.blockY;
                     int z = context.blockZ;
@@ -78,6 +84,7 @@ public class ACSurfaceRuleConditionRegistry {
         }
 
         public SurfaceRules.Condition apply(final SurfaceRules.Context contextIn) {
+            final ResourceKey<Level> dimension = ACWorldSeedHolder.getDimension();
             class ACBiomeCondition implements SurfaceRules.Condition {
 
                 private SurfaceRules.Context context;
@@ -87,6 +94,9 @@ public class ACSurfaceRuleConditionRegistry {
                 }
 
                 public boolean test() {
+                    if (!Level.OVERWORLD.equals(dimension)) {
+                        return false;
+                    }
                     int y = context.blockY;
                     if (y > MAX_Y_LEVEL) {
                         return false;
@@ -108,7 +118,17 @@ public class ACSurfaceRuleConditionRegistry {
                     }
                     
                     int foundOffset = ACBiomeRarity.getRareBiomeOffsetId(info);
-                    return foundOffset == ACBiomeConditionSource.this.rarityOffset;
+                    if (foundOffset != ACBiomeConditionSource.this.rarityOffset) {
+                        return false;
+                    }
+
+                    ResourceKey<Biome> biomeAtPos = ACBiomeRarity.getACBiomeForPosition(seed, x, z);
+                    if (biomeAtPos == null) {
+                        return false;
+                    }
+
+                    BiomeGenerationNoiseCondition noiseCondition = BiomeGenerationConfig.BIOMES.get(biomeAtPos);
+                    return noiseCondition != null && noiseCondition.getRarityOffset() == ACBiomeConditionSource.this.rarityOffset;
                 }
             }
             return new ACBiomeCondition(contextIn);
