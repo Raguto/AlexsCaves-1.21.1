@@ -16,9 +16,7 @@
             "trigger": "minecraft:player_interacted_with_entity",
             "conditions": {
                 "item": {
-                    "items": [
-                        "minecraft:shears"
-                    ]
+                    "items": "minecraft:shears"
                 },
                 "entity": {
                     "type": "alexscaves:nuclear_bomb"
