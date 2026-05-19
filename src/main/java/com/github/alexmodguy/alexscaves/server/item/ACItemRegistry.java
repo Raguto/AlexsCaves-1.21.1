@@ -45,11 +45,10 @@ import java.util.Map;
 
 public class ACItemRegistry {
     private static Map<DeferredHolder<Item, Item>, ResourceKey<Biome>> creativeTabSpawnEggMap = new LinkedHashMap<>();
-    // Custom rarities - using standard rarities for now until custom colors can be implemented via tooltip override
-    // TODO: Implement custom tooltip colors via Item.appendHoverText or client-side rendering
-    public static final Rarity RARITY_DEMONIC = Rarity.UNCOMMON;
+    // Custom rarities - the rarities are 4 different normal rarities, but the actual colors are in ItemMixin
+    public static final Rarity RARITY_DEMONIC = Rarity.COMMON;
     public static final Rarity RARITY_NUCLEAR = Rarity.UNCOMMON;
-    public static final Rarity RARITY_SWEET = Rarity.UNCOMMON;
+    public static final Rarity RARITY_SWEET = Rarity.RARE;
     public static final Rarity RARITY_RAINBOW = Rarity.EPIC;
     public static final DeferredRegister<Item> DEF_REG = DeferredRegister.create(Registries.ITEM, AlexsCaves.MODID);
     public static final DeferredHolder<Item, Item> ADVANCEMENT_TAB_ICON = DEF_REG.register("advancement_tab_icon", () -> new Item(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON)));
