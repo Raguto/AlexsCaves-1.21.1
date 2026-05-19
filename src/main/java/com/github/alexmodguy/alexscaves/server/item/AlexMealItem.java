@@ -1,5 +1,6 @@
 package com.github.alexmodguy.alexscaves.server.item;
 
+import com.github.alexmodguy.alexscaves.server.item.rarity.RainbowRarityItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -14,9 +15,9 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class AlexMealItem extends Item {
+public class AlexMealItem extends RainbowRarityItem {
     public AlexMealItem() {
-        super(new Item.Properties().food(ACFoods.ALEX_MEAL).rarity(ACItemRegistry.RARITY_RAINBOW).stacksTo(1));
+        super(new Item.Properties().food(ACFoods.ALEX_MEAL).stacksTo(1));
     }
 
     @Override

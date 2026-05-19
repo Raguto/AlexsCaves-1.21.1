@@ -4,6 +4,7 @@ import com.github.alexmodguy.alexscaves.server.enchantment.ACEnchantmentRegistry
 import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.item.DinosaurSpiritEntity;
 import com.github.alexmodguy.alexscaves.server.entity.item.ExtinctionSpearEntity;
+import com.github.alexmodguy.alexscaves.server.item.rarity.DemonicRarity;
 import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.sounds.SoundSource;
@@ -17,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
-public class ExtinctionSpearItem extends SpearItem {
+public class ExtinctionSpearItem extends SpearItem implements DemonicRarity {
     public ExtinctionSpearItem(Item.Properties properties) {
         super(properties, 8.0D);
     }

@@ -1,6 +1,7 @@
 package com.github.alexmodguy.alexscaves.server.item;
 
 import com.github.alexmodguy.alexscaves.AlexsCaves;
+import com.github.alexmodguy.alexscaves.server.item.rarity.DemonicRarity;
 import com.github.alexmodguy.alexscaves.server.message.ArmorKeyMessage;
 import com.github.alexmodguy.alexscaves.server.message.UpdateItemTagMessage;
 import com.github.alexmodguy.alexscaves.server.potion.ACEffectRegistry;
@@ -27,13 +28,13 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nullable;
 
-public class DarknessArmorItem extends ArmorItem implements CustomArmorPostRender, KeybindUsingArmor, UpdatesStackTags {
+public class DarknessArmorItem extends ArmorItem implements CustomArmorPostRender, KeybindUsingArmor, UpdatesStackTags, DemonicRarity {
 
     private static final int[] DURABILITY_PER_SLOT = new int[]{13, 15, 16, 11};
     private static final int DURABILITY_MULTIPLIER = 15;
 
     public DarknessArmorItem(Holder<ArmorMaterial> armorMaterial, Type slot) {
-        super(armorMaterial, slot, new Properties().rarity(ACItemRegistry.RARITY_DEMONIC).durability(DURABILITY_PER_SLOT[slot.getSlot().getIndex()] * DURABILITY_MULTIPLIER));
+        super(armorMaterial, slot, new Properties().durability(DURABILITY_PER_SLOT[slot.getSlot().getIndex()] * DURABILITY_MULTIPLIER));
     }
 
     private static boolean canChargeUp(LivingEntity entity, boolean creative) {

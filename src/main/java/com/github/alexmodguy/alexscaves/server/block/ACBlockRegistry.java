@@ -446,8 +446,6 @@ public class ACBlockRegistry {
             case 7:
                 return () -> new BlockItemWithSupplier(blockObj, new Item.Properties().rarity(Rarity.UNCOMMON).fireResistant());
             case 8:
-                return () -> new BlockItemWithSupplier(blockObj, new Item.Properties().rarity(Rarity.UNCOMMON).fireResistant().rarity(ACItemRegistry.RARITY_NUCLEAR));
-            case 9:
                 return () -> new BlockItemWithISTER(blockObj, new Item.Properties().rarity(Rarity.UNCOMMON));
         }
     }

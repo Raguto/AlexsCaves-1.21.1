@@ -4,6 +4,7 @@ import com.github.alexmodguy.alexscaves.AlexsCaves;
 import com.github.alexmodguy.alexscaves.client.particle.ACParticleRegistry;
 import com.github.alexmodguy.alexscaves.server.enchantment.ACEnchantmentRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.item.DarkArrowEntity;
+import com.github.alexmodguy.alexscaves.server.item.rarity.DemonicRarity;
 import com.github.alexmodguy.alexscaves.server.message.UpdateItemTagMessage;
 import com.github.alexmodguy.alexscaves.server.misc.ACSoundRegistry;
 import com.github.alexmodguy.alexscaves.server.potion.DarknessIncarnateEffect;
@@ -33,10 +34,10 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import javax.annotation.Nullable;
 import java.util.function.Predicate;
 
-public class DreadbowItem extends ProjectileWeaponItem implements UpdatesStackTags {
+public class DreadbowItem extends ProjectileWeaponItem implements UpdatesStackTags, DemonicRarity {
 
     public DreadbowItem() {
-        super(new Item.Properties().rarity(ACItemRegistry.RARITY_DEMONIC).durability(500));
+        super(new Item.Properties().durability(500));
     }
 
     @Nullable
