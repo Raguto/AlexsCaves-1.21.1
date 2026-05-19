@@ -2,6 +2,7 @@ package com.github.alexmodguy.alexscaves.server.item;
 
 import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.item.NuclearExplosionEntity;
+import com.github.alexmodguy.alexscaves.server.item.rarity.SweetRarityItem;
 import com.github.alexmodguy.alexscaves.server.item.tooltip.SackOfSatingTooltip;
 import com.github.alexmodguy.alexscaves.server.misc.ACTagRegistry;
 import net.minecraft.nbt.CompoundTag;
@@ -21,10 +22,10 @@ import net.minecraft.world.level.gameevent.GameEvent;
 
 import java.util.Optional;
 
-public class SackOfSatingItem extends Item {
+public class SackOfSatingItem extends SweetRarityItem {
 
     public SackOfSatingItem() {
-        super(new Item.Properties().stacksTo(1).rarity(ACItemRegistry.RARITY_SWEET));
+        super(new Item.Properties().stacksTo(1));
     }
 
     public static int getHunger(ItemStack itemStack) {

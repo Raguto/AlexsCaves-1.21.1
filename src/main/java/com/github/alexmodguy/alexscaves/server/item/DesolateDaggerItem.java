@@ -3,6 +3,7 @@ package com.github.alexmodguy.alexscaves.server.item;
 import com.github.alexmodguy.alexscaves.server.enchantment.ACEnchantmentRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.ACEntityRegistry;
 import com.github.alexmodguy.alexscaves.server.entity.item.DesolateDaggerEntity;
+import com.github.alexmodguy.alexscaves.server.item.rarity.DemonicRarity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -10,9 +11,9 @@ import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 
-public class DesolateDaggerItem extends SwordItem {
+public class DesolateDaggerItem extends SwordItem implements DemonicRarity {
     public DesolateDaggerItem() {
-        super(Tiers.DIAMOND, (new Item.Properties()).rarity(ACItemRegistry.RARITY_DEMONIC).attributes(SwordItem.createAttributes(Tiers.DIAMOND, 0, -2F)));
+        super(Tiers.DIAMOND, (new Item.Properties()).attributes(SwordItem.createAttributes(Tiers.DIAMOND, 0, -2F)));
     }
 
     public int getMaxDamage(ItemStack stack) {

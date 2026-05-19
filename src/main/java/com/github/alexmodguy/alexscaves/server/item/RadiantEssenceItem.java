@@ -1,5 +1,6 @@
 package com.github.alexmodguy.alexscaves.server.item;
 
+import com.github.alexmodguy.alexscaves.server.item.rarity.RainbowRarityItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -15,10 +16,10 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class RadiantEssenceItem extends Item {
+public class RadiantEssenceItem extends RainbowRarityItem {
 
     public RadiantEssenceItem() {
-        super(new Item.Properties().rarity(ACItemRegistry.RARITY_RAINBOW));
+        super(new Item.Properties());
     }
 
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag flagIn) {
