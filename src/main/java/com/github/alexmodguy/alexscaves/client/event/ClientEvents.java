@@ -37,6 +37,8 @@ import com.github.alexthe666.citadel.client.tick.ClientTickRateTracker;
 import com.github.alexthe666.citadel.server.tick.TickRateTracker;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL30;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Either;
 import com.mojang.math.Axis;
@@ -200,6 +202,7 @@ public class ClientEvents {
         Entity player = Minecraft.getInstance().getCameraEntity();
         boolean firstPerson = Minecraft.getInstance().options.getCameraType().isFirstPerson();
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_SKY) {
+            int prevDrawFb = GL11.glGetInteger(GL30.GL_DRAW_FRAMEBUFFER_BINDING);
             if (firstPerson && player instanceof LivingEntity living) {
                 MultiBufferSource.BufferSource multibuffersource$buffersource = Minecraft.getInstance().renderBuffers().bufferSource();
                 Vec3 cameraPos = event.getCamera().getPosition();
@@ -225,6 +228,7 @@ public class ClientEvents {
             } else if (renderer.currentEffect() != null && SUGAR_RUSH_SHADER.toString().equals(renderer.currentEffect().getName())) {
                 renderer.checkEntityPostEffect(null);
             }
+            GL30.glBindFramebuffer(GL30.GL_DRAW_FRAMEBUFFER, prevDrawFb);
         }
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_ENTITIES) {
             if (firstPerson && player instanceof LivingEntity living) {
