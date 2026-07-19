@@ -102,25 +102,25 @@ public abstract class LevelRendererMixin {
         float override = ClientProxy.acSkyOverrideAmount;
         float primordialBoss = AlexsCaves.PROXY.getPrimordialBossActiveAmount(partialTick);
         if(!AlexsCaves.CLIENT_CONFIG.biomeSkyOverrides.get() || override <= 0.0F && primordialBoss <= 0.0F){
-           return;
+            return;
         }
         ci.cancel();
         // AC CODE END
-        
+
         // Create a PoseStack for rendering
         PoseStack poseStack = new PoseStack();
         poseStack.mulPose(modelViewMatrix);
-        
+
         if (level.effects().renderSky(level, ticks, partialTick, modelViewMatrix, camera, projectionMatrix, foggy, runnable))
             return;
         runnable.run();
         if (!foggy) {
             FogType fogtype = camera.getFluidInCamera();
             if (fogtype != FogType.POWDER_SNOW && fogtype != FogType.LAVA && !this.doesMobEffectBlockSky(camera)) {
-                if (this.minecraft.level.effects().skyType() == DimensionSpecialEffects.SkyType.END) {
+                if (this.level.effects().skyType() == DimensionSpecialEffects.SkyType.END) {
                     this.renderEndSky(poseStack);
-                } else if (this.minecraft.level.effects().skyType() == DimensionSpecialEffects.SkyType.NORMAL) {
-                    Vec3 vec3 = this.level.getSkyColor(this.minecraft.gameRenderer.getMainCamera().getPosition(), partialTick);
+                } else if (this.level.effects().skyType() == DimensionSpecialEffects.SkyType.NORMAL) {
+                    Vec3 vec3 = this.level.getSkyColor(camera.getPosition(), partialTick);
                     //AC CODE START
                     vec3 = ClientProxy.processSkyColor(vec3, partialTick);
                     // AC CODE END
@@ -261,7 +261,7 @@ public abstract class LevelRendererMixin {
     private void ac_renderLevel(DeltaTracker deltaTracker, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f frustumMatrix, Matrix4f projectionMatrix, CallbackInfo ci) {
         float partialTicks = deltaTracker.getGameTimeDeltaPartialTick(false);
         Entity player = Minecraft.getInstance().cameraEntity;
-        
+
         // Render submarine first person view
         if (player != null && player.isPassenger() && player.getVehicle() instanceof SubmarineEntity submarine && SubmarineRenderer.isFirstPersonFloodlightsMode(submarine)) {
             PoseStack poseStack = new PoseStack();
@@ -276,7 +276,7 @@ public abstract class LevelRendererMixin {
             minecraft.renderBuffers().bufferSource().endBatch();
             poseStack.popPose();
         }
-        
+
         // Render bubbled effect
         if (Minecraft.getInstance().getCameraEntity() instanceof LivingEntity living && living.hasEffect(ACEffectRegistry.BUBBLED) && Minecraft.getInstance().options.getCameraType().isFirstPerson()) {
             PoseStack poseStack = new PoseStack();
