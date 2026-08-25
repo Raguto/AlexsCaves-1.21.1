@@ -194,7 +194,7 @@
             {
               "function": "minecraft:enchant_with_levels",
               "levels": 14.0,
-              "treasure": true
+              "options": "#minecraft:on_random_loot"
             }
           ],
           "name": "minecraft:book",

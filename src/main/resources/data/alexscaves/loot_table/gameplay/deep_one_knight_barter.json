@@ -61,10 +61,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "enchantments": [
+              "function": "minecraft:enchant_randomly",
+              "options": [
                 "minecraft:depth_strider"
-              ],
-              "function": "minecraft:enchant_randomly"
+              ]
             }
           ],
           "name": "minecraft:iron_boots",
@@ -74,10 +74,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "enchantments": [
+              "function": "minecraft:enchant_randomly",
+              "options": [
                 "minecraft:depth_strider"
-              ],
-              "function": "minecraft:enchant_randomly"
+              ]
             }
           ],
           "name": "minecraft:leather_boots",
@@ -87,10 +87,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "enchantments": [
+              "function": "minecraft:enchant_randomly",
+              "options": [
                 "minecraft:respiration"
-              ],
-              "function": "minecraft:enchant_randomly"
+              ]
             }
           ],
           "name": "minecraft:leather_helmet",
@@ -100,10 +100,10 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "enchantments": [
+              "function": "minecraft:enchant_randomly",
+              "options": [
                 "minecraft:respiration"
-              ],
-              "function": "minecraft:enchant_randomly"
+              ]
             }
           ],
           "name": "minecraft:iron_helmet",

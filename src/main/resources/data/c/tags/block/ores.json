@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    "#c:ores/coal",
+    "#c:ores/iron",
+    "#c:ores/redstone",
+    "#c:ores/uranium"
+  ]
+}

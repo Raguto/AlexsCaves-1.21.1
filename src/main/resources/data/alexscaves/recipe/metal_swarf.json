@@ -8,10 +8,10 @@
       "tag": "c:raw_materials/iron"
     },
     {
-      "tag": "c:gravel"
+      "tag": "c:gravels"
     },
     {
-      "tag": "c:gravel"
+      "tag": "c:gravels"
     }
   ],
   "result": { "id": "alexscaves:metal_swarf",
