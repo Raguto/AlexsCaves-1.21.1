@@ -152,6 +152,10 @@ public class AlexsCaves {
         }
     }
 
+    public static void sendMSGToPlayer(net.minecraft.network.protocol.common.custom.CustomPacketPayload msg, ServerPlayer player) {
+        net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, msg);
+    }
+
     public static void sendNonLocal(net.minecraft.network.protocol.common.custom.CustomPacketPayload msg, ServerPlayer player) {
         net.neoforged.neoforge.network.PacketDistributor.sendToPlayer(player, msg);
     }
