@@ -1,0 +1,5 @@
+Apply PR #176 (data migration fixes) from Raguto/AlexsCaves-1.21.1
+
+This commit applies changes from commit 665c25590795f807e1205f9e06374beda8536c3c (melon-444/AlexsCaves-1.21.1-databug-fix) as a single patch and updates build.gradle version to 'copilot-2.0.10'.
+
+Changes: 166 files updated/added/removed. See original PR: https://github.com/Raguto/AlexsCaves-1.21.1/pull/176
