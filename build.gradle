@@ -136,11 +136,24 @@ idea {
     }
 }
 
+def deployPathProvider = providers.gradleProperty('alexscaves.deployPath')
+    .orElse(providers.environmentVariable('ALEXSCAVES_DEPLOY_PATH'))
+    .orElse(providers.systemProperty('alexscaves.deployPath'))
+
 task deploy {
     dependsOn tasks.named('jar')
-    
+
+    onlyIf {
+        def deployPath = deployPathProvider.orNull
+        if (!deployPath) {
+            logger.lifecycle('deploy: no target path configured; set -Palexscaves.deployPath=/path/to/mods or ALEXSCAVES_DEPLOY_PATH')
+            return false
+        }
+        return true
+    }
+
     doLast {
-        def modsDir = file('D:/instances/NeoForge 1.21.1/minecraft/mods')
+        def modsDir = file(deployPathProvider.get())
 
         if (!modsDir.exists()) {
             logger.warn("deploy: target mods directory does not exist: ${modsDir}")
