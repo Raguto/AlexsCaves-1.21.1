@@ -71,6 +71,11 @@ public class ACNetworking {
 
         // Server -> Client packets
         registrar.playToClient(
+            SyncCaveBookProgressMessage.ID,
+            SyncCaveBookProgressMessage.CODEC,
+            SyncCaveBookProgressMessage::handleClient
+        );
+        registrar.playToClient(
             BeholderSyncMessage.ID,
             BeholderSyncMessage.CODEC,
             BeholderSyncMessage::handleClient
