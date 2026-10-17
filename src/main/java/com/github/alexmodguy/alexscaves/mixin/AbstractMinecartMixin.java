@@ -41,6 +41,24 @@ public abstract class AbstractMinecartMixin extends VehicleEntity implements Min
     private boolean flipped;
 
     @Shadow
+    private int lerpSteps;
+
+    @Shadow
+    private double lerpX;
+
+    @Shadow
+    private double lerpY;
+
+    @Shadow
+    private double lerpZ;
+
+    @Shadow
+    private double lerpYRot;
+
+    @Shadow
+    private double lerpXRot;
+
+    @Shadow
     @Nullable
     public abstract Vec3 getPos(double p_38180_, double p_38181_, double p_38182_);
 
@@ -112,7 +130,15 @@ public abstract class AbstractMinecartMixin extends VehicleEntity implements Min
 
                 this.checkBelowWorld();
 
-                if (!this.level().isClientSide) {
+                if (this.level().isClientSide) {
+                    if (this.lerpSteps > 0) {
+                        this.lerpPositionAndRotationStep(this.lerpSteps, this.lerpX, this.lerpY, this.lerpZ, this.lerpYRot, this.lerpXRot);
+                        --this.lerpSteps;
+                    } else {
+                        this.reapplyPosition();
+                        this.setRot(this.getYRot(), this.getXRot());
+                    }
+                } else {
                     if (!this.isNoGravity()) {
                         double d0 = this.isInWater() ? -0.005D : -0.04D;
                         this.setDeltaMovement(this.getDeltaMovement().add(0.0D, d0, 0.0D));
